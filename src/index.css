@@ -1,0 +1,157 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Base ─────────────────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-cream text-earth font-sans;
+    direction: rtl;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-earth font-semibold tracking-tight;
+  }
+
+  a { @apply transition-colors duration-200; }
+
+  /* Scrollbar — subtle */
+  ::-webkit-scrollbar              { width: 6px; }
+  ::-webkit-scrollbar-track        { background: transparent; }
+  ::-webkit-scrollbar-thumb        { @apply bg-stone rounded-full; }
+  ::-webkit-scrollbar-thumb:hover  { @apply bg-sand; }
+
+  /* Focus ring */
+  :focus-visible {
+    outline: 2px solid theme('colors.sage.DEFAULT');
+    outline-offset: 2px;
+  }
+}
+
+/* ─── Components ────────────────────────────────────────────────────── */
+@layer components {
+
+  /* Container */
+  .container-gaia {
+    @apply max-w-6xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Section vertical rhythm */
+  .section-padding {
+    @apply py-section-sm md:py-section;
+  }
+
+  /* Eyebrow label above headings */
+  .eyebrow {
+    @apply inline-block text-sm font-semibold tracking-[0.12em] uppercase
+           text-sage mb-3;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    background: linear-gradient(135deg, theme('colors.forest.DEFAULT'), theme('colors.olive.DEFAULT'));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Section divider */
+  .section-divider {
+    @apply w-12 h-0.5 bg-olive mx-auto my-6;
+  }
+
+  /* Card base */
+  .card {
+    @apply bg-white rounded-3xl border border-stone shadow-card
+           transition-shadow duration-300 hover:shadow-card-hover;
+  }
+
+  /* Input base */
+  .input-base {
+    @apply w-full rounded-xl border border-stone bg-white px-4 py-3
+           text-earth placeholder-mist text-sm
+           transition duration-200
+           focus:outline-none focus:border-sage focus:shadow-input;
+  }
+
+  /* Select base */
+  .select-base {
+    @apply input-base appearance-none cursor-pointer;
+  }
+
+  /* Pill tag */
+  .pill {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full
+           text-xs font-medium;
+  }
+
+  /* Step indicator */
+  .step-dot {
+    @apply w-8 h-8 rounded-full flex items-center justify-center
+           text-sm font-semibold border-2 transition-all duration-300;
+  }
+
+  /* Result stat box */
+  .stat-box {
+    @apply bg-parchment rounded-2xl p-4 text-center;
+  }
+}
+
+/* ─── Utilities ─────────────────────────────────────────────────────── */
+@layer utilities {
+  .text-balance  { text-wrap: balance; }
+  .perspective-1000 { perspective: 1000px; }
+
+  /* Stagger animation delays */
+  .delay-100  { animation-delay: 100ms; }
+  .delay-200  { animation-delay: 200ms; }
+  .delay-300  { animation-delay: 300ms; }
+  .delay-400  { animation-delay: 400ms; }
+  .delay-500  { animation-delay: 500ms; }
+
+  /* Opacity for animation starting state */
+  .opacity-start { opacity: 0; }
+}
+
+/* ─── Custom range input ─────────────────────────────────────────────── */
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 99px;
+  background: theme('colors.stone.DEFAULT');
+  outline: none;
+  cursor: pointer;
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: theme('colors.forest.DEFAULT');
+  border: 3px solid white;
+  box-shadow: 0 2px 6px rgba(59,94,65,0.35);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+input[type='range']::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+input[type='range']::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: theme('colors.forest.DEFAULT');
+  border: 3px solid white;
+  box-shadow: 0 2px 6px rgba(59,94,65,0.35);
+  cursor: pointer;
+}

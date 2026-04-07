@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(echo $PATH)",
+      "Bash(command -v node npm npx bun pnpm yarn)",
+      "Read(//opt/**)",
+      "Read(//Users/tomerhazam/**)",
+      "Bash(mdfind -name node -onlyin /usr/local)",
+      "Bash(mdfind -name npm)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(export PATH=\"$PATH:/usr/local/bin\")",
+      "Bash(npm install:*)",
+      "Bash(zip -r \"GAiA-Website.zip\" \"Website\" --exclude \"Website/node_modules/*\" --exclude \"Website/.lovable-original/*\")"
+    ]
+  }
+}
