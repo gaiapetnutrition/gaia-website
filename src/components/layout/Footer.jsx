@@ -27,16 +27,12 @@ export default function Footer() {
 
           {/* Brand column */}
           <div className="md:col-span-2 space-y-5">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center">
               <img
                 src="/gaia-logo.png"
                 alt="GAiA"
-                className="h-10 w-auto brightness-0 invert"
-                onError={e => { e.target.style.display = 'none' }}
+                className="h-14 w-auto rounded-xl"
               />
-              <span className="text-2xl font-serif font-bold text-white tracking-tight">
-                GA<em className="not-italic text-olive-light">i</em>A
-              </span>
             </div>
             <p className="text-sm leading-relaxed max-w-xs text-white/60">
               תזונה טבעית לכלבים מבוססת מדע — שילוב ייחודי של ידע מדעי עם פילוסופיית מזון מלא ובריאות הוליסטית.

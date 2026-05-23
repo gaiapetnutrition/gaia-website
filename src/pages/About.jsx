@@ -50,7 +50,7 @@ export default function About() {
     <div className="min-h-screen bg-cream">
 
       {/* Header */}
-      <div className="bg-earth text-white">
+      <div className="bg-green-gradient text-white">
         <div className="container-gaia py-16 md:py-24">
           <Badge variant="olive" dot className="mb-4">הסיפור שלנו</Badge>
           <h1 className="text-display-lg font-serif text-white mb-4 max-w-xl">

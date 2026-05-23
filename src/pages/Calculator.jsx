@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Calculator as CalcIcon, ChevronLeft, ChevronRight,
-  RotateCcw, Calendar, Flame, Utensils, Zap,
+  RotateCcw, Calendar, PawPrint, Utensils, Zap,
   ArrowLeft, Info, CheckCircle2
 } from 'lucide-react'
 import clsx from 'clsx'
@@ -105,57 +105,58 @@ function MacroChart({ macros }) {
 }
 
 /* ─── Results panel ──────────────────────────────────────── */
-function Results({ result, inputs, onReset }) {
+function Results({ result, inputs, onReset, onBack }) {
   if (!result) return null
 
-  const { mer, rer, dailyGrams, perMeal, frequency, macros, foodType } = result
+  const { mer, rer, dailyGrams, perMeal, frequency, macros, foodType, idealWeightKg, bcsScore, bodyCondition } = result
 
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Hero stats */}
       <div className="bg-green-gradient rounded-3xl p-6 text-white">
         <div className="flex items-center gap-2 mb-1">
-          <Flame className="w-4 h-4 text-olive-light" />
-          <span className="text-xs font-medium text-white/70 uppercase tracking-wider">צרכים קלוריים יומיים</span>
+          <PawPrint className="w-4 h-4 text-olive-light" />
+          <span className="text-xs font-medium text-white/70 uppercase tracking-wider">
+            צרכים קלוריים יומיים{inputs.name ? ` ל${inputs.name}` : ''}
+          </span>
         </div>
         <div className="text-5xl font-bold mt-1">{mer.toLocaleString()}</div>
         <div className="text-white/60 text-sm">קלוריות ליום (MER)</div>
-        <div className="mt-3 text-xs text-white/50">RER (מנוחה): {rer.toLocaleString()} קק"ל</div>
+
+        {bcsScore !== 5 && (
+          <div className="mt-2 text-xs text-white/60">
+            משקל אידיאלי מוערך: <span className="text-white font-semibold">{idealWeightKg} ק״ג</span>
+            <span className="block mt-0.5 text-white/40">מחושב מהמשקל הנוכחי ו-BCS {bcsScore}/9</span>
+          </div>
+        )}
       </div>
 
       {/* Food amount */}
       <div className="bg-white border border-stone rounded-3xl p-6">
         <div className="flex items-center gap-2 mb-4">
           <Utensils className="w-4 h-4 text-forest" />
-          <h3 className="font-semibold text-earth">כמות אוכל יומית</h3>
+          <h3 className="font-semibold text-earth">כמות אוכל יומית{inputs.name ? ` ל${inputs.name}` : ''}</h3>
+          <span className="text-sm text-mist">— {foodType?.label} • {result.customKcalPer100g > 0 ? result.customKcalPer100g * 10 : foodType?.kcalPer100g * 10} קק״ל/ק״ג{result.customKcalPer100g > 0 ? ' (מותאם אישית)' : ''}</span>
         </div>
         <div className="flex items-end gap-2 mb-1">
           <span className="text-4xl font-bold text-forest">{dailyGrams.toLocaleString()}</span>
           <span className="text-mist text-sm mb-1.5">גרם / יום</span>
         </div>
-        <p className="text-sm text-mist mb-4">
-          {foodType?.label} • {foodType?.kcalPer100g} קק"ל / 100 גרם
-        </p>
-        <div className="bg-parchment rounded-2xl p-4 flex items-center justify-between">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-forest">{perMeal}</div>
-            <div className="text-xs text-mist">גרם לארוחה</div>
-          </div>
-          <div className="w-px h-10 bg-stone" />
-          <div className="text-center">
+        <div className="bg-parchment rounded-2xl p-4 flex items-center">
+          <div className="flex-1 flex flex-col items-center">
             <div className="text-2xl font-bold text-earth">{frequency.times}</div>
             <div className="text-xs text-mist">ארוחות ביום</div>
           </div>
           <div className="w-px h-10 bg-stone" />
-          <div className="text-center">
-            <div className="text-2xl font-bold text-earth">{(dailyGrams / 1000).toFixed(2)}</div>
-            <div className="text-xs text-mist">ק"ג / יום</div>
+          <div className="flex-1 flex flex-col items-center">
+            <div className="text-2xl font-bold text-forest">{perMeal}</div>
+            <div className="text-xs text-mist">גרם לארוחה</div>
           </div>
         </div>
       </div>
 
-      {/* Macro breakdown */}
-      <div className="bg-white border border-stone rounded-3xl p-6">
+      {/* Macro breakdown — hidden, restore by uncommenting */}
+      {/* <div className="bg-white border border-stone rounded-3xl p-6">
         <div className="flex items-center gap-2 mb-5">
           <Zap className="w-4 h-4 text-forest" />
           <h3 className="font-semibold text-earth">פירוט מאקרו-נוטריאנטים</h3>
@@ -183,53 +184,108 @@ function Results({ result, inputs, onReset }) {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Disclaimer + CTA */}
       <div className="bg-parchment rounded-2xl p-4 flex gap-3 text-xs text-mist">
         <Info className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-sage" />
-        <p>החישוב מהווה הערכה מבוססת נוסחאות וטרינריות מקובלות (AAFCO/NRC). לתוכנית מדויקת ומותאמת אישית — קבעו ייעוץ.</p>
+        <p>החישוב מהווה הערכה מבוססת נוסחאות וטרינריות מקובלות ואינו מחליף ייעוץ מקצועי. התוצאה היא נקודת פתיחה בלבד — כל כלב שונה, ויש לעקוב אחר משקל, מדד מצב גוף (BCS), רמת פעילות ומצב בריאותי ולהתאים את כמות המזון בהתאם. לתוכנית מדויקת ומותאמת אישית מומלץ לקבוע ייעוץ עם וטרינר/ית או תזונאי/ת.</p>
       </div>
 
-      <Link to="/consultations">
+      {/* BCS warning — shown only for underweight or overweight */}
+      {(bodyCondition === 'underweight' || bodyCondition === 'overweight') && (
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex gap-3 text-xs text-amber-800">
+          <Info className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-amber-500" />
+          <p className="leading-relaxed">
+            <span className="font-semibold block mb-1">התוצאה מבוססת על משקל יעד משוער לפי BCS, ונועדה לתמוך בחזרה הדרגתית לטווח גוף אידיאלי.</span>
+            אם יש ירידה או עלייה חריגה במשקל, BCS קיצוני, או מצב רפואי קיים, מומלץ להתייעץ עם וטרינר לגבי תוכנית חזרה ייעודית למשקל תקין, ובעוצמה המתאימה לצרכיו, ולעקוב אחר המשקל וה־BCS לאורך הזמן.
+          </p>
+        </div>
+      )}
+
+      <Link to="/consultations" className="block mt-4">
         <Button variant="primary" size="lg" className="w-full">
           לייעוץ מקצועי מלא
           <ArrowLeft className="w-4 h-4" />
         </Button>
       </Link>
 
-      <button onClick={onReset} className="w-full text-sm text-mist hover:text-bark flex items-center justify-center gap-1.5 transition-colors">
-        <RotateCcw className="w-3.5 h-3.5" />
-        חישוב מחדש
-      </button>
+      <div className="flex items-center justify-center gap-6">
+        <button onClick={onBack} className="text-sm text-mist hover:text-bark flex items-center gap-1.5 transition-colors">
+          <ChevronRight className="w-3.5 h-3.5" />
+          חזרה לשלב הקודם
+        </button>
+        <span className="text-stone">|</span>
+        <button onClick={onReset} className="text-sm text-mist hover:text-bark flex items-center gap-1.5 transition-colors">
+          <RotateCcw className="w-3.5 h-3.5" />
+          חישוב מחדש
+        </button>
+      </div>
     </div>
   )
 }
 
+/* ─── Activity level scale data ─────────────────────────── */
+// 7 positions — all sheet levels exposed (Inactive → Working).
+// Scale renders RTL: low (right) → work (left), matching Hebrew reading direction.
+const ACTIVITY_STEPS = [
+  { id: 'low',           anchor: 'לא פעיל',   desc: 'לא פעיל — טיולים קצרים ושגרה ביתית רגועה, עם מעט פעילות מאומצת.'            },
+  { id: 'low_plus',      anchor: null,          desc: 'לא פעיל+ — טיולים קצרים ושגרה ביתית רגועה, עם מעט פעילות מאומצת.'          },
+  { id: 'moderate',      anchor: 'רגיל',       desc: 'רגיל — טיולים ומשחקים יומיומיים כחלק משגרת כלב בית רגילה.'                  },
+  { id: 'moderate_plus', anchor: null,          desc: 'רגיל+ — טיולים ומשחקים יומיומיים כחלק משגרת כלב בית רגילה.'                },
+  { id: 'active',        anchor: 'פעיל',       desc: 'פעיל — טיולים ארוכים, ריצות, אימונים או משחק אנרגטי כמה פעמים בשבוע.'      },
+  { id: 'active_plus',   anchor: null,          desc: 'פעיל+ — טיולים ארוכים, ריצות, אימונים או משחק אנרגטי כמה פעמים בשבוע.'    },
+  { id: 'work',          anchor: 'כלב עבודה',  desc: 'כלב עבודה — פעילות גופנית גבוהה ומובנית כמו ספורט, שמירה, ציד או רעייה.'   },
+]
+
 /* ─── Main Calculator ─────────────────────────────────────── */
 const TOTAL_STEPS = 3
 
+// Puppy → adult threshold (years) by breed size
+const PUPPY_THRESHOLD = { small: 1, medium: 1, large: 1.5, giant: 2 }
+
 const INITIAL = {
   name:          '',
+  breedSize:     'small',
   weightKg:      10,
   ageYears:      2,
   lifeStage:     'adult',
   activityLevel: 'moderate',
   isNeutered:    true,
-  bodyCondition: 'ideal',
-  foodType:      'dry',
+  bcsScore:      5,
+  foodType:        'homecooked',
+  customKcalPerKg: '',
 }
 
 export default function Calculator() {
-  const [step,   setStep]   = useState(0)
-  const [inputs, setInputs] = useState(INITIAL)
-  const [result, setResult] = useState(null)
+  const [step,       setStep]       = useState(0)
+  const [inputs,     setInputs]     = useState(INITIAL)
+  const [result,     setResult]     = useState(null)
+  const [hoveredBcs,       setHoveredBcs]       = useState(null)
+  const [showBcsInfo,      setShowBcsInfo]      = useState(false)
+  const [showBcsLightbox,  setShowBcsLightbox]  = useState(false)
+  const [showBreedInfo,    setShowBreedInfo]    = useState(false)
+  const [showCalorieInfo,  setShowCalorieInfo]  = useState(false)
   const topRef = useRef(null)
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key !== 'Escape') return
+      if (showBcsLightbox)  { setShowBcsLightbox(false);  return }
+      if (showBcsInfo)      { setShowBcsInfo(false);      return }
+      if (showBreedInfo)    { setShowBreedInfo(false);    return }
+      if (showCalorieInfo)  { setShowCalorieInfo(false) }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [showBcsLightbox, showBcsInfo, showBreedInfo, showCalorieInfo])
 
   const set = (key, val) => setInputs(prev => ({ ...prev, [key]: val }))
 
   function handleCalculate() {
-    setResult(calculate(inputs))
+    const { customKcalPerKg, ...rest } = inputs
+    const customKcalPer100g = Number(customKcalPerKg) > 0 ? Number(customKcalPerKg) / 10 : 0
+    setResult(calculate({ ...rest, customKcalPer100g }))
     setStep(TOTAL_STEPS) // show results
     setTimeout(() => topRef.current?.scrollIntoView({ behavior: 'smooth' }), 50)
   }
@@ -249,16 +305,14 @@ export default function Calculator() {
   return (
     <div className="min-h-screen bg-cream">
       {/* Page header */}
-      <div className="bg-earth text-white">
+      <div className="bg-green-gradient text-white">
         <div className="container-gaia py-14 md:py-20">
           <div ref={topRef} />
-          <Badge variant="olive" dot className="mb-4">כלי חינמי</Badge>
           <h1 className="text-display-lg font-serif text-white mb-3">
             מחשבון תזונה לכלב
           </h1>
           <p className="text-white/60 max-w-lg text-base leading-relaxed">
-            חישוב מדויק של הצרכים הקלוריים היומיים של הכלב שלכם — בהתבסס על
-            נוסחאות וטרינריות מקובלות (AAFCO / NRC).
+            החישוב מבוסס על נוסחאות אנרגיה וטרינריות מקובלות (RER ו‑MER), ומהווה נקודת פתיחה בלבד. הוא אינו מחליף אבחון וייעוץ עם וטרינר/ית או תזונאי/ת.
           </p>
         </div>
       </div>
@@ -268,7 +322,12 @@ export default function Calculator() {
 
           {/* Show results or form */}
           {result ? (
-            <Results result={result} inputs={inputs} onReset={handleReset} />
+            <Results
+              result={result}
+              inputs={inputs}
+              onReset={handleReset}
+              onBack={() => { setResult(null); setStep(TOTAL_STEPS - 1) }}
+            />
           ) : (
             <div className="bg-white rounded-4xl border border-stone shadow-card overflow-hidden">
 
@@ -309,15 +368,67 @@ export default function Calculator() {
                       />
                     </div>
 
+                    {/* Breed size */}
+                    <div>
+                      <div className="flex items-center gap-1.5 mb-2">
+                        <label className="text-sm font-medium text-bark">גודל גזע מוערך</label>
+                        <button
+                          type="button"
+                          onClick={() => setShowBreedInfo(v => !v)}
+                          title="מידע על גודל גזע"
+                          className={clsx(
+                            'w-[18px] h-[18px] rounded-full border text-[10px] font-bold flex items-center justify-center transition-colors duration-150 flex-shrink-0 leading-none',
+                            showBreedInfo
+                              ? 'bg-forest border-forest text-white'
+                              : 'border-mist text-mist hover:border-forest hover:text-forest',
+                          )}
+                        >i</button>
+                      </div>
+
+                      {/* Collapsible info panel */}
+                      <div className={clsx(
+                        'overflow-hidden transition-all duration-300',
+                        showBreedInfo ? 'max-h-48 opacity-100 mb-3' : 'max-h-0 opacity-0',
+                      )}>
+                        <div className="bg-parchment rounded-2xl p-4 text-xs text-bark leading-relaxed">
+                          <span className="font-semibold block mb-1">הידעתם?</span>
+                          גזעים קטנים מגיעים בדרך כלל לגודל הבוגר שלהם סביב גיל 12 חודשים, בעוד שגזעים גדולים וענקיים יכולים להמשיך לגדול ולהגיע לבגרות מלאה מאוחר יותר — לרוב בין גיל 18–24 חודשים.
+                          <span className="block mt-1.5 text-mist">חשוב לזכור שמדובר בהערכות כלליות, והקצב עשוי להשתנות בין כלב לכלב.</span>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        {[
+                          { id: 'small', icon: '🐩', label: 'קטן / בינוני' },
+                          { id: 'large', icon: '🦮', label: 'גדול'         },
+                          { id: 'giant', icon: '🐕‍🦺', label: 'ענק'          },
+                        ].map(bs => (
+                          <OptionCard
+                            key={bs.id}
+                            selected={inputs.breedSize === bs.id}
+                            onClick={() => {
+                              set('breedSize', bs.id)
+                              const threshold = PUPPY_THRESHOLD[bs.id]
+                              const age = inputs.ageYears
+                              if (age <= 0.25)          set('lifeStage', 'puppy_small')
+                              else if (age < threshold) set('lifeStage', 'puppy')
+                              else if (age >= 8)        set('lifeStage', 'senior')
+                              else                      set('lifeStage', 'adult')
+                            }}
+                            icon={bs.icon}
+                            label={bs.label}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
                     {/* Weight */}
                     <Slider
-                      label="משקל"
+                      label="משקל נוכחי"
                       value={inputs.weightKg}
                       min={1}
                       max={80}
                       step={0.5}
                       unit=" ק״ג"
-                      hint="משקל הכלב הנוכחי בקילוגרמים"
                       onChange={v => set('weightKg', v)}
                     />
 
@@ -331,34 +442,14 @@ export default function Calculator() {
                       unit=" שנים"
                       onChange={v => {
                         set('ageYears', v)
-                        if (v < 0.33) set('lifeStage', 'puppy_small')
-                        else if (v < 1) set('lifeStage', 'puppy')
-                        else if (v >= 7) set('lifeStage', 'senior')
-                        else set('lifeStage', 'adult')
+                        const threshold = PUPPY_THRESHOLD[inputs.breedSize] ?? 1
+                        if (v <= 0.25)          set('lifeStage', 'puppy_small')
+                        else if (v < threshold) set('lifeStage', 'puppy')
+                        else if (v >= 8)        set('lifeStage', 'senior')
+                        else                    set('lifeStage', 'adult')
                       }}
                     />
 
-                    {/* Life stage (auto-set, but overrideable) */}
-                    <div>
-                      <label className="text-sm font-medium text-bark block mb-2">שלב חיים</label>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                        {[
-                          { id: 'puppy_small', icon: '🐾', label: 'גור צעיר', sub: 'עד 4 חודשים' },
-                          { id: 'puppy',       icon: '🐶', label: 'גור',       sub: '4–12 חודשים' },
-                          { id: 'adult',       icon: '🐕', label: 'בוגר',      sub: '1–7 שנים' },
-                          { id: 'senior',      icon: '🦴', label: 'מבוגר',     sub: '7+ שנים' },
-                        ].map(ls => (
-                          <OptionCard
-                            key={ls.id}
-                            selected={inputs.lifeStage === ls.id}
-                            onClick={() => set('lifeStage', ls.id)}
-                            icon={ls.icon}
-                            label={ls.label}
-                            sublabel={ls.sub}
-                          />
-                        ))}
-                      </div>
-                    </div>
                   </div>
                 )}
 
@@ -370,25 +461,136 @@ export default function Calculator() {
                       <p className="text-mist text-sm">אלה הנתונים שמשפיעים הכי הרבה על הצרכים הקלוריים</p>
                     </div>
 
-                    {/* Activity level */}
+                    {/* BCS 1–9 */}
                     <div>
-                      <label className="text-sm font-medium text-bark block mb-2">רמת פעילות גופנית</label>
-                      <div className="grid grid-cols-2 gap-2">
-                        {[
-                          { id: 'low',      icon: '🛋️',  label: 'נמוכה',       sub: 'הליכות קצרות' },
-                          { id: 'moderate', icon: '🚶',  label: 'בינונית',     sub: '1–2 שעות ביום' },
-                          { id: 'active',   icon: '🏃',  label: 'פעיל',        sub: 'ריצות, אילוף' },
-                          { id: 'sport',    icon: '🏅',  label: 'ספורטיבי',    sub: 'אגיליטי, שמירה' },
-                        ].map(al => (
-                          <OptionCard
-                            key={al.id}
-                            selected={inputs.activityLevel === al.id}
-                            onClick={() => set('activityLevel', al.id)}
-                            icon={al.icon}
-                            label={al.label}
-                            sublabel={al.sub}
-                          />
-                        ))}
+                      <div className="flex justify-between items-center mb-2">
+                        <div className="flex items-center gap-1.5">
+                          <label className="text-sm font-medium text-bark">מצב גוף (BCS)</label>
+                          <button
+                            type="button"
+                            onClick={() => setShowBcsInfo(v => !v)}
+                            title="מה זה BCS?"
+                            className={clsx(
+                              'w-[18px] h-[18px] rounded-full border text-[10px] font-bold flex items-center justify-center transition-colors duration-150 flex-shrink-0 leading-none',
+                              showBcsInfo
+                                ? 'bg-forest border-forest text-white'
+                                : 'border-mist text-mist hover:border-forest hover:text-forest',
+                            )}
+                          >i</button>
+                        </div>
+                        {!showBcsInfo && (
+                          <span className="text-sm font-bold text-forest tabular-nums">
+                            9 / {hoveredBcs ?? inputs.bcsScore}&nbsp;—&nbsp;
+                            {['רזה מאוד','רזה','מתחת לאידאל','אידאלי רזה','אידאלי','מעט מעל אידאלי','עודף משקל','עודף משמעותי','השמנה חמורה'][(hoveredBcs ?? inputs.bcsScore) - 1]}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* BCS info image — shown when ⓘ is active */}
+                      <div className={clsx(
+                        'overflow-hidden transition-all duration-300',
+                        showBcsInfo ? 'max-h-[600px] opacity-100 mb-3' : 'max-h-0 opacity-0',
+                      )}>
+                        <img
+                          src="/bcs3.png"
+                          alt="סולם מצב גוף BCS 1-9"
+                          onClick={() => setShowBcsLightbox(true)}
+                          className="w-full rounded-2xl border border-stone cursor-zoom-in hover:opacity-90 transition-opacity duration-150"
+                        />
+                        <p className="text-center text-xs text-mist mt-1.5">לחצו על התמונה להגדלה</p>
+                      </div>
+
+                      {/* BCS scale buttons — hidden when ⓘ is open */}
+                      {!showBcsInfo && (
+                        <>
+                          <div className="flex gap-1.5 justify-between" onMouseLeave={() => setHoveredBcs(null)}>
+                            {[1,2,3,4,5,6,7,8,9].map(n => (
+                              <button
+                                key={n}
+                                type="button"
+                                onClick={() => set('bcsScore', n)}
+                                onMouseEnter={() => setHoveredBcs(n)}
+                                className={clsx(
+                                  'flex-1 h-10 rounded-xl text-sm font-semibold border-2 transition-all duration-150',
+                                  inputs.bcsScore === n
+                                    ? n <= 3 ? 'border-amber-400 bg-amber-50 text-amber-700'
+                                      : n <= 5 ? 'border-forest bg-forest/[6%] text-forest'
+                                      : 'border-red-300 bg-red-50 text-red-600'
+                                    : 'border-stone bg-white text-mist hover:border-sage/60',
+                                )}
+                              >
+                                {n}
+                              </button>
+                            ))}
+                          </div>
+                          <div className="flex justify-between text-xs text-mist mt-1.5 px-0.5">
+                            <span>רזה מאוד</span>
+                            <span>אידיאלי</span>
+                            <span>שמן מאוד</span>
+                          </div>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Activity level scale */}
+                    <div>
+                      <label className="text-sm font-medium text-bark block mb-4">רמת פעילות גופנית</label>
+
+                      {/* Track — RTL: low on the right, work on the left */}
+                      <div>
+                        {(() => {
+                          const idx = Math.max(0, ACTIVITY_STEPS.findIndex(s => s.id === inputs.activityLevel))
+                          return (
+                            <>
+                              <div className="relative grid grid-cols-7">
+                                {/* Track background: spans center-of-col-0 → center-of-col-6 */}
+                                <div className="absolute top-[9px] h-0.5 bg-stone rounded-full pointer-events-none"
+                                  style={{ left: 'calc(100% / 14)', right: 'calc(100% / 14)' }} />
+                                {/* Track fill — anchored to the right, grows leftward as idx increases */}
+                                <div className="absolute top-[9px] h-0.5 bg-forest rounded-full transition-all duration-200 pointer-events-none"
+                                  style={{ right: 'calc(100% / 14)', width: `calc(${idx} * 100% / 7)` }} />
+
+                                {ACTIVITY_STEPS.map((step, i) => {
+                                  const isSelected = inputs.activityLevel === step.id
+                                  const isPast     = i < idx
+                                  return (
+                                    <div key={step.id} className="flex flex-col items-center gap-2">
+                                      {/* Dot — anchor dots are 18 px, between-anchor are 12 px */}
+                                      <button
+                                        type="button"
+                                        onClick={() => set('activityLevel', step.id)}
+                                        className={clsx(
+                                          'rounded-full border-2 flex-shrink-0 relative z-10 transition-all duration-150',
+                                          step.anchor ? 'w-[18px] h-[18px]' : 'w-3 h-3 mt-[3px]',
+                                          isSelected
+                                            ? 'bg-forest border-forest shadow-[0_0_0_4px_rgba(61,94,65,0.15)]'
+                                            : isPast
+                                              ? 'bg-white border-forest hover:border-forest'
+                                              : 'bg-white border-stone hover:border-forest/50',
+                                        )}
+                                      />
+                                      {/* Label — only visible on anchor positions */}
+                                      <span className={clsx(
+                                        'text-[11px] leading-none select-none',
+                                        step.anchor ? '' : 'invisible',
+                                        isSelected ? 'text-forest font-semibold' : 'text-mist',
+                                      )}>
+                                        {step.anchor ?? '·'}
+                                      </span>
+                                    </div>
+                                  )
+                                })}
+                              </div>
+
+                              {/* Dynamic description */}
+                              <div className="mt-3 bg-parchment rounded-xl px-4 py-2.5 text-center">
+                                <p className="text-sm text-bark">
+                                  {ACTIVITY_STEPS.find(s => s.id === inputs.activityLevel)?.desc}
+                                </p>
+                              </div>
+                            </>
+                          )
+                        })()}
                       </div>
                     </div>
 
@@ -406,26 +608,6 @@ export default function Calculator() {
                             onClick={() => set('isNeutered', n.val)}
                             icon={n.icon}
                             label={n.label}
-                          />
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Body condition */}
-                    <div>
-                      <label className="text-sm font-medium text-bark block mb-2">מצב גוף (BCS)</label>
-                      <div className="grid grid-cols-3 gap-2">
-                        {[
-                          { id: 'underweight', icon: '📉', label: 'רזה מדי' },
-                          { id: 'ideal',       icon: '✅', label: 'אידיאלי' },
-                          { id: 'overweight',  icon: '📈', label: 'עודף משקל' },
-                        ].map(bc => (
-                          <OptionCard
-                            key={bc.id}
-                            selected={inputs.bodyCondition === bc.id}
-                            onClick={() => set('bodyCondition', bc.id)}
-                            icon={bc.icon}
-                            label={bc.label}
                           />
                         ))}
                       </div>
@@ -449,15 +631,53 @@ export default function Calculator() {
                           onClick={() => set('foodType', ft.id)}
                           icon={ft.icon}
                           label={ft.label}
-                          sublabel={`${ft.kcalPer100g} קק"ל / 100 גרם`}
+                          sublabel={`${ft.kcalPer100g * 10} קק״ל/ק״ג`}
                         />
                       ))}
                     </div>
 
-                    <div className="bg-parchment rounded-2xl p-4 flex gap-3 text-xs text-mist">
-                      <Info className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-sage" />
-                      <p>הערכי הקלוריות הם ממוצעים. בדקו את תוויות המוצר הספציפי שלכם לנתונים מדויקים יותר.</p>
+                    {/* Custom calorie input */}
+                    <div>
+                      <label className="text-sm font-medium text-bark block mb-0.5">
+                        קלוריות המזון שלכם (אופציונלי - מומלץ!)
+                      </label>
+                      <div className="flex items-center gap-1.5 mb-2">
+                        <p className="text-xs text-mist">אם ידועה לכם הצפיפות הקלורית המדויקת מתווית המוצר — הזינו אותה כאן</p>
+                        <button
+                          type="button"
+                          onClick={() => setShowCalorieInfo(v => !v)}
+                          className={clsx(
+                            'w-[18px] h-[18px] rounded-full border text-[10px] font-bold flex items-center justify-center transition-colors duration-150 flex-shrink-0 leading-none',
+                            showCalorieInfo
+                              ? 'bg-forest border-forest text-white'
+                              : 'border-mist text-mist hover:border-forest hover:text-forest',
+                          )}
+                        >i</button>
+                      </div>
+
+                      {/* Collapsible info panel */}
+                      <div className={clsx(
+                        'overflow-hidden transition-all duration-300',
+                        showCalorieInfo ? 'max-h-48 opacity-100 mb-3' : 'max-h-0 opacity-0',
+                      )}>
+                        <div className="bg-parchment rounded-2xl p-4 text-xs text-bark leading-relaxed">
+                          מומלץ להזין את הצפיפות הקלורית המדויקת של המזון כדי לקבל חישוב מדויק יותר. במוצרים קנויים לרוב ניתן למצוא את כמות הקלוריות על גבי האריזה. אם אין לכם את הנתון, המחשבון ישתמש בערך ברירת מחדל המבוסס על הערכה ממוצעת של מוצרים דומים בשוק ומתכונים נפוצים — כנקודת התחלה הגיונית.
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          min="1"
+                          max="9999"
+                          placeholder={`ברירת מחדל: ${(FOOD_TYPES.find(f => f.id === inputs.foodType)?.kcalPer100g ?? 350) * 10}`}
+                          value={inputs.customKcalPerKg}
+                          onChange={e => set('customKcalPerKg', e.target.value)}
+                          className="input-base w-40"
+                        />
+                        <span className="text-sm text-mist">קק״ל/ק״ג</span>
+                      </div>
                     </div>
+
                   </div>
                 )}
 
@@ -500,6 +720,38 @@ export default function Calculator() {
           )}
         </div>
       </div>
+
+      {/* ── BCS Lightbox ──────────────────────────────────────── */}
+      {showBcsLightbox && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8"
+          onClick={() => setShowBcsLightbox(false)}
+        >
+          {/* Blurred backdrop */}
+          <div className="absolute inset-0 bg-[#1a0d06]/70 backdrop-blur-md" />
+
+          {/* Image */}
+          <div
+            className="relative animate-fade-in"
+            onClick={e => e.stopPropagation()}
+          >
+            <img
+              src="/bcs3.png"
+              alt="סולם מצב גוף BCS 1-9"
+              className="max-w-[80vw] max-h-[80vh] object-contain rounded-3xl shadow-2xl"
+            />
+            {/* Close hint */}
+            <button
+              type="button"
+              onClick={() => setShowBcsLightbox(false)}
+              className="absolute top-3 left-3 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-colors duration-150"
+              aria-label="סגור"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

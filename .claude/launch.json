@@ -4,7 +4,7 @@
     {
       "name": "gaia-dev",
       "runtimeExecutable": "/usr/local/bin/node",
-      "runtimeArgs": ["/Users/tomerhazam/Documents/Claude work/Website/node_modules/.bin/vite", "--port", "5173"],
+      "runtimeArgs": ["/Users/tomerhazam/Documents/Claude work/Website/node_modules/.bin/vite", "--port", "5173", "--host", "0.0.0.0"],
       "port": 5173
     }
   ]

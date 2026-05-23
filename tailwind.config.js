@@ -24,8 +24,13 @@ export default {
         clay:      { DEFAULT: '#C4724A', light: '#D4895F', dark: '#A05A38' },
       },
       fontFamily: {
-        sans:  ['Heebo', 'system-ui', 'sans-serif'],
-        serif: ['"Playfair Display"', 'Georgia', 'serif'],
+        // ── Active font: Rubik Dirt ──────────────────────────────────────
+        // To revert, swap these back:
+        // sans:  ['Heebo', 'system-ui', 'sans-serif'],
+        // serif: ['"Playfair Display"', 'Georgia', 'serif'],
+        sans:  ['"Secular One"', 'Heebo', 'system-ui', 'sans-serif'],
+        serif: ['"Secular One"', '"Playfair Display"', 'Georgia', 'serif'],
+        display: ['"Rubik Dirt"', '"Secular One"', 'system-ui', 'sans-serif'],
         mono:  ['"Roboto Mono"', 'monospace'],
       },
       fontSize: {

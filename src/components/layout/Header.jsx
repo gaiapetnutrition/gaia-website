@@ -1,145 +1,180 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import clsx from 'clsx'
-import Button from '../ui/Button'
 
 const NAV = [
-  { label: 'בית',            path: '/' },
-  { label: 'מחשבון תזונה',  path: '/calculator' },
-  { label: 'ייעוץ',          path: '/consultations' },
-  { label: 'מאמרים',         path: '/articles' },
-  { label: 'אודות',          path: '/about' },
+  { label: 'בית',    path: '/' },
+  {
+    label: 'מחשבונים',
+    dropdown: [
+      { label: 'מחשבון האכלה',           path: '/calculator' },
+      { label: 'מחשבון שוקולד',          path: '/chocolate-calculator' },
+    ],
+  },
+  { label: 'ייעוץ',   path: '/consultations' },
+  { label: 'מאמרים', path: '/articles' },
+  { label: 'אודות',  path: '/about' },
 ]
 
 export default function Header() {
-  const [open,      setOpen]      = useState(false)
-  const [scrolled,  setScrolled]  = useState(false)
-  const { pathname }              = useLocation()
+  const [scrolled,      setScrolled]      = useState(false)
+  const [bannerVisible, setBannerVisible] = useState(true)
+  const [openDropdown,  setOpenDropdown]  = useState(null)   // label of open dropdown
+  const { pathname } = useLocation()
+  const closeTimer = useRef(null)
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 20)
+    const handler = () => setScrolled(window.scrollY > 8)
     window.addEventListener('scroll', handler, { passive: true })
     return () => window.removeEventListener('scroll', handler)
   }, [])
 
-  // Close mobile menu on route change
-  useEffect(() => { setOpen(false) }, [pathname])
+  // helpers for delayed close (so mouse can travel into the menu)
+  const openMenu  = (label) => { clearTimeout(closeTimer.current); setOpenDropdown(label) }
+  const scheduleClose = () => { closeTimer.current = setTimeout(() => setOpenDropdown(null), 120) }
 
   return (
     <header
       className={clsx(
-        'sticky top-0 z-50 transition-all duration-300',
-        scrolled
-          ? 'bg-cream/95 backdrop-blur-md border-b border-stone shadow-sm'
-          : 'bg-transparent',
+        'sticky top-0 z-50 transition-shadow duration-300',
+        scrolled ? 'shadow-[0_1px_12px_rgba(61,26,10,0.1)]' : '',
       )}
     >
-      <div className="container-gaia">
-        <nav className="flex items-center justify-between h-16 md:h-20">
-
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 flex-shrink-0">
-            <img
-              src="/gaia-logo.png"
-              alt="GAiA"
-              className="h-12 w-auto"
-              onError={e => {
-                e.target.style.display = 'none'
-                e.target.nextSibling.style.display = 'flex'
-              }}
-            />
-            {/* Fallback wordmark */}
-            <div
-              className="hidden items-center gap-0.5"
-              style={{ display: 'none' }}
-            >
-              <span className="text-2xl font-serif font-bold text-forest tracking-tight">
-                GA<em className="not-italic text-olive">i</em>A
-              </span>
-            </div>
-          </Link>
-
-          {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-1">
-            {NAV.map(item => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={clsx(
-                  'relative px-3 py-2 text-sm font-medium rounded-lg transition-colors',
-                  pathname === item.path
-                    ? 'text-forest'
-                    : 'text-bark hover:text-forest hover:bg-forest/[5%]',
-                )}
-              >
-                {item.label}
-                {pathname === item.path && (
-                  <span className="absolute bottom-0 right-3 left-3 h-0.5 bg-olive rounded-full" />
-                )}
-              </Link>
-            ))}
-          </div>
-
-          {/* Desktop CTA */}
-          <div className="hidden md:flex items-center gap-3">
-            <Button
-              as={Link}
-              to="/calculator"
-              variant="ghost"
-              size="sm"
-              onClick={() => {}}
-            >
-              מחשבון חינמי
-            </Button>
-            <Button
-              as={Link}
+      {/* ── Announcement banner ───────────────────────────── */}
+      {bannerVisible && (
+        <div className="relative bg-[#2D1206] text-white">
+          <div className="flex items-center justify-center gap-4 px-10 py-2.5">
+            <span className="text-sm font-medium text-white/80 tracking-wide">
+              קבעו ייעוץ תזונתי אישי לכלבכם
+            </span>
+            <Link
               to="/consultations"
-              variant="primary"
-              size="sm"
-              onClick={() => {}}
+              className="flex-shrink-0 bg-forest hover:bg-forest-light border border-forest text-white text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded transition-colors duration-150"
             >
-              קביעת ייעוץ
-            </Button>
-          </div>
-
-          {/* Mobile hamburger */}
-          <button
-            className="md:hidden p-2 rounded-lg text-bark hover:text-forest hover:bg-forest/[5%] transition-colors"
-            onClick={() => setOpen(o => !o)}
-            aria-label="תפריט"
-          >
-            {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
-        </nav>
-      </div>
-
-      {/* Mobile menu */}
-      {open && (
-        <div className="md:hidden bg-cream border-b border-stone shadow-lg animate-fade-in">
-          <div className="container-gaia py-4 flex flex-col gap-1">
-            {NAV.map(item => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={clsx(
-                  'px-4 py-3 text-sm font-medium rounded-xl transition-colors',
-                  pathname === item.path
-                    ? 'bg-forest/[8%] text-forest'
-                    : 'text-bark hover:bg-forest/[5%] hover:text-forest',
-                )}
-              >
-                {item.label}
-              </Link>
-            ))}
-            <div className="pt-3 border-t border-stone flex flex-col gap-2">
-              <Button as={Link} to="/consultations" variant="primary" size="md" className="w-full">
-                קביעת ייעוץ
-              </Button>
-            </div>
+              לקביעת פגישה
+            </Link>
           </div>
         </div>
       )}
+
+      {/* ── Main nav row ─────────────────────────────────── */}
+      <div className="bg-[#FAF5E4] border-b border-[#3D1A0A]/6">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-start h-12 md:h-14 gap-1">
+
+            {/* Logo */}
+            <Link to="/" className="flex-shrink-0" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+              <img src="/gaia-logo.png" alt="GAiA" className="h-12 w-auto rounded-xl" />
+            </Link>
+
+            {/* Desktop nav */}
+            <nav className="hidden md:flex items-center gap-0.5" aria-label="ניווט ראשי">
+              {NAV.map(item => {
+                if (item.dropdown) {
+                  const active = item.dropdown.some(d => pathname === d.path)
+                  const isOpen = openDropdown === item.label
+                  return (
+                    <div
+                      key={item.label}
+                      className="relative"
+                      onMouseEnter={() => openMenu(item.label)}
+                      onMouseLeave={scheduleClose}
+                    >
+                      <button
+                        className={clsx(
+                          'relative flex items-center gap-1 px-4 py-2.5 text-[15px] font-bold tracking-wide transition-colors duration-150 rounded-lg',
+                          active ? 'text-forest' : 'text-[#3D1A0A]/65 hover:text-[#3D1A0A]',
+                        )}
+                      >
+                        {item.label}
+                        <ChevronDown
+                          className={clsx('w-3.5 h-3.5 transition-transform duration-200', isOpen && 'rotate-180')}
+                        />
+                        {active && (
+                          <span className="absolute bottom-0.5 right-4 left-4 h-[2.5px] bg-forest rounded-full" />
+                        )}
+                      </button>
+
+                      {/* Dropdown panel */}
+                      <div
+                        className={clsx(
+                          'absolute top-full right-0 mt-1 bg-white border border-[#3D1A0A]/8 rounded-2xl shadow-lg py-1.5 min-w-[160px] transition-all duration-150 origin-top-right',
+                          isOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none',
+                        )}
+                        onMouseEnter={() => openMenu(item.label)}
+                        onMouseLeave={scheduleClose}
+                      >
+                        {item.dropdown.map(sub => (
+                          <Link
+                            key={sub.path}
+                            to={sub.path}
+                            onClick={() => setOpenDropdown(null)}
+                            className={clsx(
+                              'block px-4 py-2 text-sm font-semibold transition-colors duration-100',
+                              pathname === sub.path
+                                ? 'text-forest bg-forest/5'
+                                : 'text-[#3D1A0A]/70 hover:text-forest hover:bg-forest/5',
+                            )}
+                          >
+                            {sub.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                }
+
+                // Regular link
+                const active = pathname === item.path
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={clsx(
+                      'relative px-4 py-2.5 text-[15px] font-bold tracking-wide transition-colors duration-150 rounded-lg',
+                      active ? 'text-forest' : 'text-[#3D1A0A]/65 hover:text-[#3D1A0A]',
+                    )}
+                  >
+                    {item.label}
+                    {active && (
+                      <span className="absolute bottom-0.5 right-4 left-4 h-[2.5px] bg-forest rounded-full" />
+                    )}
+                  </Link>
+                )
+              })}
+            </nav>
+
+          </div>
+        </div>
+
+        {/* ── Mobile nav — horizontal scrollable tabs ─────── */}
+        <div className="md:hidden border-t border-[#3D1A0A]/6 overflow-x-auto scrollbar-none">
+          <div className="flex items-center gap-1 px-3 py-2 w-max min-w-full justify-end">
+            {NAV.flatMap(item =>
+              item.dropdown
+                ? item.dropdown.map(sub => ({ label: sub.label, path: sub.path }))
+                : [{ label: item.label, path: item.path }]
+            ).map(item => {
+              const active = pathname === item.path
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={clsx(
+                    'flex-shrink-0 px-4 py-1.5 text-sm font-bold rounded-2xl whitespace-nowrap transition-all duration-150',
+                    active
+                      ? 'bg-forest text-white shadow-sm'
+                      : 'text-[#3D1A0A]/65 hover:text-[#3D1A0A] hover:bg-[#3D1A0A]/5',
+                  )}
+                >
+                  {item.label}
+                </Link>
+              )
+            })}
+          </div>
+        </div>
+      </div>
     </header>
   )
 }

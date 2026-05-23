@@ -29,3 +29,22 @@ npm-debug.log*
 
 # Lovable original files (archived)
 .lovable-original/
+
+# Claude internals
+.claude/worktrees/
+.claude/settings.local.json
+
+# Working / scratch folders not used by the app
+images/
+Font/
+scroll animation/
+
+# Specific screenshots / scratch files
+chat_mod_11.png
+chat_mod_22.png
+paw.png
+GAiA*.png
+
+# Non-app docs / scratch folders
+ONBOARDING.md
+Calculator/
