@@ -4,12 +4,14 @@ import clsx from 'clsx'
 const variants = {
   primary: [
     'bg-forest text-white',
-    'hover:bg-forest-light active:bg-forest-dark',
-    'shadow-cta hover:shadow-lg',
+    'hover:bg-forest-light hover:-translate-y-[2px] hover:shadow-[0_6px_20px_rgba(59,94,65,0.35)]',
+    'active:bg-forest-dark active:translate-y-0 active:shadow-cta',
+    'shadow-cta',
   ],
   secondary: [
     'bg-white text-forest border-2 border-forest',
-    'hover:bg-forest hover:text-white',
+    'hover:bg-forest hover:text-white hover:-translate-y-[2px]',
+    'active:translate-y-0',
   ],
   ghost: [
     'bg-transparent text-forest',
@@ -21,7 +23,8 @@ const variants = {
   ],
   clay: [
     'bg-clay text-white',
-    'hover:bg-clay-dark',
+    'hover:bg-clay-dark hover:-translate-y-[2px]',
+    'active:translate-y-0',
     'shadow-md',
   ],
 }
@@ -48,8 +51,10 @@ const Button = forwardRef(({
     <Tag
       ref={ref}
       className={clsx(
-        'inline-flex items-center justify-center font-semibold',
-        'transition-all duration-200',
+        'inline-flex items-center justify-center font-semibold cursor-pointer',
+        'transition-[transform,background-color,box-shadow,opacity,border-color,color] duration-[180ms]',
+        '[transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)]',
+        'active:scale-[0.97] active:[transition-timing-function:cubic-bezier(0.23,1,0.32,1)] active:duration-[100ms]',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2',
         'disabled:opacity-50 disabled:pointer-events-none',
         'whitespace-nowrap select-none',

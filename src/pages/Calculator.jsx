@@ -198,7 +198,7 @@ function Results({ result, inputs, onReset, onBack }) {
           <Info className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-amber-500" />
           <p className="leading-relaxed">
             <span className="font-semibold block mb-1">התוצאה מבוססת על משקל יעד משוער לפי BCS, ונועדה לתמוך בחזרה הדרגתית לטווח גוף אידיאלי.</span>
-            אם יש ירידה או עלייה חריגה במשקל, BCS קיצוני, או מצב רפואי קיים, מומלץ להתייעץ עם וטרינר לגבי תוכנית חזרה ייעודית למשקל תקין, ובעוצמה המתאימה לצרכיו, ולעקוב אחר המשקל וה־BCS לאורך הזמן.
+            אם יש ירידה או עלייה חריגה במשקל, BCS קיצוני, או מצב רפואי קיים, מומלץ להתייעץ עם וטרינר/ית או תזונאי/ת לגבי תוכנית חזרה ייעודית למשקל תקין, ובעוצמה המתאימה לצרכיו, ולעקוב אחר המשקל וה־BCS לאורך הזמן.
           </p>
         </div>
       )}
@@ -242,7 +242,8 @@ const ACTIVITY_STEPS = [
 const TOTAL_STEPS = 3
 
 // Puppy → adult threshold (years) by breed size
-const PUPPY_THRESHOLD = { small: 1, medium: 1, large: 1.5, giant: 2 }
+// Puppy threshold in years: dog is treated as puppy until this age
+const PUPPY_THRESHOLD = { small: 10/12, medium: 1, large: 15/12, giant: 2 }
 
 const INITIAL = {
   name:          '',
@@ -312,7 +313,7 @@ export default function Calculator() {
             מחשבון תזונה לכלב
           </h1>
           <p className="text-white/60 max-w-lg text-base leading-relaxed">
-            החישוב מבוסס על נוסחאות אנרגיה וטרינריות מקובלות (RER ו‑MER), ומהווה נקודת פתיחה בלבד. הוא אינו מחליף אבחון וייעוץ עם וטרינר/ית או תזונאי/ת.
+            החישוב מבוסס על נוסחאות אנרגיה וטרינריות מקובלות (RER ו‑MER), ומהווה נקודת פתיחה בלבד. יש לעקוב אחר מצב הכלב ולהתאים את הכמות בהתאם לאורך זמן. אינו מחליף אבחון וייעוץ עם וטרינר/ית או תזונאי/ת.
           </p>
         </div>
       </div>
@@ -392,15 +393,16 @@ export default function Calculator() {
                       )}>
                         <div className="bg-parchment rounded-2xl p-4 text-xs text-bark leading-relaxed">
                           <span className="font-semibold block mb-1">הידעתם?</span>
-                          גזעים קטנים מגיעים בדרך כלל לגודל הבוגר שלהם סביב גיל 12 חודשים, בעוד שגזעים גדולים וענקיים יכולים להמשיך לגדול ולהגיע לבגרות מלאה מאוחר יותר — לרוב בין גיל 18–24 חודשים.
-                          <span className="block mt-1.5 text-mist">חשוב לזכור שמדובר בהערכות כלליות, והקצב עשוי להשתנות בין כלב לכלב.</span>
+                          גזעים קטנים נחשבים גורים עד גיל ~10 חודשים, בינוניים עד ~12 חודשים, גדולים עד ~15 חודשים, וענקיים עד ~24 חודשים.
+                          <span className="block mt-1.5 text-earth font-semibold">חשוב לזכור שמדובר בהערכות כלליות, והקצב עשוי להשתנות בין כלב לכלב.</span>
                         </div>
                       </div>
-                      <div className="grid grid-cols-3 gap-2">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                         {[
-                          { id: 'small', icon: '🐩', label: 'קטן / בינוני' },
-                          { id: 'large', icon: '🦮', label: 'גדול'         },
-                          { id: 'giant', icon: '🐕‍🦺', label: 'ענק'          },
+                          { id: 'small',  icon: '🐩',   label: 'קטן',    sublabel: 'משקל סופי של 5–12 ק"ג'  },
+                          { id: 'medium', icon: '🦮',   label: 'בינוני', sublabel: 'משקל סופי של 12–25 ק"ג' },
+                          { id: 'large',  icon: '🐕‍🦺',  label: 'גדול',   sublabel: 'משקל סופי של 25–40 ק"ג' },
+                          { id: 'giant',  icon: '🐘',   label: 'ענק',    sublabel: 'משקל סופי של 40+ ק"ג'   },
                         ].map(bs => (
                           <OptionCard
                             key={bs.id}
@@ -416,6 +418,7 @@ export default function Calculator() {
                             }}
                             icon={bs.icon}
                             label={bs.label}
+                            sublabel={bs.sublabel}
                           />
                         ))}
                       </div>

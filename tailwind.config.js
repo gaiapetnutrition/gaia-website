@@ -10,28 +10,31 @@ export default {
         olive:     { DEFAULT: '#8C9E5A', light: '#A3B470', dark: '#6E7E42' },
 
         // Warm neutrals
-        cream:     { DEFAULT: '#FAF8F2', dark: '#F0EDE3' },
-        parchment: { DEFAULT: '#F0EDE3', dark: '#E5DFD0' },
+        cream:     { DEFAULT: '#FAF7F0', dark: '#EDE8DC' },
+        parchment: { DEFAULT: '#EDE8DC', dark: '#E0D9C8' },
+        linen:     { DEFAULT: '#F5F1E8', dark: '#EAE4D6' },
         stone:     { DEFAULT: '#E5E0D4', dark: '#CCC7B8' },
         sand:      { DEFAULT: '#D4CFC0', dark: '#BDB7A6' },
 
         // Text tones
         earth:     { DEFAULT: '#1E1E1B', light: '#2E2E2A' },
         bark:      { DEFAULT: '#4A4540', light: '#6A635C' },
-        mist:      { DEFAULT: '#8A837B', light: '#AAA39B' },
+        mist:      { DEFAULT: '#6B6560', light: '#8A837B' },  // darkened for WCAG 4.5:1
 
         // Accent / highlight
-        clay:      { DEFAULT: '#C4724A', light: '#D4895F', dark: '#A05A38' },
+        clay:      { DEFAULT: '#C06B40', light: '#D07E55', dark: '#9A5430' },
+        brown:     { DEFAULT: '#502814', light: '#6B3A1E', dark: '#3A1C0E' },
+        moss:      { DEFAULT: '#4A6741', light: '#5C7D52', dark: '#374F30' },
+
+        // Warm amber — used for star ratings
+        honey:     { DEFAULT: '#B8882A', light: '#CC9E40', dark: '#96701E' },
       },
       fontFamily: {
-        // ── Active font: Rubik Dirt ──────────────────────────────────────
-        // To revert, swap these back:
-        // sans:  ['Heebo', 'system-ui', 'sans-serif'],
-        // serif: ['"Playfair Display"', 'Georgia', 'serif'],
-        sans:  ['"Secular One"', 'Heebo', 'system-ui', 'sans-serif'],
-        serif: ['"Secular One"', '"Playfair Display"', 'Georgia', 'serif'],
-        display: ['"Rubik Dirt"', '"Secular One"', 'system-ui', 'sans-serif'],
-        mono:  ['"Roboto Mono"', 'monospace'],
+        sans:    ['"Secular One"', 'Heebo', 'system-ui', 'sans-serif'],
+        serif:   ['Fraunces', '"Playfair Display"', 'Georgia', 'serif'],
+        display: ['Fraunces', 'system-ui', 'serif'],
+        body:    ['Heebo', 'system-ui', 'sans-serif'],
+        mono:    ['"Roboto Mono"', 'monospace'],
       },
       fontSize: {
         'display-xl': ['clamp(2.5rem, 5vw, 4rem)',   { lineHeight: '1.1', letterSpacing: '-0.02em' }],
@@ -49,27 +52,30 @@ export default {
         '4xl': '2rem',
       },
       boxShadow: {
-        'card':  '0 1px 3px rgba(30,30,27,0.06), 0 4px 16px rgba(30,30,27,0.04)',
-        'card-hover': '0 4px 12px rgba(30,30,27,0.10), 0 12px 32px rgba(30,30,27,0.08)',
-        'cta':   '0 8px 32px rgba(59,94,65,0.25)',
-        'input': '0 0 0 3px rgba(107,143,113,0.20)',
+        'card':       '0 1px 3px rgba(90,60,30,0.07), 0 4px 16px rgba(90,60,30,0.05)',
+        'card-hover': '0 4px 12px rgba(90,60,30,0.11), 0 12px 32px rgba(90,60,30,0.08)',
+        'cta':        '0 8px 32px rgba(59,94,65,0.28)',
+        'input':      '0 0 0 3px rgba(107,143,113,0.22)',
+        'warm-sm':    '0 2px 8px rgba(90,60,30,0.09)',
       },
       animation: {
-        'fade-up':   'fadeUp 0.6s ease forwards',
-        'fade-in':   'fadeIn 0.5s ease forwards',
-        'slide-in':  'slideIn 0.5s ease forwards',
+        // Strong ease-out (cubic-bezier(0.23,1,0.32,1)) — immediate movement, clean landing
+        'fade-up':   'fadeUp 280ms cubic-bezier(0.23, 1, 0.32, 1) forwards',
+        'fade-in':   'fadeIn 220ms cubic-bezier(0.23, 1, 0.32, 1) forwards',
+        'slide-in':  'slideIn 220ms cubic-bezier(0.23, 1, 0.32, 1) forwards',
         'pulse-soft':'pulseSoft 2.5s ease-in-out infinite',
       },
       keyframes: {
-        fadeUp:    { from: { opacity: 0, transform: 'translateY(20px)' }, to: { opacity: 1, transform: 'translateY(0)' } },
+        // 10px travel (not 20px) — snappier, less theatrical
+        fadeUp:    { from: { opacity: 0, transform: 'translateY(10px)' }, to: { opacity: 1, transform: 'translateY(0)' } },
         fadeIn:    { from: { opacity: 0 }, to: { opacity: 1 } },
-        slideIn:   { from: { opacity: 0, transform: 'translateX(16px)' }, to: { opacity: 1, transform: 'translateX(0)' } },
+        slideIn:   { from: { opacity: 0, transform: 'translateX(10px)' }, to: { opacity: 1, transform: 'translateX(0)' } },
         pulseSoft: { '0%,100%': { opacity: 1 }, '50%': { opacity: 0.7 } },
       },
       backgroundImage: {
         'gradient-radial':     'radial-gradient(var(--tw-gradient-stops))',
         'hero-gradient':       'linear-gradient(to left, rgba(30,30,27,0.0) 0%, rgba(30,30,27,0.55) 50%, rgba(30,30,27,0.85) 100%)',
-        'section-gradient':    'linear-gradient(180deg, #FAF8F2 0%, #F0EDE3 100%)',
+        'section-gradient':    'linear-gradient(180deg, #FAF7F0 0%, #EDE8DC 100%)',
         'green-gradient':      'linear-gradient(135deg, #3B5E41 0%, #4D7A54 100%)',
       },
     },

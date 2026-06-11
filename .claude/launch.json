@@ -2,10 +2,11 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "gaia-dev",
-      "runtimeExecutable": "/usr/local/bin/node",
-      "runtimeArgs": ["/Users/tomerhazam/Documents/Claude work/Website/node_modules/.bin/vite", "--port", "5173", "--host", "0.0.0.0"],
-      "port": 5173
+      "name": "gaia-website-new",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 5174,
+      "autoPort": false
     }
   ]
 }

@@ -11,15 +11,14 @@ const DOG_SIZES = [
   { id: 'small',  label: 'קטן',    desc: '5–12 ק"ג',      weight: 8.5,  emoji: '🐕' },
   { id: 'medium', label: 'בינוני', desc: '12–25 ק"ג',     weight: 18.5, emoji: '🦮' },
   { id: 'large',  label: 'גדול',   desc: '25–40 ק"ג',     weight: 32.5, emoji: '🐕‍🦺' },
-  { id: 'giant',  label: 'ענק',    desc: 'מעל 40 ק"ג',   weight: 50,   emoji: '🐾' },
+  { id: 'giant',  label: 'ענק',    desc: 'מעל 40 ק"ג',   weight: 50,   emoji: '🐺' },
 ]
 
 const CHOC_TYPES = [
   { id: 'white',   label: 'לבן',      mgPerG: 0.1,  swatch: '#FFF5D6', border: '#D9C87A' },
-  { id: 'milk',    label: 'חלב',      mgPerG: 1.75, swatch: '#C68642', border: '#9B6225' },
-  { id: 'mild',    label: 'מריר קל',  mgPerG: 10.5, swatch: '#8B5E3C', border: '#6B3E20' },
+  { id: 'milk',    label: 'חלב',      mgPerG: 1.75, swatch: '#A06830', border: '#7A4E1E' },
+  { id: 'mild',    label: 'מריר קל',  mgPerG: 10.5, swatch: '#7A4E2C', border: '#5C3418' },
   { id: 'dark',    label: 'מריר חזק', mgPerG: 20,   swatch: '#5C3317', border: '#3D1F08' },
-  { id: 'cooking', label: 'בישול',    mgPerG: 23,   swatch: '#2E1503', border: '#180800' },
 ]
 
 const AMOUNTS = [
@@ -182,12 +181,34 @@ export default function ChocolateCalculator() {
     <div className="min-h-screen bg-cream">
 
       {/* Page header */}
-      <div className="bg-green-gradient text-white">
+      <div className="bg-green-gradient text-white overflow-hidden relative">
+        {/* Paw watermark — bottom-left, lowest hierarchy, pure depth */}
+        <img
+          src="/gaia-paw.png"
+          alt=""
+          aria-hidden="true"
+          className="absolute bottom-0 left-0 w-44 h-44 object-contain pointer-events-none select-none"
+          style={{ opacity: 0.08, filter: 'brightness(0) invert(1)', transform: 'translate(-20%, 20%)' }}
+        />
         <div className="container-gaia py-14 md:py-20">
-          <h1 className="text-display-lg font-serif text-white mb-3">מחשבון רעילות שוקולד לכלב</h1>
-          <p className="text-white/60 max-w-lg text-base leading-relaxed">
-            שוקולד מכיל תיאוברומין — חומר הרעיל לכלבים. המחשבון מעריך את רמת הסיכון לפי משקל הכלב, סוג השוקולד והכמות שנצרכה.
-          </p>
+          <div className="flex items-center justify-between gap-8">
+            {/* Text — right side (RTL) */}
+            <div className="flex-1 min-w-0">
+              <h1 className="text-display-lg font-serif text-white mb-3">מחשבון רעילות שוקולד לכלב</h1>
+              <p className="text-white/60 max-w-lg text-base leading-relaxed">
+                שוקולד מכיל תיאוברומין — חומר הרעיל לכלבים. המחשבון מעריך את רמת הסיכון לפי משקל הכלב, סוג השוקולד והכמות שנצרכה.
+              </p>
+            </div>
+            {/* Image — left side, faded into background */}
+            <div className="hidden md:block flex-shrink-0 relative" style={{ width: '491px', height: '351px', marginLeft: '24px' }}>
+              <img
+                src={`/chocolate_new2.png?v=${Date.now()}`}
+                alt=""
+                className="absolute inset-0 w-full h-full object-contain object-center"
+                style={{ maskImage: 'none', WebkitMaskImage: 'none' }}
+              />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -226,9 +247,9 @@ export default function ChocolateCalculator() {
                     <h2 className="text-xl font-serif font-semibold text-earth mb-1">איזה סוג שוקולד נאכל?</h2>
                     <p className="text-sm text-mist">ככל שהשוקולד כהה יותר, כך הוא מסוכן יותר לכלבים</p>
                   </div>
-                  <div className="flex gap-2 overflow-x-auto pb-1 sm:grid sm:grid-cols-5 sm:overflow-visible">
+                  <div className="flex gap-2 overflow-x-auto pb-1 sm:grid sm:grid-cols-4 sm:overflow-visible">
                     {CHOC_TYPES.map(c => (
-                      <div key={c.id} className="flex-shrink-0 w-[18%] min-w-[70px] sm:w-auto sm:min-w-0">
+                      <div key={c.id} className="flex-shrink-0 w-[22%] min-w-[70px] sm:w-auto sm:min-w-0">
                         <SelectCard selected={choc?.id === c.id} onClick={() => setChoc(c)}>
                           <div
                             className="w-10 h-10 rounded-xl border-2 flex-shrink-0"
@@ -263,7 +284,10 @@ export default function ChocolateCalculator() {
                         )}
                       >
                         <span className="text-xs text-mist">{a.desc}</span>
-                        <span className="font-bold text-earth">{a.label}</span>
+                        <span className="font-bold text-earth flex items-center gap-1">
+                          <span dir="ltr" className="tabular-nums">{a.label.split(' ')[0]}</span>
+                          <span>גרם</span>
+                        </span>
                       </button>
                     ))}
                   </div>

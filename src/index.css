@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Emil Kowalski easing system ───────────────────────────────────── */
+/* Strong ease-out: starts fast, lands clean — use for all UI entrances  */
+/* Strong ease-in-out: for on-screen movement between two positions       */
+/* Drawer: iOS-like, from Ionic Framework                                 */
+:root {
+  --ease-out:    cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
 /* ─── Custom font ───────────────────────────────────────────────────── */
 /* To revert: remove the @font-face block below */
 @font-face {
@@ -20,11 +30,12 @@
   font-display: swap;
 }
 
-/* ─── Big headlines → Rubik Dirt ───────────────────────────────────── */
-/* To revert: remove this block */
+/* ─── Display headlines → Fraunces ─────────────────────────────────── */
 .text-display-xl,
-.text-display-lg {
-  font-family: 'Rubik Dirt', 'Secular One', system-ui, sans-serif;
+.text-display-lg,
+.text-display-md {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 700;
 }
 
 /* ─── Base ─────────────────────────────────────────────────────────── */
@@ -44,6 +55,12 @@
 
   h1, h2, h3, h4, h5, h6 {
     @apply text-earth font-semibold tracking-tight;
+  }
+
+  /* Body paragraphs use Heebo for readability contrast against Secular One headings */
+  p, li {
+    font-family: 'Heebo', system-ui, sans-serif;
+    line-height: 1.75;
   }
 
   a { @apply transition-colors duration-200; }
@@ -93,10 +110,14 @@
     @apply w-12 h-0.5 bg-olive mx-auto my-6;
   }
 
-  /* Card base */
+  /* Card base — shadow transition 200ms; box-shadow is GPU-composited */
   .card {
-    @apply bg-white rounded-3xl border border-stone shadow-card
-           transition-shadow duration-300 hover:shadow-card-hover;
+    background-color: #F5F1E8;
+    @apply rounded-3xl border border-stone shadow-card;
+    transition: box-shadow 200ms var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .card:hover { @apply shadow-card-hover; }
   }
 
   /* Input base */
@@ -118,10 +139,13 @@
            text-xs font-medium;
   }
 
-  /* Step indicator */
+  /* Step indicator — specify exact transitioning properties, never `all` */
   .step-dot {
     @apply w-8 h-8 rounded-full flex items-center justify-center
-           text-sm font-semibold border-2 transition-all duration-300;
+           text-sm font-semibold border-2;
+    transition: background-color 200ms var(--ease-out),
+                border-color 200ms var(--ease-out),
+                color 200ms var(--ease-out);
   }
 
   /* Result stat box */
@@ -170,8 +194,11 @@ input[type='range']::-webkit-slider-thumb {
   cursor: pointer;
   transition: transform 0.15s ease;
 }
-input[type='range']::-webkit-slider-thumb:hover {
-  transform: scale(1.15);
+/* Gate hover scale on devices that actually support hover (not touch) */
+@media (hover: hover) and (pointer: fine) {
+  input[type='range']::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+  }
 }
 input[type='range']::-moz-range-thumb {
   width: 20px;
@@ -187,4 +214,35 @@ input[type='range']::-moz-range-thumb {
 @keyframes scrollArrowPulse {
   0%, 100% { opacity: 0.2; transform: translateY(0);   }
   50%       { opacity: 0.7; transform: translateY(5px); }
+}
+
+/* Connector line grow — HowItWorks step connector */
+@keyframes growRight {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* Subtle float — used on step icons */
+@keyframes floatY {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-4px); }
+}
+
+/* ─── prefers-reduced-motion ────────────────────────────────────────── */
+/* Reduced motion = fewer/gentler animations, not zero.                  */
+/* Keep opacity transitions (aid comprehension). Remove movement.        */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Restore opacity-only fades — they aid comprehension without motion */
+  .animate-fade-in {
+    animation-duration: 150ms !important;
+  }
 }
