@@ -7,16 +7,13 @@ export default function About() {
 
       {/* Header */}
       <div className="flex justify-center items-center py-12 md:py-16 border-b border-earth/8">
-        <img src="/gaia-logo.png" alt="GAiA" className="h-24 md:h-32 w-auto" />
+        <img src="/gaia-logo.png" alt="GAiA" className="h-[calc(6rem*1.15)] md:h-[calc(8rem*1.15)] w-auto" />
       </div>
 
       {/* Content */}
-      <section className="section-padding">
+      <section className="pt-8 pb-section">
         <div className="container-gaia max-w-2xl">
 
-          <h1 className="text-display-md font-serif text-earth mb-10 leading-snug">
-            אודות גאיה
-          </h1>
 
           <div className="space-y-6 text-bark leading-[1.9] text-base">
             <p>
@@ -33,12 +30,13 @@ export default function About() {
               זו רק ההתחלה. בעתיד אנחנו מתכננים להרחיב את גאיה עם כלים נוספים, אפליקציות, תוספים ומוצרים מומלצים שיסייעו להפוך תזונה טבעית לברורה ופשוטה יותר. אז הישארו לעקוב!
             </div>
 
-            <p className="text-earth/80">
-              אם גם אתם מאמינים שכלבים ראויים לתזונה טובה יותר, אנחנו שמחים שאתם כאן. 🐾
+            <p className="text-earth/80 inline-flex items-center gap-2">
+              אם גם אתם מאמינים שכלבים ראויים לתזונה טובה יותר, אנחנו שמחים שאתם כאן.
+              <img src="/gaia-paw.png" alt="" className="w-[1.1em] h-[1.1em] opacity-70 inline-block" />
             </p>
 
             <p className="font-semibold text-earth text-lg">
-              ברוכים הבאים לקהילת גאיה.
+              ברוכים הבאים לקהילה.
             </p>
           </div>
 

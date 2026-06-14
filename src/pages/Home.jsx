@@ -91,7 +91,7 @@ function Hero() {
             style={{ animationFillMode: 'both' }}
           >
             <img src="/gaia-paw.png" alt="" className="w-3.5 h-3.5 opacity-80" style={{ filter: 'hue-rotate(0deg) saturate(0.8)' }} />
-            תזונה טבעית. מלאה ומאוזנת.
+            קהילת המזון הטבעי לכלבים
           </span>
 
           {/* H1 — each line enters independently, 80ms apart */}
@@ -100,13 +100,7 @@ function Hero() {
               className="block animate-fade-up"
               style={{ animationDelay: '80ms', animationFillMode: 'both' }}
             >
-              המקום ללמוד על רווחת הכלב
-            </span>
-            <span
-              className="block animate-fade-up"
-              style={{ animationDelay: '160ms', animationFillMode: 'both' }}
-            >
-              ותזונה טבעית —{' '}
+              הבית לתזונה טבעית לכלבים —{' '}
               <span className="text-forest italic">מלאה ומאוזנת</span>
             </span>
           </h1>
@@ -143,7 +137,7 @@ function Hero() {
               className="flex items-center justify-center gap-2 text-sm font-semibold text-earth/65 hover:text-forest transition-colors duration-200 cursor-pointer py-1"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              קבע ייעוץ
+              קבעו ייעוץ
             </Link>
           </div>
 
@@ -320,7 +314,7 @@ function ScrollSplitBowl() {
           <span className="text-forest font-bold underline decoration-2 underline-offset-4 pb-0.5">נכון</span>
         </h2>
         <p className="text-mist mt-3 max-w-md mx-auto text-[0.9375rem] leading-relaxed">
-          אנחנו בוחרים מה להאכיל את הכלב שלנו <strong className="font-semibold text-earth/80">לשארית ימי חייו</strong>. בלי האיזון הנכון — אנחנו יכולים להרע יותר מלהטיב.
+          אנחנו בוחרים מה להאכיל את הכלבים שלנו <strong className="font-semibold text-earth/80">לשארית ימי חייהם</strong>.<br />בלי <strong className="font-semibold text-earth/80">האיזון</strong> הנכון — אנחנו עלולים להזיק יותר מאשר להועיל.
         </p>
       </div>
 
@@ -360,15 +354,15 @@ function Philosophy() {
       icon: <FlaskConical className="w-6 h-6" />,
       title: 'מבוסס על מחקר',
       desc: <>כל תוכן והמלצה מבוססים על תקני AAFCO ו-NRC — <strong className="font-semibold text-earth/80">הסטנדרטים המובילים בעולם</strong> לתזונת כלבים מלאה. בלי טרנדים, בלי תחושות בטן, בלי ניחושים.</>,
-      accent: 'border-t-[3px] border-t-olive',
-      iconBg: 'bg-olive/10 text-olive',
+      accent: 'border-t-[3px] border-t-honey',
+      iconBg: 'bg-honey/10 text-honey',
     },
     {
       icon: <Leaf className="w-6 h-6" />,
       title: 'טבעי הוליסטי',
       desc: <>דגש מרכזי על אוכל <strong className="font-semibold text-earth/80">אמיתי, שלם ומגוון</strong> מאוד כמקור ראשון, עם כמה שפחות תוספים סינטטיים — כבסיס יומיומי מזין לבריאות ואריכות ימים.</>,
-      accent: 'border-t-[3px] border-t-forest',
-      iconBg: 'bg-forest/10 text-forest',
+      accent: 'border-t-[3px] border-t-olive',
+      iconBg: 'bg-olive/10 text-olive',
     },
     {
       icon: <Heart className="w-6 h-6" />,
@@ -400,14 +394,20 @@ function Philosophy() {
             הגישה שלנו
             <img src="/gaia-paw.png" alt="" className="w-[1.05rem] h-[1.05rem] opacity-70" />
           </span>
-          <h2 className="text-display-md font-serif text-earth mb-4 mt-1">
-            נקודת התחלה של מלא ומאוזן — לפי תקנים בינלאומיים
-            <span className="block mt-2 text-forest italic">הגשר בין מחקר להוליסטיות</span>
-          </h2>
+          <p className="font-serif text-earth font-bold text-[calc(1rem*1.2*1.1)] mb-4 mt-1 tracking-wide">
+            בלי ניחושים.
+          </p>
+          <div className="flex justify-center my-3">
+            <h2 className="text-display-md font-serif text-earth whitespace-nowrap">
+              נקודת התחלה של מלא ומאוזן — לפי תקנים בינלאומיים
+            </h2>
+          </div>
+          <div className="w-10 border-t border-earth/20 mx-auto my-3" />
+          <p className="text-display-md font-serif text-forest italic font-bold mb-4">הגשר בין מחקר להוליסטיות</p>
           <p className="text-mist leading-relaxed max-w-lg mx-auto">
             תזונה מבוססת מדע ותזונה טבעית הוליסטית לא סותרות —
             <span className="block font-semibold text-earth/75 mt-1 text-[1.15em]">הן משלימות.</span>
-            <span className="block mt-2">מהוות את הבסיס לאריכות ימים ובריאות הכלבים שלנו.</span>
+
           </p>
         </div>
 
@@ -526,22 +526,22 @@ function Testimonials() {
 
   const REVIEWS = [
     {
-      name: 'מיכל כ.',
-      dog:  'בעלת מקס, לברדור, 5 שנים',
+      name: 'נועה מ.',
+      dog:  'הבעלים של שון, לברדור בן 5',
       text: 'האכלתי את מקס במזון ביתי מבושל במשך שנתיים בלי לדעת שחסר לו יוד, סידן ועוד נוטריאנטים. הכלי גילה את זה תוך דקה ונתן לי בסיס לעבוד איתו. גאיה דייקו לי את התפריט עד הרכיב האחרון כדי שלא יהיו חוסרים. מקצועיים מאוד!!',
       stars: 5,
       accentColor: 'border-r-olive',
     },
     {
       name: 'דניאל ר.',
-      dog:  'בעל לונה, גולדן, גורה בת 8 חודשים',
+      dog:  'הבעלים של לונה, גורת גולדן בת 8 חודשים',
       text: 'לא הבנתי בכלל כמה קריטי האיזון בתקופת הגדילה עד שהשתמשתי במחשבון. הייעוץ נתן לי תפריט מדויק ומדוד שאני סומך עליו, בלי תחושה שאני מנחש או מסכן את הכלב שלי.',
       stars: 5,
       accentColor: 'border-r-forest',
     },
     {
       name: 'שירה מ.',
-      dog:  'בעלת ברונו, בוקסר, 8 שנים',
+      dog:  'הבעלים של ברונו, בוקסר בן 8',
       text: 'ברונו כבר מבוגר ועם בעיות מפרקים. מעבר לזה שהבנתי שהתפריט שלנו לא מלא ומאוזן, נחשפתי להמון מרכיבים מבוססי מחקר שעזרו לו לתפקד והוא הרבה יותר טוב! הסבירו לי למה כל רכיב חשוב ובנינו משהו שבאמת מתאים לו.',
       stars: 5,
       accentColor: 'border-r-[#502814]',
@@ -591,7 +591,7 @@ function Testimonials() {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-earth leading-tight">{r.name}</p>
-                    <p className="text-[11px] text-mist leading-tight mt-0.5">{r.dog}</p>
+                    <p className="text-[10px] text-mist leading-tight mt-0.5 whitespace-nowrap">{r.dog}</p>
                   </div>
                 </div>
               </Card>

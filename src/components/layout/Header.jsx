@@ -8,14 +8,14 @@ const NAV = [
   {
     label: 'מחשבונים',
     dropdown: [
-      { label: 'מחשבון האכלה',                path: '/calculator' },
-      { label: 'בדיקת מלא ומאוזן לפי AAFCO',  path: '/aafco-balance-check' },
-      { label: 'מחשבון קלוריות לתזונה טבעית', path: '/natural-calorie-calculator' },
-      { label: 'מחשבון שוקולד',               path: '/chocolate-calculator' },
+      { label: 'מחשבון האכלה',                path: '/calculator', icon: '/feed_icon2.webp', iconSize: 19 },
+      { label: 'בדיקת מלא ומאוזן לפי AAFCO',  path: '/aafco-balance-check', icon: '/scales_icon5.png', iconStyle: { position: 'relative', top: '-2px', marginRight: '5px' } },
+      { label: 'מחשבון קלוריות לתזונה טבעית', path: '/natural-calorie-calculator', icon: '/calorie_icon.png', iconSize: 14 },
+      { label: 'מחשבון שוקולד', path: '/chocolate-calculator', icon: '/choco_icon2.png' },
     ],
   },
-  { label: 'ייעוץ',   path: '/consultations' },
   { label: 'מאמרים', path: '/articles' },
+  { label: 'ייעוץ',   path: '/consultations' },
   { label: 'אודות',  path: '/about' },
 ]
 
@@ -143,6 +143,9 @@ export default function Header() {
                             )}
                           >
                             {sub.label}
+                            {sub.icon && (
+                              <img src={sub.icon} alt="" className="inline-block object-contain align-middle mr-1" style={{ width: sub.iconSize ?? 17, height: sub.iconSize ?? 17, ...sub.iconStyle }} />
+                            )}
                           </Link>
                         ))}
                       </div>

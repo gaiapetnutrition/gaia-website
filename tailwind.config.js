@@ -31,9 +31,9 @@ export default {
       },
       fontFamily: {
         sans:    ['"Secular One"', 'Heebo', 'system-ui', 'sans-serif'],
-        serif:   ['Fraunces', '"Playfair Display"', 'Georgia', 'serif'],
-        display: ['Fraunces', 'system-ui', 'serif'],
-        body:    ['Heebo', 'system-ui', 'sans-serif'],
+        serif:   ['"Secular One"', 'Heebo', 'system-ui', 'sans-serif'],
+        display: ['"Secular One"', 'system-ui', 'sans-serif'],
+        body:    ['"Secular One"', 'Heebo', 'system-ui', 'sans-serif'],
         mono:    ['"Roboto Mono"', 'monospace'],
       },
       fontSize: {
