@@ -211,18 +211,29 @@ function ScrollSplitBowl() {
   const containerRef = useRef(null)
   const frontRef     = useRef(null)
   const dividerRef   = useRef(null)
-  const [played, setPlayed] = useState(false)
+  const [played, setPlayed] = useState(() => sessionStorage.getItem('bowlPlayed') === '1')
+
+  function markPlayed() {
+    sessionStorage.setItem('bowlPlayed', '1')
+    setPlayed(true)
+  }
 
   useEffect(() => {
-    const WHEEL_SCALE = 350
-    let animProgress  = 0
-    let hasPlayed     = false
-
     function applyClip(p) {
       const clip = p * 100
       if (frontRef.current)   frontRef.current.style.clipPath    = `inset(0 ${clip}% 0 0)`
       if (dividerRef.current) dividerRef.current.style.transform = `translateX(-${clip}%)`
     }
+
+    // Already played this session — show fully revealed immediately
+    if (sessionStorage.getItem('bowlPlayed') === '1') {
+      applyClip(1)
+      return
+    }
+
+    const WHEEL_SCALE = 350
+    let animProgress  = 0
+    let hasPlayed     = false
 
     const isTouch = navigator.maxTouchPoints > 0
 
@@ -244,7 +255,7 @@ function ScrollSplitBowl() {
                 dividerRef.current.style.transition = 'transform 900ms cubic-bezier(0.23,1,0.32,1)'
                 dividerRef.current.style.transform  = 'translateX(-100%)'
               }
-              setTimeout(() => { animProgress = 1; setPlayed(true) }, 950)
+              setTimeout(() => { animProgress = 1; markPlayed() }, 950)
             }, 350)
             obs.disconnect()
           }
@@ -285,12 +296,12 @@ function ScrollSplitBowl() {
     function onWheel(e) {
       if (!locked) return
       const delta = e.deltaMode === 1 ? e.deltaY * 18 : e.deltaMode === 2 ? e.deltaY * window.innerHeight : e.deltaY
-      if (delta > 0 && animProgress >= 1) { hasPlayed = true; setPlayed(true); unlockPage(lockedAt); return }
+      if (delta > 0 && animProgress >= 1) { hasPlayed = true; markPlayed(); unlockPage(lockedAt); return }
       if (delta < 0 && animProgress <= 0) { unlockPage(LOCK_Y - 1); return }
       if (delta < 0 && hasPlayed)         { return }
       animProgress = Math.max(0, Math.min(1, animProgress + delta / WHEEL_SCALE))
       applyClip(animProgress)
-      if      (animProgress >= 1) { hasPlayed = true; setPlayed(true); unlockPage(lockedAt) }
+      if      (animProgress >= 1) { hasPlayed = true; markPlayed(); unlockPage(lockedAt) }
       else if (animProgress <= 0) unlockPage(LOCK_Y - 1)
     }
 
@@ -392,18 +403,17 @@ function Philosophy() {
         >
           <span className="eyebrow inline-flex items-center gap-2">
             הגישה שלנו
-            <img src="/gaia-paw.png" alt="" className="w-[1.05rem] h-[1.05rem] opacity-70" />
           </span>
-          <p className="font-serif text-earth font-bold text-[calc(1rem*1.2*1.1)] mb-4 mt-1 tracking-wide">
-            בלי ניחושים.
-          </p>
+          <p className="text-display-md font-serif text-forest font-bold mb-3 mt-1">הגשר בין מחקר להוליסטיות</p>
+          <div className="w-10 border-t border-earth/20 mx-auto my-3" />
           <div className="flex justify-center my-3">
             <h2 className="text-display-md font-serif text-earth whitespace-nowrap">
               נקודת התחלה של מלא ומאוזן — לפי תקנים בינלאומיים
             </h2>
           </div>
-          <div className="w-10 border-t border-earth/20 mx-auto my-3" />
-          <p className="text-display-md font-serif text-forest italic font-bold mb-4">הגשר בין מחקר להוליסטיות</p>
+          <p className="font-serif text-earth font-bold text-[calc(1rem*1.2*1.1)] mb-4 tracking-wide">
+            בלי ניחושים.
+          </p>
           <p className="text-mist leading-relaxed max-w-lg mx-auto">
             תזונה מבוססת מדע ותזונה טבעית הוליסטית לא סותרות —
             <span className="block font-semibold text-earth/75 mt-1 text-[1.15em]">הן משלימות.</span>
@@ -477,7 +487,7 @@ function HowItWorks() {
             <img src="/gaia-paw.png" alt="" className="w-[1.05rem] h-[1.05rem] opacity-70" />
           </span>
           <h2 className="text-display-md font-serif text-earth mt-1 text-[1.15em]">
-            מהיכן שאתם.
+            מאיפה שאתם היום.
           </h2>
         </div>
 

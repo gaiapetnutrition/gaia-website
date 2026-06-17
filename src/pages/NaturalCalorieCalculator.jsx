@@ -248,9 +248,7 @@ function ResultsBox({ totalKcal, kcalPerServing, servings, totalGrams }) {
         </div>
 
         <div className="border-r border-white/20 pr-4">
-          <div className="text-xs opacity-60 mb-1">
-            לכלב אחד {servings > 1 && <span className="opacity-75">(÷ {servings})</span>}
-          </div>
+          <div className="text-xs opacity-60 mb-1">לכלב אחד</div>
           <div className="text-3xl font-bold tabular-nums leading-none">
             {hasData ? Math.round(kcalPerServing).toLocaleString('he-IL') : '—'}
           </div>
@@ -363,6 +361,7 @@ export default function NaturalCalorieCalculator() {
         <div className="max-w-2xl mx-auto space-y-6">
 
           {/* ── Main card ── */}
+
           <div className="bg-white border border-stone rounded-4xl shadow-card">
             <div className="p-6 sm:p-8 space-y-7">
 
@@ -441,6 +440,23 @@ export default function NaturalCalorieCalculator() {
                               />
                             ))}
                           </tbody>
+                          <tfoot>
+                            <tr className="bg-parchment border-t-2 border-stone/80">
+                              <td className="py-2.5 px-3 sm:px-4 text-xs font-bold text-bark text-right">סך הכל</td>
+                              <td className="py-2.5 px-2 sm:px-4 text-center">
+                                <span className="text-sm font-bold text-bark tabular-nums">
+                                  {totalGrams > 0 ? totalGrams.toLocaleString('he-IL') : '—'}
+                                  {totalGrams > 0 && <span className="text-xs font-normal text-mist mr-0.5"> ג׳</span>}
+                                </span>
+                              </td>
+                              <td className="py-2.5 px-2 sm:px-4 text-center">
+                                <span className="text-sm font-bold text-forest tabular-nums">
+                                  {totalKcal > 0 ? Math.round(totalKcal).toLocaleString('he-IL') : '—'}
+                                </span>
+                              </td>
+                              <td className="py-2.5 px-2 sm:px-4 w-10" />
+                            </tr>
+                          </tfoot>
                         </table>
                       </div>
 
@@ -475,7 +491,7 @@ export default function NaturalCalorieCalculator() {
                   {/* Empty state */}
                   {recipe.length === 0 && (
                     <div className="text-center py-10 text-mist text-sm space-y-1">
-                      <p className="text-3xl mb-3">🥩</p>
+                      <img src="/gaia-paw.png" alt="" className="w-10 h-10 mx-auto mb-3 opacity-25" />
                       <p>חפשו מרכיב למעלה והוסיפו אותו למתכון</p>
                     </div>
                   )}
@@ -485,11 +501,14 @@ export default function NaturalCalorieCalculator() {
             </div>
           </div>
 
-          {/* Disclaimer */}
+        </div>
+
+        {/* Disclaimer — wider than main card */}
+        <div className="max-w-3xl mx-auto mt-6">
           <div className="bg-parchment border border-stone/60 rounded-3xl p-5 space-y-2">
             <p className="text-xs text-bark font-semibold">הערות חשובות</p>
             <ul className="text-xs text-mist leading-relaxed space-y-1 list-disc list-inside">
-              <li>החישוב מבוסס על נתוני מזון אנושיים (USDA) ומהווה הערכה בלבד — הערכים עשויים להשתנות לפי מקור, בישול ואיכות המרכיב.</li>
+              <li>החישוב מבוסס על נתוני מזון אנושיים (USDA) ומהווה הערכה בלבד — הערכים עשויים להשתנות לפי מקור, זמן בישול ואיכות המרכיב.</li>
               <li>המחשבון לא בודק איזון תזונתי מלא לכלבים — חלבון, ויטמינים, מינרלים ועוד.</li>
               <li>
                 לתפריט מאוזן ומותאם אישית לכלבכם —{' '}
@@ -500,8 +519,8 @@ export default function NaturalCalorieCalculator() {
               </li>
             </ul>
           </div>
-
         </div>
+
       </div>
     </div>
   )

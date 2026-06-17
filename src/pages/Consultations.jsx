@@ -1,28 +1,55 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import {
   CheckCircle, ChevronDown, ChevronUp, Clock, ArrowLeft,
   FlaskConical, FileText, Heart, Users, AlertCircle,
 } from 'lucide-react'
 
+/* ─── Scroll reveal hook ─────────────────────────────────────── */
+function useReveal(threshold = 0.1) {
+  const ref       = useRef(null)
+  const hasPlayed = useRef(false)
+  const [visible, setVisible] = useState(false)
+  const [done,    setDone]    = useState(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const show = () => {
+      if (hasPlayed.current) return
+      hasPlayed.current = true
+      setVisible(true)
+      setTimeout(() => setDone(true), 750)
+    }
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { obs.disconnect(); show() } },
+      { threshold, rootMargin: '0px 0px -40px 0px' }
+    )
+    obs.observe(el)
+    return () => { obs.disconnect() }
+  }, [threshold])
+
+  return [ref, visible, done]
+}
+
 /* ─── Data ───────────────────────────────────────────────────── */
 
 const FAQS = [
   {
     q: 'האם אתה וטרינר?',
-    a: 'לא. אני יועץ תזונה לכלבים מוסמך — לא וטרינר ולא מאבחן מחלות. הייעוץ שלי מתמקד בתזונה בלבד: בניית תפריטים, ניסוח מתכונות מלאות ומאוזנות, והכוונה להאכלה נכונה. לכל שאלה רפואית, פנו לוטרינר המטפל שלכם.',
+    a: 'לא. אני תזונאי כלבים מוסמך — לא וטרינר ולא מאבחן מחלות. הייעוץ שלי מתמקד בתזונה בלבד: בניית תפריטים, ניסוח מתכונים מלאים ומאוזנים והכוונה להאכלה נכונה. לכל שאלה רפואית, פנו לוטרינר המטפל שלכם. התזונה מותאמת תמיד בהתאם למצב הרפואי של הכלב והמלצות הוטרינר.',
   },
   {
-    q: 'האם הייעוץ מתאים אם הכלב שלי אוכל כיבל?',
-    a: 'בהחלט. חלק גדול מהמתייעצים שלי מגיעים עם כלבים שאוכלים כיבל ורוצים להבין אם יש אלטרנטיבה, או לשלב בין השניים. נעשה יחד את המעבר בצורה הדרגתית ומחושבת.',
+    q: 'האם הייעוץ מתאים אם הכלב שלי אוכל מזון יבש?',
+    a: 'בהחלט. חלק גדול מהמתייעצים שלי מגיעים עם כלבים שאוכלים מזון יבש ורוצים להבין אם יש אלטרנטיבה, או לשלב בין השניים. נעשה יחד את המעבר בצורה הדרגתית ומחושבת ונתאים את התזונה בהתאם ליכולות שלכם.',
   },
   {
     q: 'האם אני צריך בדיקות דם לפני הייעוץ?',
     a: 'לא חובה, אבל אם יש בדיקות עדכניות — מאוד מומלץ להביא. הן עוזרות לי לתת המלצות מדויקות יותר. לכלבים עם בעיות רפואיות, בדיקות דם עשויות להיות חיוניות.',
   },
   {
-    q: 'האם אקבל מתכונות ספציפיות עם כמויות?',
-    a: 'בחבילות 2, 3 ו-4 — כן. אני עובד עם תוכנת Animal Diet Formulator ומנסח מתכונות מלאות ומאוזנות בהתאם לנתוני הכלב שלכם, כולל כמויות מדויקות ורשימת תוספים. לא "המלצה כללית", אלא מתכון מחושב.',
+    q: 'האם אקבל מתכונים ספציפיים עם כמויות?',
+    a: 'בחבילות 2, 3 ו-4 — כן. אני עובד עם תוכנת Animal Diet Formulator ומנסח מתכונים מלאים ומאוזנים בהתאם לנתוני הכלב שלכם, כולל כמויות מדויקות ורשימת תוספים. לא "המלצה כללית", אלא מתכון מחושב.',
   },
   {
     q: 'מה אם לכלב שלי יש מצב רפואי?',
@@ -30,67 +57,69 @@ const FAQS = [
   },
   {
     q: 'האם הייעוץ מתאים לגורים?',
-    a: 'כן — ובמיוחד לגורים. דרישות התזונה שלהם שונות מאוד מכלבים בוגרים, ובניית בסיס תזונתי נכון בשלב הגדילה היא קריטית. אני מתייחס לכך ברצינות מלאה.',
+    a: 'כן. דרישות התזונה של גורים שונות משל כלבים בוגרים, ובניית בסיס תזונתי נכון בשלב הגדילה היא קריטית.',
   },
   {
     q: 'כמה זמן לוקח לקבל את המתכון?',
-    a: 'בדרך כלל עד 5–7 ימי עסקים לאחר שיחת הייעוץ. המתכון מגיע עם הסברים מלאים, כמויות, ורשימת תוספים מומלצים.',
+    a: 'את המתכון אנחנו בונים ביחד במהלך הפגישה. לאחר שיחת הייעוץ (עד 3 ימי עסקים) יישלח אליכם המתכון עם הסברים מלאים, כמויות ורשימת תוספים מומלצים במידת הצורך.',
   },
 ]
 
 const PLANS = [
   {
     id: 'initial',
-    name: 'ייעוץ ראשוני',
-    subtitle: 'כיוון ברור לפני שמתחילים',
-    duration: 'שיחה של 30 דקות',
+    name: 'שיחת ייעוץ',
+    subtitle: 'ייעוץ',
+    duration: 'שיחה של כ-45 דקות',
     price: '250',
     badge: null,
     flagship: false,
-    desc: 'לאלה שרוצים להבין את התמונה הגדולה לפני שמחליטים. שיחה ממוקדת, סקירה של התפריט הנוכחי, ותשובות לשאלות הכי דוחקות.',
+    desc: 'שיחה ממוקדת, סקירה של התפריט הנוכחי, תשובות לשאלות, תוספים, המלצות נקודתיות לבעיות בריאותיות.',
     features: [
       'סקירת התזונה הנוכחית',
       'תשובות לשאלות ממוקדות',
-      'כיוון כללי והמלצות ראשוניות',
-      'סיכום כתוב קצר',
+      'המלצות על מזון ותוספי מזון',
+      'סיכום כתוב',
     ],
     note: 'לא כולל ניסוח מתכון',
   },
   {
     id: 'transition',
     name: 'מעבר לתזונה טבעית',
-    subtitle: 'מכיבל לתפריט ביתי',
-    duration: '60 דקות + תוכנית',
-    price: '570',
+    subtitle: 'תוכנית מעבר',
+    duration: '60 דקות ייעוץ + תוכנית + מתכונים + ליווי ותמיכה',
+    price: '520',
     badge: null,
     flagship: false,
-    desc: 'חבילת המעבר השלמה: תוכנית מעבר הדרגתית, מתכון בסיסי מאוזן אחד, ותמיכה לאחר השיחה.',
+    desc: 'תוכנית מעבר הדרגתית, 2 מתכונים עם בסיס מלא ומאוזן, הסברים פרקטיים על מצרכים, דרכי הכנה, ציוד, תוספים, ותמיכה לאחר השיחה.',
     features: [
-      'שאלון קליטה מפורט',
-      'שיחת ייעוץ 60 דקות',
-      'תוכנית מעבר הדרגתית מהכיבל',
-      'מתכון בסיסי מאוזן אחד',
-      'תמיכה בווטסאפ לאחר השיחה',
+      'שיחת ייעוץ של כ-60 דקות',
+      'תוכנית מעבר הדרגתית מתזונה יבשה',
+      '2 מתכונים עם בסיס מלא ומאוזן מותאמים אישית',
+      'ניסוח עם Animal Diet Formulator',
+      '2 מתכונים מלאים ומאוזנים',
+      'המלצות תוספים מותאמות',
+      'תוכנית כתובה מלאה',
+      'תמיכה בווטסאפ לאחר השיחה ל-3 שבועות הרגלה',
     ],
     note: null,
   },
   {
     id: 'formulation',
-    name: 'ניסוח מתכון מלא ומאוזן',
-    subtitle: 'הגישה המקיפה',
-    duration: '60 דקות + ניסוח',
-    price: '890',
+    name: 'ייעוץ וניסוח מתכונים או שיפור מתכונים קיימים',
+    subtitle: 'ייעוץ + מתכונים',
+    duration: '60 דקות ייעוץ + מתכונים',
+    price: '590',
     badge: 'הכי מקיף',
     flagship: true,
-    desc: 'עבודה מלאה עם Animal Diet Formulator. שתי מתכונות מחושבות לפי נתוני הכלב שלכם — מלאות, מאוזנות, עם כמויות מדויקות ותוספים.',
+    desc: 'שיחת ייעוץ, 2 מתכונים מותאמים אישית עם בסיס מלא ומאוזן, הסברים פרקטיים, דרכי הכנה, תוספים לפי הצורך.',
     features: [
       'שאלון קליטה מפורט',
-      'שיחת ייעוץ 60 דקות',
+      'שיחת ייעוץ של כ-60 דקות',
       'ניסוח עם Animal Diet Formulator',
-      '2 מתכונות מלאות ומאוזנות',
+      '2 מתכונים מלאים ומאוזנים',
       'המלצות תוספים מותאמות',
       'תוכנית כתובה מלאה',
-      'תמיכה שוטפת 30 יום',
     ],
     note: null,
   },
@@ -99,16 +128,15 @@ const PLANS = [
     name: 'תמיכה תזונתית מורכבת',
     subtitle: 'לצרכים מיוחדים',
     duration: '60 דקות + ניסוח מעמיק',
-    price: '1,100',
+    price: '690',
     badge: null,
     flagship: false,
     desc: 'לכלבים עם אלרגיות, בעיות עיכול, מחלת כליות, או כל מצב שדורש התאמה תזונתית מדוקדקת בתיאום עם הוטרינר.',
     features: [
       'שאלון קליטה מורחב',
-      'שיחת ייעוץ 60 דקות',
-      '2 מתכונות מותאמות למצב הרפואי',
+      'שיחת ייעוץ של כ-60 דקות',
+      '2 מתכונים מותאמות למצב הרפואי',
       'תיאום עם הגישה הווטרינרית',
-      'תמיכה שוטפת 30 יום',
     ],
     note: 'אינו מחליף אבחון או טיפול וטרינרי',
   },
@@ -116,14 +144,14 @@ const PLANS = [
 
 const WHO_FOR = [
   {
+    icon: '🔄',
+    title: 'רוצים לעבור מתזונה יבשה',
+    desc: 'ורוצים לעשות את זה נכון — בצורה הדרגתית, מחושבת ובטוחה.',
+  },
+  {
     icon: '🍳',
     title: 'מכינים אוכל ביתי',
     desc: 'ולא בטוחים אם התפריט שלהם עומד בסטנדרטים הנכונים.',
-  },
-  {
-    icon: '🔄',
-    title: 'רוצים לעבור מכיבל',
-    desc: 'ורוצים לעשות את זה נכון — בצורה הדרגתית, מחושבת ובטוחה.',
   },
   {
     icon: '❓',
@@ -176,9 +204,9 @@ const STEPS = [
 ]
 
 const ADDONS = [
-  { name: 'מתכון נוסף — כלב בריא', price: '290 ₪' },
-  { name: 'מתכון נוסף — מקרה מורכב', price: '350–390 ₪' },
-  { name: 'שיחת מעקב חוזרת', price: '280–320 ₪' },
+  { name: 'שיחת מעקב חוזרת', price: '200 ₪' },
+  { name: 'מתכון נוסף', price: '220 ₪' },
+  { name: 'מתכון נוסף — התאמה רפואית מורכבת', price: '280 ₪' },
 ]
 
 /* ─── FAQ accordion item ─────────────────────────────────────── */
@@ -218,6 +246,19 @@ export default function Consultations() {
     return () => window.removeEventListener('keydown', handler)
   }, [])
 
+  const [refProblem,  visProblem,  doneProblem]  = useReveal(0.08)
+  const [refHelp,     visHelp,     doneHelp]     = useReveal(0.08)
+  const [refBio,      visBio,      doneBio]      = useReveal(0.08)
+  const [refDiff,     visDiff,     doneDiff]     = useReveal(0.08)
+  const [refWhoFor,   visWhoFor,   doneWhoFor]   = useReveal(0.08)
+  const [refProcess,  visProcess,  doneProcess]  = useReveal(0.08)
+  const [refPricing,  visPricing,  donePricing]  = useReveal(0.08)
+  const [refFaq,      visFaq,      doneFaq]      = useReveal(0.08)
+  const [refCta,      visCta,      doneCta]      = useReveal(0.08)
+
+  const rx = (visible, done) =>
+    done ? '' : `transition-[opacity,transform] duration-500 [transition-timing-function:cubic-bezier(0.23,1,0.32,1)] ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`
+
   return (
     <>
     <div className="min-h-screen bg-cream" dir="rtl">
@@ -242,26 +283,19 @@ export default function Consultations() {
 
           <h1 className="text-display-lg font-serif text-earth mb-5 leading-[1.1]">
             תזונה טבעית לכלב שלכם —{' '}
-            <em className="text-forest not-italic">נכונה, מחושבת ומאוזנת.</em>
+            <em className="text-forest not-italic">מותאמת, מלאה ומאוזנת.</em>
           </h1>
 
           <p className="text-bark text-lg leading-[1.75] max-w-xl mb-9">
-            אם אתם רוצים לעבור מכיבל לתזונה ביתית, לשפר תפריט קיים, או לבנות מתכון מלא ומאוזן לכלב שלכם — אתם במקום הנכון.
+            אם אתם רוצים לעבור מגרגרים יבשים לתזונה ביתית, לשפר תפריט קיים, או לבנות מתכון מלא ומאוזן לכלב שלכם — אתם במקום הנכון.
           </p>
 
-          <div className="flex flex-wrap gap-4 items-center">
-            <a
-              href="#packages"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-forest text-white font-semibold text-sm rounded-xl hover:bg-forest-dark transition-colors duration-200"
-            >
-              לחבילות ומחירים
-              <ArrowLeft className="w-4 h-4" />
-            </a>
+          <div className="flex items-center mt-1">
             <a
               href="#contact"
-              className="inline-flex items-center gap-2 px-2 py-3 text-forest font-semibold text-sm hover:text-forest-dark transition-colors duration-200"
+              className="inline-flex items-center gap-2 text-forest font-semibold text-sm hover:text-forest-dark transition-colors duration-200"
             >
-              שאלה לפני קביעה?
+              רוצים לדבר קודם? שיחת היכרות חינם
               <ArrowLeft className="w-3.5 h-3.5" />
             </a>
           </div>
@@ -275,13 +309,13 @@ export default function Consultations() {
         <div className="container-gaia">
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2.5">
             {[
-              { icon: '🎓', text: 'הסמכה — Southern Illinois University' },
-              { icon: '🧪', text: 'ניסוח עם Animal Diet Formulator' },
-              { icon: '📋', text: 'מבוסס תקני AAFCO / NRC' },
-              { icon: '✋', text: 'יועץ תזונה — לא וטרינר, ולא מתיימר להיות' },
-            ].map(({ icon, text }) => (
+              'תזונאי מוסמך — Southern Illinois University',
+              'הרכבת מתכונים עם תוכנה ייעודית',
+              'מבוסס תקני AAFCO / NRC',
+              'ליווי פרקטי ויסודי בכל צעד',
+            ].map((text) => (
               <span key={text} className="flex items-center gap-2 text-[13px] text-mist font-medium">
-                <span className="text-base leading-none">{icon}</span>
+                <img src="/gaia-paw.png" alt="" style={{ width: 13, height: 13, opacity: 0.45 }} />
                 {text}
               </span>
             ))}
@@ -293,9 +327,9 @@ export default function Consultations() {
           §3 THE PROBLEM
       ══════════════════════════════════════════════════════ */}
       <section className="py-section-sm bg-forest">
-        <div className="container-gaia max-w-5xl text-center">
-          <span className="inline-block text-xs font-semibold tracking-[0.12em] uppercase mb-5 text-white/40">
-            הבעיה האמיתית
+        <div ref={refProblem} className={`container-gaia max-w-5xl text-center ${rx(visProblem, doneProblem)}`}>
+          <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.12em] uppercase mb-5 text-white/50">
+            האתגר
           </span>
           <h2 className="text-display-md font-serif text-white mb-5 leading-[1.2]">
             מחקר של UC Davis ניתח מעל 200 דיאטות ביתיות לכלבים —{' '}
@@ -310,7 +344,7 @@ export default function Consultations() {
             <em className="not-italic text-olive-light">אין חובה לעמוד בתקנים של מלא ומאוזן.</em>
           </h2>
           <p className="text-white/65 leading-relaxed text-base mb-10 max-w-xl mx-auto">
-            כשזה נוגע לספקי תזונה טבעית, אין בישראל צורך בעמידה בתקנים של מלא ומאוזן לפי תקנים בינלאומיים כמו AAFCO או NRC, מה שמחסיר מהציבור ידע — ובעיקר מחסיר נוטריאנטים מהכלבים שלנו.
+            כשזה נוגע למוצרי מזון טבעי, אין בישראל צורך בעמידה בתקנים של מלא ומאוזן לפי תקנים בינלאומיים כמו AAFCO או NRC, מה שמחסיר מהציבור ידע — ובעיקר מחסיר נוטריאנטים מהכלבים שלנו.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-right">
             {[
@@ -339,10 +373,16 @@ export default function Consultations() {
       {/* ══════════════════════════════════════════════════════
           §4 WHAT I HELP WITH
       ══════════════════════════════════════════════════════ */}
-      <section className="section-padding bg-cream">
-        <div className="container-gaia max-w-3xl">
+      <section className="pt-8 pb-section bg-cream relative overflow-hidden">
+        <img src="/gaia-paw.png" alt="" aria-hidden="true"
+          className="absolute -top-6 -right-8 w-64 h-64 opacity-[0.07] pointer-events-none select-none"
+          style={{ transform: 'rotate(15deg)' }}
+        />
+        <div ref={refHelp} className={`container-gaia max-w-3xl ${rx(visHelp, doneHelp)}`}>
           <div className="text-center mb-10">
-            <h2 className="text-display-md font-serif text-forest mb-5 mt-2">עם מה אנחנו עוזרים</h2>
+            <h2 className="text-display-md font-serif text-forest mb-5 mt-2 flex items-center justify-center gap-3">
+              עם מה אנחנו עוזרים
+            </h2>
             <p className="text-mist text-base max-w-md mx-auto leading-relaxed">
               ייעוץ מעשי שמסתיים בתוצר ברור — לא רק בשיחה.
             </p>
@@ -351,13 +391,8 @@ export default function Consultations() {
             {[
               {
                 Icon: ArrowLeft,
-                title: 'מעבר מכיבל לתזונה טבעית',
-                desc: 'מעבר הדרגתי, מחושב, עם תוכנית ברורה — לא ניסוי וטעייה.',
-              },
-              {
-                Icon: FileText,
-                title: 'ניסוח מתכון מלא ומאוזן',
-                desc: 'שימוש ב-Animal Diet Formulator לניסוח מתכון עם כמויות ותוספים מדויקים.',
+                title: 'מעבר מגרגרים יבשים לתזונה טבעית',
+                desc: 'מעבר הדרגתי, מחושב, עם תוכנית ברורה — לא המלצות כלליות.',
               },
               {
                 Icon: FlaskConical,
@@ -365,9 +400,14 @@ export default function Consultations() {
                 desc: 'אם אתם כבר מאכילים ביתי — בדיקה שהתפריט מספק את כל מה שהכלב צריך.',
               },
               {
+                Icon: FileText,
+                title: 'ניסוח מתכונים עם בסיס מלא ומאוזן',
+                desc: 'שימוש בניסיון, ידע מבוסס מחקר ותוכנה מקצועית לניסוח מתכון מדויק ומותאם.',
+              },
+              {
                 Icon: Heart,
                 title: 'התאמה לצרכים מיוחדים',
-                desc: 'כלבים עם אלרגיות, בעיות עיכול, מחלת כליות — תזונה מותאמת בתיאום עם הוטרינר.',
+                desc: 'כלבים עם אלרגיות, בעיות עיכול, מחלת כליות — תזונה מותאמת בהתאם להנחיות הוטרינר.',
               },
             ].map(({ Icon, title, desc }) => (
               <div key={title} className="card p-5 flex gap-4 items-start">
@@ -388,37 +428,39 @@ export default function Consultations() {
           §5 WHO AM I
       ══════════════════════════════════════════════════════ */}
       <section className="section-padding bg-parchment">
-        <div className="container-gaia max-w-3xl">
-          <div className="grid grid-cols-1 md:grid-cols-[1fr_1.7fr] gap-10 items-start">
-            {/* Left column */}
+        <div ref={refBio} className={`container-gaia max-w-4xl ${rx(visBio, doneBio)}`}>
+          {/* Two-column: bio text + photo/cert */}
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_1.2fr] gap-10 items-start mb-8">
+            {/* Left column — bio */}
             <div>
               <span className="eyebrow block mb-3">על התזונאי שלנו</span>
               <h2 className="text-display-sm font-serif text-earth mb-5 leading-snug">
                 תומר חזאם — תזונאי כלבים מוסמך
               </h2>
-              <p className="text-mist text-sm leading-[1.9] mb-4">
-                מבשל לכלבים שלי כבר למעלה מעשור, ומתוך המטבח הביתי התגלגלתי אל הצד המדעי של הקערה. עם ההבנה ש‑1 מתוך 4 כלבים צפוי להתמודד עם סרטן במהלך חייו, היה לי ברור שתזונה היא לא רק ״מה טעים לכלב״, אלא כלי משמעותי בהפחתת סיכונים ותמיכה בגוף לאורך שנים.
+              <p className="text-mist text-sm leading-[1.85] mb-5">
+                מבשל לכלבים שלי כבר למעלה מעשור, ומתוך המטבח הביתי התגלגלתי אל הצד המדעי של הקערה. עם ההבנה ש‑1 מתוך 4 כלבים צפוי להתמודד עם סרטן במהלך חייו (ו-1 מתוך 2 מעל גיל 10!), היה לי ברור שתזונה היא לא רק ״מה טעים לכלב״, אלא כלי משמעותי בהפחתת סיכונים ותמיכה בגוף לאורך שנים.
               </p>
-              <p className="text-mist text-sm leading-[1.9] mb-4">
+              <p className="text-mist text-sm leading-[1.85] mb-5">
                 לאורך חצי שנה של לימודים ברמה אוניברסיטאית בארה״ב בתחום תזונת כלבים וחתולים, יחד עם שנים של ניסוי, טעייה ויישום בפועל, פיתחתי גישה שמחברת בין מחקר עדכני לבין אוכל אמיתי — מלא, מאוזן, עשיר ומגוון, עם דגש על רכיבים נוגדי חמצון ותמיכה מערכתית.
               </p>
-              <p className="text-mist text-sm leading-[1.9]">
-                היום אני מלווה בעלי כלבים במעבר מתזונת קיבל לתזונה טבעית וביתית, בבישול מתכונים מלאים ומאוזנים, בתיסוף נכון לתזונה קיימת, ובהתאמת תפריטים למצבים רפואיים שונים — בצורה מקצועית, שקופה ונעימה, שתיתן גם לכם וגם לכלב שלכם שקט נפשי ליד הקערה.
+              <p className="text-mist text-sm leading-[1.85] mb-5">
+                ככל שהעמקתי בלימודים, בהשכלה העצמאית שלי ובהתנסות עם כלבים, הבנתי שישראל נמצאת מאחור ביחס למדינות מערביות כמו ארה״ב, אירופה ואוסטרליה, שבהן הדרישה למזון מלא ומאוזן היא דרישה בסיסית וברורה – בעוד שכאן אין כמעט פיקוח או חובה לעמוד בסטנדרטים כאלה. עם הזמן למדתי לפשט ולהפוך את התזונה הטבעית לכלבים – שלי ושל לקוחותיי – למשהו נגיש וברור, תוך שימוש בכלים מקצועיים והבנה רחבה של מרכיבים, נוטריאנטים, יחסים ורגישויות. המטרה שלי היא לבנות תזונה קלה ופרקטית ליישום, בלי ניחושים ובלי משחקים מסוכנים בבריאות של הכלב.
+              </p>
+              <p className="text-mist text-sm leading-[1.7]">
+                היום אני מלווה בעלי כלבים במעבר ממזון יבש לתזונה טבעית וביתית, בבישול מתכונים מלאים ומאוזנים, מזון נא, תיסוף נכון לתזונה קיימת, ובהתאמת תפריטים למצבים רפואיים שונים — בצורה מקצועית, שקופה ונעימה, שתיתן גם לכם וגם לכלב שלכם שקט נפשי.
               </p>
             </div>
 
-            {/* Right column — profile image + credential pills */}
-            <div className="space-y-2.5">
+            {/* Right column — profile image + certificate + credential cards */}
+            <div className="space-y-3">
               <img
                 src="/profile_image.jpeg"
                 alt="תומר חזאם"
-                className="w-full rounded-2xl mb-4 shadow-card"
+                className="w-full rounded-2xl shadow-card"
               />
-
-              {/* Certificate thumbnail */}
               <button
                 onClick={() => setCertOpen(true)}
-                className="block w-full rounded-2xl shadow-card overflow-hidden hover:shadow-card-hover transition-shadow duration-200 mb-2.5 group relative cursor-pointer"
+                className="block w-full rounded-2xl shadow-card overflow-hidden hover:shadow-card-hover transition-shadow duration-200 group relative cursor-pointer"
               >
                 <img src="/SIU_cert.png" alt="תעודת הסמכה — Canine & Feline Nutrition, SIU" className="w-full object-cover" />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200 rounded-2xl flex items-center justify-center">
@@ -428,22 +470,24 @@ export default function Consultations() {
                 </div>
               </button>
 
-
-              {[
-                { label: 'הסמכה', value: 'Canine & Feline Nutrition — Southern Illinois University' },
-                { label: 'כלי עבודה', value: 'Animal Diet Formulator — ניסוח מתכונות מחושב' },
-                { label: 'סטנדרט', value: 'AAFCO / NRC — התקנים המובילים בעולם לתזונת כלבים' },
-                { label: 'גישה', value: 'מבוסס מחקר, לא טרנדים. ישיר, לא שיווקי.' },
-                { label: 'חשוב לדעת', value: 'לא וטרינר, לא מאבחן — ואני תמיד אומר זאת בגלוי.' },
-              ].map(({ label, value }) => (
-                <div key={label} className="bg-white rounded-2xl px-4 py-3 flex gap-3 items-start shadow-card">
-                  <span className="text-[11px] font-bold text-forest uppercase tracking-wider flex-shrink-0 mt-0.5 w-[5.5rem]">
-                    {label}
-                  </span>
-                  <span className="text-bark text-sm leading-snug">{value}</span>
-                </div>
-              ))}
             </div>
+          </div>
+
+          {/* Credential cards — full width */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[
+              { label: 'גישה', value: 'הגשר בין מזרח למערב — הוליסטיות, גיוון, תמיכה מערכתית ודגש על נוגדי חמצון יחד עם בסיס מחקרי עדכני' },
+              { label: 'סטנדרט', value: 'AAFCO / NRC — התקנים המובילים בעולם לדרישות מינימליות למזון מלא ומאוזן כנקודת התחלה' },
+              { label: 'כלי עבודה', value: 'Animal Diet Formulator — תוכנה ייעודית למפרמלי מזון, תזונאים ווטרינרים תזונאים' },
+              { label: 'הסמכה', value: 'Canine & Feline Nutrition — Southern Illinois University' },
+            ].map(({ label, value }) => (
+              <div key={label} className="bg-white rounded-2xl px-4 py-3 shadow-card flex flex-col gap-1">
+                <span className="text-[10px] font-bold text-forest uppercase tracking-wider">
+                  {label}
+                </span>
+                <span className="text-bark text-[13px] leading-snug">{value}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -451,13 +495,18 @@ export default function Consultations() {
       {/* ══════════════════════════════════════════════════════
           §6 WHAT MAKES THIS DIFFERENT
       ══════════════════════════════════════════════════════ */}
-      <section className="section-padding bg-cream">
-        <div className="container-gaia max-w-3xl">
+      <section className="pt-10 pb-section bg-cream relative overflow-hidden">
+        <img src="/gaia-paw.png" alt="" aria-hidden="true"
+          className="absolute -top-6 -right-8 w-64 h-64 opacity-[0.07] pointer-events-none select-none"
+          style={{ transform: 'rotate(15deg)' }}
+        />
+        <div ref={refDiff} className={`container-gaia max-w-3xl ${rx(visDiff, doneDiff)}`}>
           <div className="text-center mb-10">
-            <span className="eyebrow block mb-3">מה מייחד</span>
-            <h2 className="text-display-md font-serif text-earth mb-4">לא עצות — תוצאות.</h2>
+            <h2 className="text-display-md font-serif text-forest mb-4">
+              לא רק עצות — תוצאות.
+            </h2>
             <p className="text-mist text-base max-w-md mx-auto leading-relaxed">
-              הייעוץ שלי מסתיים במתכון מחושב ובתוכנית שאפשר לעבוד איתה.
+              הייעוץ שלנו מסתיים במתכונים מחושבים ובתוכנית פרקטית שאפשר לעבוד איתה.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -487,17 +536,21 @@ export default function Consultations() {
       {/* ══════════════════════════════════════════════════════
           §7 WHO THIS IS FOR
       ══════════════════════════════════════════════════════ */}
-      <section className="section-padding bg-parchment">
-        <div className="container-gaia max-w-3xl">
+      <section className="pt-10 pb-section bg-parchment relative overflow-hidden">
+        <img src="/gaia-paw.png" alt="" aria-hidden="true"
+          className="absolute -top-6 -left-8 w-64 h-64 opacity-[0.07] pointer-events-none select-none"
+          style={{ transform: 'rotate(-15deg)' }}
+        />
+        <div ref={refWhoFor} className={`container-gaia max-w-3xl ${rx(visWhoFor, doneWhoFor)}`}>
           <div className="text-center mb-10">
-            <span className="eyebrow block mb-3">למי זה מתאים</span>
-            <h2 className="text-display-md font-serif text-earth mb-4">מי מגיע אלי?</h2>
+            <h2 className="text-display-md font-serif text-forest mb-4">
+              למי זה מתאים?
+            </h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {WHO_FOR.map(({ icon, title, desc }) => (
-              <div key={title} className="card p-5 bg-white">
-                <span className="text-2xl block mb-3 leading-none">{icon}</span>
-                <h3 className="font-semibold text-earth text-sm mb-1.5">{title}</h3>
+            {WHO_FOR.map(({ title, desc }) => (
+              <div key={title} className="card px-4 py-3.5 bg-white">
+                <h3 className="font-semibold text-earth text-sm mb-1">{title}</h3>
                 <p className="text-mist text-xs leading-relaxed">{desc}</p>
               </div>
             ))}
@@ -508,12 +561,14 @@ export default function Consultations() {
       {/* ══════════════════════════════════════════════════════
           §8 PROCESS
       ══════════════════════════════════════════════════════ */}
-      <section className="section-padding bg-cream">
-        <div className="container-gaia max-w-2xl">
+      <section className="pt-8 pb-section bg-cream relative overflow-hidden">
+        <img src="/gaia-paw.png" alt="" aria-hidden="true"
+          className="absolute -top-6 -right-8 w-64 h-64 opacity-[0.07] pointer-events-none select-none"
+          style={{ transform: 'rotate(15deg)' }}
+        />
+        <div ref={refProcess} className={`container-gaia max-w-2xl ${rx(visProcess, doneProcess)}`}>
           <div className="text-center mb-12">
-            <span className="eyebrow block mb-3">התהליך</span>
-            <h2 className="text-display-md font-serif text-earth mb-4">איך זה עובד</h2>
-            <p className="text-mist text-base">פשוט, מסודר, ובלי הפתעות.</p>
+            <h2 className="text-display-md font-serif text-earth mb-4">איך זה עובד?</h2>
           </div>
           <div className="space-y-0">
             {STEPS.map(({ n, title, desc }, i) => (
@@ -537,20 +592,20 @@ export default function Consultations() {
       </section>
 
       {/* ══════════════════════════════════════════════════════
-          §9 PACKAGES & PRICING
+          §9 PACKAGES & PRICING — HIDDEN (restore by removing the {false && ...} wrapper)
       ══════════════════════════════════════════════════════ */}
-      <section id="packages" className="section-padding bg-parchment">
-        <div className="container-gaia">
+      {false && <section id="packages" className="section-padding bg-parchment">
+        <div ref={refPricing} className={`container-gaia ${rx(visPricing, donePricing)}`}>
           <div className="text-center mb-12">
             <span className="eyebrow block mb-3">חבילות ומחירים</span>
             <h2 className="text-display-md font-serif text-earth mb-4">בחרו את החבילה המתאימה</h2>
             <p className="text-mist text-base max-w-lg mx-auto leading-relaxed">
-              כל חבילה מותאמת לשלב אחר בתהליך. לא בטוחים? ראו את ה-FAQ למטה או שלחו הודעה.
+              כל חבילה מותאמת לשלב אחר בתהליך.<br />לא בטוחים? ראו את ה-FAQ למטה או שלחו הודעה.
             </p>
           </div>
 
           {/* Main packages grid — 4 packages in 2×2 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-3xl mx-auto mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto mb-6">
             {PLANS.map(plan => (
               <div
                 key={plan.id}
@@ -583,7 +638,7 @@ export default function Consultations() {
 
                 {/* Price */}
                 <div className="mb-5 pb-5 border-b border-stone">
-                  <span className="text-3xl font-bold text-earth">₪{plan.price}</span>
+                  <span className="text-3xl font-bold text-earth">{plan.price} ₪</span>
                 </div>
 
                 {/* Description */}
@@ -622,31 +677,6 @@ export default function Consultations() {
             ))}
           </div>
 
-          {/* Ongoing support — horizontal card */}
-          <div className="card bg-white p-5 flex flex-col sm:flex-row items-start sm:items-center gap-5 max-w-3xl mx-auto mb-8">
-            <div className="flex-1">
-              <p className="text-[11px] font-bold text-forest uppercase tracking-wider mb-1">
-                למי שכבר בדרך הנכונה
-              </p>
-              <h3 className="font-bold text-earth text-base mb-1">תמיכה חודשית שוטפת</h3>
-              <p className="text-mist text-sm leading-relaxed">
-                לקוחות קיימים שרוצים ליווי מתמשך — עדכוני תפריט, שאלות שוטפות, והתאמות לפי שינויים בכלב.
-              </p>
-            </div>
-            <div className="flex-shrink-0 text-right sm:text-left">
-              <div className="mb-1">
-                <span className="text-2xl font-bold text-earth">₪390</span>
-                <span className="text-mist text-xs"> / חודש</span>
-              </div>
-              <p className="text-[11px] text-mist mb-3">למי שכבר עבר ייעוץ ראשוני</p>
-              <a
-                href="#contact"
-                className="inline-block text-center py-2 px-5 rounded-xl text-sm font-semibold border border-earth/20 text-earth hover:bg-earth/[0.05] transition-colors"
-              >
-                צור קשר
-              </a>
-            </div>
-          </div>
 
           {/* Add-ons */}
           <div className="max-w-2xl mx-auto">
@@ -657,22 +687,25 @@ export default function Consultations() {
               {ADDONS.map(({ name, price }) => (
                 <div key={name} className="bg-white rounded-2xl px-4 py-3 text-center shadow-card">
                   <p className="text-xs text-mist mb-1">{name}</p>
-                  <p className="font-semibold text-earth text-sm">+{price}</p>
+                  <p className="font-semibold text-earth text-sm">{price}</p>
                 </div>
               ))}
             </div>
           </div>
         </div>
-      </section>
+      </section>}
 
       {/* ══════════════════════════════════════════════════════
           §10 FAQ
       ══════════════════════════════════════════════════════ */}
-      <section className="section-padding bg-cream">
-        <div className="container-gaia max-w-2xl">
+      <section className="section-padding bg-parchment relative overflow-hidden">
+        <img src="/gaia-paw.png" alt="" aria-hidden="true"
+          className="absolute -top-6 -left-8 w-64 h-64 opacity-[0.07] pointer-events-none select-none"
+          style={{ transform: 'rotate(-15deg)' }}
+        />
+        <div ref={refFaq} className={`container-gaia max-w-2xl ${rx(visFaq, doneFaq)}`}>
           <div className="text-center mb-10">
-            <span className="eyebrow block mb-3">שאלות נפוצות</span>
-            <h2 className="text-display-md font-serif text-earth">שאלות לפני שמתחילים</h2>
+            <h2 className="text-display-md font-serif text-earth">שאלות נפוצות</h2>
           </div>
           <div className="card bg-white px-6 py-2">
             {FAQS.map(faq => (
@@ -686,14 +719,20 @@ export default function Consultations() {
           §11 FINAL CTA
       ══════════════════════════════════════════════════════ */}
       <section id="contact" className="py-section-sm bg-forest relative overflow-hidden">
-        {/* Decorative paw */}
+        {/* Decorative paw — left */}
         <img
           src="/gaia-paw.png" alt="" aria-hidden="true"
           className="absolute -bottom-6 left-4 w-44 opacity-[0.07] pointer-events-none select-none"
           style={{ transform: 'rotate(-8deg)', filter: 'brightness(0) invert(1)' }}
         />
+        {/* Decorative paw — right (mirror) */}
+        <img
+          src="/gaia-paw.png" alt="" aria-hidden="true"
+          className="absolute -bottom-4 right-8 w-44 opacity-[0.07] pointer-events-none select-none"
+          style={{ transform: 'rotate(45deg)', filter: 'brightness(0) invert(1)' }}
+        />
 
-        <div className="container-gaia max-w-xl text-center relative">
+        <div ref={refCta} className={`container-gaia max-w-xl text-center relative ${rx(visCta, doneCta)}`}>
           <h2 className="text-display-md font-serif text-white mb-4 leading-[1.2]">
             מוכנים לבנות תפריט שאפשר לסמוך עליו?
           </h2>

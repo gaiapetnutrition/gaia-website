@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Instagram, Mail, Phone } from 'lucide-react'
 
 const LINKS = {
@@ -18,6 +18,15 @@ const LINKS = {
 }
 
 export default function Footer() {
+  const { pathname } = useLocation()
+
+  function handleLogoClick(e) {
+    if (pathname === '/') {
+      e.preventDefault()
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
   return (
     <footer className="bg-earth text-white/75">
       <div className="container-gaia py-16 md:py-20">
@@ -28,11 +37,13 @@ export default function Footer() {
           {/* Brand column */}
           <div className="md:col-span-2 space-y-5">
             <div className="flex items-center">
-              <img
-                src="/gaia-logo.png"
-                alt="GAiA"
-                className="h-14 w-auto rounded-xl"
-              />
+              <Link to="/" onClick={handleLogoClick}>
+                <img
+                  src="/gaia-logo.png"
+                  alt="GAiA"
+                  className="h-14 w-auto rounded-xl"
+                />
+              </Link>
             </div>
             <p className="text-sm leading-relaxed max-w-xs text-white/60">
               תזונה טבעית לכלבים מבוססת מדע — שילוב ייחודי של ידע מדעי עם פילוסופיית מזון מלא ובריאות הוליסטית.

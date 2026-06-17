@@ -189,7 +189,11 @@ function Results({ result, inputs, onReset, onBack }) {
       {/* Disclaimer + CTA */}
       <div className="bg-parchment rounded-2xl p-4 flex gap-3 text-xs text-mist">
         <Info className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-sage" />
-        <p>החישוב מהווה הערכה מבוססת נוסחאות וטרינריות מקובלות ואינו מחליף ייעוץ מקצועי. התוצאה היא נקודת פתיחה בלבד — כל כלב שונה, ויש לעקוב אחר משקל, מדד מצב גוף (BCS), רמת פעילות ומצב בריאותי ולהתאים את כמות המזון בהתאם. לתוכנית מדויקת ומותאמת אישית מומלץ לקבוע ייעוץ עם וטרינר/ית או תזונאי/ת.</p>
+        <ul className="space-y-1.5 list-disc list-inside">
+          <li>החישוב מהווה הערכה מבוססת נוסחאות וטרינריות מקובלות ואינו מחליף ייעוץ מקצועי.</li>
+          <li>התוצאה היא נקודת פתיחה בלבד — כל כלב שונה, ויש לעקוב אחר משקל, BCS, רמת פעילות ומצב בריאותי ולהתאים בהתאם.</li>
+          <li>לתוכנית מדויקת ומותאמת אישית מומלץ לקבוע ייעוץ עם וטרינר/ית או תזונאי/ת.</li>
+        </ul>
       </div>
 
       {/* BCS warning — shown only for underweight or overweight */}
@@ -267,6 +271,7 @@ export default function Calculator() {
   const [showBcsLightbox,  setShowBcsLightbox]  = useState(false)
   const [showBreedInfo,    setShowBreedInfo]    = useState(false)
   const [showCalorieInfo,  setShowCalorieInfo]  = useState(false)
+  const [showNeuteredInfo, setShowNeuteredInfo] = useState(false)
   const topRef = useRef(null)
 
   useEffect(() => {
@@ -275,7 +280,8 @@ export default function Calculator() {
       if (showBcsLightbox)  { setShowBcsLightbox(false);  return }
       if (showBcsInfo)      { setShowBcsInfo(false);      return }
       if (showBreedInfo)    { setShowBreedInfo(false);    return }
-      if (showCalorieInfo)  { setShowCalorieInfo(false) }
+      if (showCalorieInfo)  { setShowCalorieInfo(false);  return }
+      if (showNeuteredInfo) { setShowNeuteredInfo(false) }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -310,10 +316,10 @@ export default function Calculator() {
         <div className="container-gaia py-14 md:py-20">
           <div ref={topRef} />
           <h1 className="text-display-lg font-serif text-white mb-3">
-            מחשבון תזונה לכלב
+            מחשבון האכלה לכלב
           </h1>
           <p className="text-white/60 max-w-lg text-base leading-relaxed">
-            החישוב מבוסס על נוסחאות אנרגיה וטרינריות מקובלות (RER ו‑MER), ומהווה נקודת פתיחה בלבד. יש לעקוב אחר מצב הכלב ולהתאים את הכמות בהתאם לאורך זמן. אינו מחליף אבחון וייעוץ עם וטרינר/ית או תזונאי/ת.
+            החישוב מבוסס על נוסחאות אנרגיה וטרינריות מקובלות (RER ו‑MER), יחד עם התחשבות במגוון גורמים כמו: שלב חיים, מצב גוף, פעילות ומצב סירוס/עיקור. עם זאת, לכל כלב גוף וחילוף חומרים שונים ויש להתייחס לתוצאה כנקודת פתיחה בלבד - לעקוב אחר מצב הכלב לאורך זמן ולהתאים את הכמות בהתאם. לא מחליף אבחון וייעוץ עם וטרינר/ית או תזונאי/ת.
           </p>
         </div>
       </div>
@@ -393,7 +399,7 @@ export default function Calculator() {
                       )}>
                         <div className="bg-parchment rounded-2xl p-4 text-xs text-bark leading-relaxed">
                           <span className="font-semibold block mb-1">הידעתם?</span>
-                          גזעים קטנים נחשבים גורים עד גיל ~10 חודשים, בינוניים עד ~12 חודשים, גדולים עד ~15 חודשים, וענקיים עד ~24 חודשים.
+                          גזעים קטנים יכולים להחשב גורים עד גיל ~10 חודשים, בינוניים עד ~12 חודשים, גדולים עד ~15 חודשים, וענקיים עד ~24 חודשים.
                           <span className="block mt-1.5 text-earth font-semibold">חשוב לזכור שמדובר בהערכות כלליות, והקצב עשוי להשתנות בין כלב לכלב.</span>
                         </div>
                       </div>
@@ -402,7 +408,7 @@ export default function Calculator() {
                           { id: 'small',  icon: '🐩',   label: 'קטן',    sublabel: 'משקל סופי של 5–12 ק"ג'  },
                           { id: 'medium', icon: '🦮',   label: 'בינוני', sublabel: 'משקל סופי של 12–25 ק"ג' },
                           { id: 'large',  icon: '🐕‍🦺',  label: 'גדול',   sublabel: 'משקל סופי של 25–40 ק"ג' },
-                          { id: 'giant',  icon: '🐘',   label: 'ענק',    sublabel: 'משקל סופי של 40+ ק"ג'   },
+                          { id: 'giant',  icon: '🐺',   label: 'ענק',    sublabel: 'משקל סופי של 40+ ק"ג'   },
                         ].map(bs => (
                           <OptionCard
                             key={bs.id}
@@ -599,19 +605,48 @@ export default function Calculator() {
 
                     {/* Neutered */}
                     <div>
-                      <label className="text-sm font-medium text-bark block mb-2">סטטוס סירוס / עיקור</label>
+                      <div className="flex items-center gap-1.5 mb-2">
+                        <label className="text-sm font-medium text-bark">סטטוס סירוס / עיקור</label>
+                        <button
+                          type="button"
+                          onClick={() => setShowNeuteredInfo(v => !v)}
+                          title="מידע על סירוס/עיקור"
+                          className={clsx(
+                            'w-[18px] h-[18px] rounded-full border text-[10px] font-bold flex items-center justify-center transition-colors duration-150 flex-shrink-0 leading-none',
+                            showNeuteredInfo
+                              ? 'bg-forest border-forest text-white'
+                              : 'border-mist text-mist hover:border-forest hover:text-forest',
+                          )}
+                        >i</button>
+                      </div>
+                      <div className={clsx(
+                        'overflow-hidden transition-all duration-300',
+                        showNeuteredInfo ? 'max-h-48 opacity-100 mb-3' : 'max-h-0 opacity-0',
+                      )}>
+                        <div className="bg-parchment rounded-2xl p-4 text-xs text-bark leading-relaxed">
+                          <span className="font-semibold block mb-1">הידעתם?</span>
+                          לאחר עיקור או סירוס, חילוף החומרים של כלבים נוטה לרדת, ולכן הצורך האנרגטי היומי שלהם עשוי להיות נמוך בכ־15–25% לעומת כלבים לא מעוקרים/מסורסים. התחשבות בגורם זה מאפשרת לנו להציע כמות האכלה מדויקת יותר, שתסייע בשמירה על משקל גוף אידיאלי.
+                        </div>
+                      </div>
                       <div className="grid grid-cols-2 gap-2">
                         {[
-                          { val: true,  icon: '✂️', label: 'מסורס / מעוקרת' },
-                          { val: false, icon: '🐾', label: 'שלם / שלמה' },
+                          { val: true,  label: 'מסורס / מעוקרת' },
+                          { val: false, label: 'לא מסורס/מעוקרת' },
                         ].map(n => (
-                          <OptionCard
+                          <button
                             key={String(n.val)}
-                            selected={inputs.isNeutered === n.val}
+                            type="button"
                             onClick={() => set('isNeutered', n.val)}
-                            icon={n.icon}
-                            label={n.label}
-                          />
+                            className={clsx(
+                              'flex items-center justify-center p-4 rounded-2xl border-2 text-center',
+                              'transition-all duration-200 cursor-pointer w-full',
+                              inputs.isNeutered === n.val
+                                ? 'border-forest bg-forest/[5%] text-forest'
+                                : 'border-stone bg-white text-bark hover:border-sage/60 hover:bg-sage/5',
+                            )}
+                          >
+                            <span className="text-base font-semibold">{n.label}</span>
+                          </button>
                         ))}
                       </div>
                     </div>

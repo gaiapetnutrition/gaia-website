@@ -7,12 +7,22 @@ export default function About() {
 
       {/* Header */}
       <div className="flex justify-center items-center py-12 md:py-16 border-b border-earth/8">
-        <img src="/gaia-logo.png" alt="GAiA" className="h-[calc(6rem*1.15)] md:h-[calc(8rem*1.15)] w-auto" />
+        <img src="/gaia-logo.png" alt="GAiA" className="h-[calc(6rem*1.15)] md:h-[calc(8rem*1.15)] w-auto rounded-[2rem]" />
       </div>
 
       {/* Content */}
-      <section className="pt-8 pb-section">
-        <div className="container-gaia max-w-2xl">
+      <section className="pt-8 pb-section relative overflow-hidden">
+        {/* Background paw — right side */}
+        <img src="/gaia-paw.png" alt="" aria-hidden="true"
+          className="absolute top-1/2 -right-16 w-80 h-80 opacity-[0.06] pointer-events-none select-none"
+          style={{ transform: 'translateY(-62%) rotate(35deg)' }}
+        />
+        {/* Background paw — left side */}
+        <img src="/gaia-paw.png" alt="" aria-hidden="true"
+          className="absolute top-1/2 -left-16 w-80 h-80 opacity-[0.06] pointer-events-none select-none"
+          style={{ transform: 'translateY(-50%) rotate(-20deg)' }}
+        />
+        <div className="container-gaia max-w-2xl relative">
 
 
           <div className="space-y-6 text-bark leading-[1.9] text-base">

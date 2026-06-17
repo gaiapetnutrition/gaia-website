@@ -121,7 +121,7 @@ export default function Header() {
                       {/* Dropdown panel */}
                       <div
                         className={clsx(
-                          'absolute top-full right-0 mt-1.5 border border-stone rounded-2xl shadow-warm-sm py-1.5 min-w-[172px] origin-top-right',
+                          'absolute top-full right-0 mt-1.5 border border-stone rounded-2xl shadow-warm-sm py-1.5 min-w-[260px] origin-top-right',
                           'bg-linen',
                           'transition-[opacity,transform] duration-[140ms] [transition-timing-function:cubic-bezier(0.23,1,0.32,1)]',
                           isOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none',
@@ -136,7 +136,7 @@ export default function Header() {
                             to={sub.path}
                             onClick={() => setOpenDropdown(null)}
                             className={clsx(
-                              'block px-4 py-2 text-[13px] font-medium transition-colors duration-100 cursor-pointer',
+                              'block px-4 py-2 text-[13px] font-medium transition-colors duration-100 cursor-pointer whitespace-nowrap',
                               pathname === sub.path
                                 ? 'text-forest bg-forest/[0.07]'
                                 : 'text-earth/65 hover:text-forest hover:bg-forest/[0.05]',
