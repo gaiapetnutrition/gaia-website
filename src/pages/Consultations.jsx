@@ -32,16 +32,195 @@ function useReveal(threshold = 0.1) {
   return [ref, visible, done]
 }
 
+/* ─── ADF Video Showcase ─────────────────────────────────────── */
+const ADF_VIDEOS = [
+  { src: '/ADF_videos/ADF_1.mov', caption: 'ניסוח מתכון לפי פרופיל תזונתי מלא — כל רכיב מחושב ומתועד.' },
+  { src: '/ADF_videos/ADF_2.mov', caption: 'הגדרת יחסים בין חלבון, שומן ופחמימות לפי משקל ושלב החיים.' },
+  { src: '/ADF_videos/ADF_3.mov', caption: 'בדיקת עמידה בדרישות AAFCO/NRC לפני אישור סופי של המתכון.' },
+  { src: '/ADF_videos/ADF_4.mov', caption: 'תוצר מוגמר — מתכון כתוב עם כמויות, תוספים ורשימת מרכיבים.' },
+]
+const PREVIEW_MS = 4200
+
+/*
+ * Tuning knobs:
+ *   EXPAND_RATIO   — how much wider the active card becomes (inactive = 1, active = this)
+ *   EXPAND_MS      — card expand/shrink animation duration in ms
+ *   PREVIEW_MS     — how long each card plays before advancing
+ */
+const EXPAND_RATIO = 1.75
+const EXPAND_MS    = 420
+const EXPAND_EASING = 'cubic-bezier(0.16, 1, 0.3, 1)'
+
+function ADFShowcase() {
+  // -1 = not yet started, 0–3 = active card index, null = sequence done
+  const [activeIdx, setActiveIdx] = useState(-1)
+  const [inView, setInView]       = useState(false)
+
+  const sectionRef    = useRef(null)
+  const videoRefsDesk = useRef([])  // desktop flex row refs
+  const timerRef      = useRef(null)
+
+  const reducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const isTouch       = typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0
+  // Sequence runs on desktop when motion is allowed
+  const autoEnabled   = !isTouch && !reducedMotion
+
+  // Start the sequence once the first video card is 50% visible
+  useEffect(() => {
+    const el = videoRefsDesk.current[0]
+    if (!el) return
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setInView(true); obs.disconnect() }
+    }, { threshold: 0.9 })
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
+
+  // Kick off sequence when inView flips true
+  useEffect(() => {
+    if (!autoEnabled || !inView) return
+    setActiveIdx(0)
+  }, [autoEnabled, inView])
+
+  // Advance through cards 0→1→2→3, then stop (activeIdx stays at 3)
+  useEffect(() => {
+    if (activeIdx < 0 || activeIdx === null) return
+
+    const vid = videoRefsDesk.current[activeIdx]
+    if (vid) { vid.currentTime = 0; vid.muted = true; vid.play().catch(() => {}) }
+
+    // Last card — play and stop; no advance
+    if (activeIdx === ADF_VIDEOS.length - 1) return
+
+    timerRef.current = setTimeout(() => {
+      const v = videoRefsDesk.current[activeIdx]
+      if (v) { v.pause(); v.currentTime = 0 }
+      setActiveIdx(i => i + 1)
+    }, PREVIEW_MS)
+
+    return () => {
+      clearTimeout(timerRef.current)
+      const v = videoRefsDesk.current[activeIdx]
+      if (v && !v.paused) { v.pause(); v.currentTime = 0 }
+    }
+  }, [activeIdx])
+
+  return (
+    <section
+      ref={sectionRef}
+      className="pt-10 pb-section bg-cream"
+      aria-label="סרטוני הדגמה — Animal Diet Formulator"
+    >
+      <div className="container-gaia max-w-5xl">
+
+        {/* Heading */}
+        <div className="text-center mb-8">
+          <span className="eyebrow block mb-3">כלי מקצועי לכתיבת מתכונים</span>
+          <h2 className="text-display-sm font-serif text-earth">
+            Animal Diet Formulator — כלי דיוק מתכונים לפני תקנים ברורים המשמש וטרינרים ותזונאים ברחבי העולם
+          </h2>
+          <p className="text-mist text-sm max-w-xs mx-auto mt-2 leading-relaxed">
+            כך נראית עבודת הניסוח מאחורי הקלעים — מדידה, בדיקה ואיזון.
+          </p>
+        </div>
+
+        {/* ── Desktop: expanding flex row (no pointer interaction on cards) ── */}
+        {/* Card height: edit `height` below (default 230px)                   */}
+        <div
+          className="hidden sm:flex gap-3 items-stretch"
+          style={{ height: '230px' }}
+        >
+          {ADF_VIDEOS.map((v, i) => {
+            const isActive = i === activeIdx
+            return (
+              <div
+                key={i}
+                aria-label={`סרטון ${i + 1}: ${v.caption}`}
+                className="relative flex flex-col rounded-2xl overflow-hidden bg-white pointer-events-none select-none"
+                style={{
+                  flexGrow: isActive ? EXPAND_RATIO : 1,
+                  flexShrink: 1,
+                  flexBasis: 0,
+                  minWidth: 0,
+                  boxShadow: isActive
+                    ? '0 6px 28px rgba(0,0,0,0.11)'
+                    : '0 1px 6px rgba(0,0,0,0.06)',
+                  transition: `flex-grow ${EXPAND_MS}ms ${EXPAND_EASING}, box-shadow 300ms ease`,
+                }}
+              >
+                {/* Video fills all space above caption */}
+                <div className="relative overflow-hidden flex-1 min-h-0">
+                  <video
+                    ref={el => { videoRefsDesk.current[i] = el }}
+                    src={v.src}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    muted
+                    playsInline
+                    preload="metadata"
+                    tabIndex={-1}
+                  />
+
+                  {/* Dim overlay on inactive cards */}
+                  <div
+                    className="absolute inset-0 bg-bark/25 pointer-events-none transition-opacity duration-300"
+                    style={{ opacity: isActive ? 0 : 1 }}
+                  />
+                </div>
+
+                {/* Caption — fixed height so layout stays stable */}
+                <div className="px-3 py-2.5 flex-shrink-0" style={{ height: '50px' }}>
+                  <p
+                    className="text-[11px] leading-[1.45] line-clamp-3 transition-colors duration-300 font-semibold"
+                    style={{ color: isActive ? '#5a4637' : '#b0a096' }}
+                  >
+                    {v.caption}
+                  </p>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* ── Mobile: static 2-col grid, fully passive ── */}
+        <div className="grid grid-cols-2 gap-3 sm:hidden">
+          {ADF_VIDEOS.map((v, i) => (
+            <div
+              key={i}
+              className="flex flex-col rounded-xl overflow-hidden bg-white shadow-card"
+              aria-label={`סרטון ${i + 1}: ${v.caption}`}
+            >
+              <div className="relative overflow-hidden" style={{ aspectRatio: '16/9' }}>
+                <video
+                  src={v.src}
+                  className="w-full h-full object-cover"
+                  playsInline
+                  controls
+                  preload="metadata"
+                  tabIndex={-1}
+                />
+              </div>
+              <div className="px-2.5 py-2">
+                <p className="text-[11px] text-mist leading-snug line-clamp-2">{v.caption}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </section>
+  )
+}
+
 /* ─── Data ───────────────────────────────────────────────────── */
 
 const FAQS = [
   {
     q: 'האם אתה וטרינר?',
-    a: 'לא. אני תזונאי כלבים מוסמך — לא וטרינר ולא מאבחן מחלות. הייעוץ שלי מתמקד בתזונה בלבד: בניית תפריטים, ניסוח מתכונים מלאים ומאוזנים והכוונה להאכלה נכונה. לכל שאלה רפואית, פנו לוטרינר המטפל שלכם. התזונה מותאמת תמיד בהתאם למצב הרפואי של הכלב והמלצות הוטרינר.',
+    a: 'לא. אני תזונאי כלבים מוסמך — לא וטרינר ולא מאבחן מחלות. הייעוץ שלי מתמקד בתזונה בלבד: בניית תפריטים, ניסוח מתכונים מלאים ומאוזנים והכוונה להאכלה נכונה. יחד עם זאת - התזונה מותאמת תמיד בהתאם למצב הרפואי של הכלב והמלצות הוטרינר. לכל שאלה רפואית, פנו לוטרינר המטפל שלכם.',
   },
   {
     q: 'האם הייעוץ מתאים אם הכלב שלי אוכל מזון יבש?',
-    a: 'בהחלט. חלק גדול מהמתייעצים שלי מגיעים עם כלבים שאוכלים מזון יבש ורוצים להבין אם יש אלטרנטיבה, או לשלב בין השניים. נעשה יחד את המעבר בצורה הדרגתית ומחושבת ונתאים את התזונה בהתאם ליכולות שלכם.',
+    a: 'בהחלט. חלק גדול מהמתייעצים שלי מגיעים עם כלבים שאוכלים מזון יבש ורוצים להבין אם יש אלטרנטיבה, או לשלב בין השניים. נתאים את התזונה בהתאם ליכולות שלכם ואם תרצו - נעשה יחד את המעבר בצורה הדרגתית ומחושבת.',
   },
   {
     q: 'האם אני צריך בדיקות דם לפני הייעוץ?',
@@ -50,6 +229,10 @@ const FAQS = [
   {
     q: 'האם אקבל מתכונים ספציפיים עם כמויות?',
     a: 'בחבילות 2, 3 ו-4 — כן. אני עובד עם תוכנת Animal Diet Formulator ומנסח מתכונים מלאים ומאוזנים בהתאם לנתוני הכלב שלכם, כולל כמויות מדויקות ורשימת תוספים. לא "המלצה כללית", אלא מתכון מחושב.',
+  },
+  {
+    q: 'האם כל אחד יכול להשתמש בתוכנה?',
+    a: 'כן, אבל לא מומלץ. כל אחד יכול טכנית להשתמש בתוכנה (בתשלום), אבל לא מומלץ לבנות תפריטים לגמרי לבד בלי ידע מקצועי בתזונת בעלי חיים.\nהכנת מתכון מלא ומאוזן דורשת הבנה של צרכים תזונתיים, מינונים בטוחים של רכיבים, יחס נכון בין חלבון, שומן, ויטמינים ומינרלים ועוד - זו ממש תורה בפני עצמה. טעות קטנה במינונים או בהרכב עלולה להוביל לאורך זמן לחוסרים או לעומסים תזונתיים, שגם אם לא רואים מיד – יכולים לפגוע בבריאות הכלב.\nלכן התוכנה מיועדת בעיקר לבעלי מקצוע מוסמכים, ואחרת ככלי עזר וחשיבה, שרצוי להשתמש בו יחד עם מתכונים שנבדקו מראש או בליווי איש מקצוע (וטרינר/יועץ תזונה), במיוחד אצל גורים, כלבים מבוגרים או כלבים עם בעיות רפואיות.',
   },
   {
     q: 'מה אם לכלב שלי יש מצב רפואי?',
@@ -154,9 +337,9 @@ const WHO_FOR = [
     desc: 'ולא בטוחים אם התפריט שלהם עומד בסטנדרטים הנכונים.',
   },
   {
-    icon: '❓',
-    title: 'מבולבלים ממידע סותר',
-    desc: 'ורוצים מקור אחד, מהימן, מבוסס מחקר — לא מיתוסים ולא טרנדים.',
+    icon: '🐕',
+    title: 'רוצים לתסף מזון טבעי קנוי',
+    desc: 'מה חסר במזון הטבעי הקנוי שלכם, ואיך לתסף אותו בצורה בטוחה ומאוזנת לפי צרכי הכלב.',
   },
   {
     icon: '🩺',
@@ -164,9 +347,9 @@ const WHO_FOR = [
     desc: 'אלרגיות, עיכול, כליות — ורוצים תמיכה תזונתית מקצועית לצד הוטרינר.',
   },
   {
-    icon: '🐕',
-    title: 'גורים חדשים',
-    desc: 'שהבעלים שלהם מבינים שהבסיס התזונתי נבנה עכשיו — ורוצים לבנות אותו נכון.',
+    icon: '❓',
+    title: 'מבולבלים ממידע סותר',
+    desc: 'ורוצים מקור אחד, מהימן, מבוסס מחקר — לא מיתוסים ולא טרנדים.',
   },
   {
     icon: '🔬',
@@ -178,28 +361,28 @@ const WHO_FOR = [
 const STEPS = [
   {
     n: '01',
-    title: 'שאלון קליטה',
-    desc: 'לאחר ההרשמה תקבלו שאלון מפורט על הכלב: גיל, משקל, מצב בריאותי, אוכל נוכחי, והיסטוריה רלוונטית.',
+    title: 'שאלון קליטה קצר',
+    desc: 'לאחר קביעת תור תקבלו שאלון מפורט על הכלב: גיל, משקל, מצב בריאותי, אוכל נוכחי, והיסטוריה רלוונטית.',
   },
   {
     n: '02',
     title: 'סקירה וניתוח',
-    desc: 'אני בוחן את הנתונים, מנתח את התפריט הנוכחי, ומכין את עצמי לשיחה עם הבנה מלאה של המקרה.',
+    desc: 'אנחנו בוחנים את הנתונים, מנתחים את התפריט הנוכחי, ומכינים את עצמנו לשיחה עם הבנה מלאה של המקרה.',
   },
   {
     n: '03',
     title: 'שיחת ייעוץ',
-    desc: 'שיחת וידאו או טלפון מובנית. עוברים יחד על הממצאים, עונים על שאלות, ומגדירים יחד את הכיוון הנכון.',
+    desc: 'שיחת וידאו (או טלפון אם לא מתאפשר). עוברים יחד על הממצאים, עונים על שאלות, ומגדירים יחד את הכיוון הנכון.',
   },
   {
     n: '04',
-    title: 'ניסוח התפריט',
-    desc: 'בחבילות הכוללות מתכון — עבודה עם Animal Diet Formulator לניסוח מתכון מלא ומאוזן עם כמויות מדויקות.',
+    title: 'ניסוח ודיוק התפריט',
+    desc: 'ייעוץ כולל מתכון אחד — עבודה עם Animal Diet Formulator לניסוח מתכון מלא ומאוזן עם כמויות מדויקות.',
   },
   {
     n: '05',
-    title: 'תמיכה ומעקב',
-    desc: 'בחבילות עם תמיכה — 30 יום של מענה לשאלות, התאמות קטנות, וווידוא שהמעבר הולך כמתוכנן.',
+    title: 'פגישת מעקב',
+    desc: 'פגישת מעקב קצרה (15 דק\') חינם – כי התוצאה חשובה לנו כמו לכם.',
   },
 ]
 
@@ -228,9 +411,9 @@ function FAQItem({ q, a }) {
         </span>
       </button>
       {open && (
-        <p className="pb-5 text-mist text-sm leading-relaxed">
-          {a}
-        </p>
+        <div className="pb-5 text-mist text-sm leading-relaxed flex flex-col gap-3">
+          {a.split('\n').map((line, i) => <p key={i}>{line}</p>)}
+        </div>
       )}
     </div>
   )
@@ -244,6 +427,43 @@ export default function Consultations() {
     const handler = e => { if (e.key === 'Escape') setCertOpen(false) }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
+  }, [])
+
+  // Calendly popup: close on Escape or click-outside (overlay)
+  useEffect(() => {
+    const onKey = e => {
+      if (e.key === 'Escape') window.Calendly?.closePopupWidget()
+    }
+    const onOverlay = e => {
+      const overlay = document.querySelector('.calendly-overlay')
+      const popup   = document.querySelector('.calendly-popup')
+      if (!overlay || !popup || !overlay.contains(e.target)) return
+      const { left, right, top, bottom } = popup.getBoundingClientRect()
+      const outside = e.clientX < left || e.clientX > right || e.clientY < top || e.clientY > bottom
+      if (outside) window.Calendly?.closePopupWidget()
+    }
+    document.addEventListener('keydown', onKey)
+    document.addEventListener('click', onOverlay)
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.removeEventListener('click', onOverlay)
+    }
+  }, [])
+
+  // Move Calendly's X button to the popup's top-right corner
+  useEffect(() => {
+    const obs = new MutationObserver(() => {
+      const closeBtn = document.querySelector('.calendly-popup-close')
+      const popup    = document.querySelector('.calendly-popup')
+      if (!closeBtn || !popup) return
+      const rect = popup.getBoundingClientRect()
+      closeBtn.style.position = 'fixed'
+      closeBtn.style.top      = (rect.top + 20) + 'px'
+      closeBtn.style.right    = (window.innerWidth - rect.right + 20) + 'px'
+      closeBtn.style.left     = 'auto'
+    })
+    obs.observe(document.body, { childList: true, subtree: true })
+    return () => obs.disconnect()
   }, [])
 
   const [refProblem,  visProblem,  doneProblem]  = useReveal(0.08)
@@ -286,14 +506,29 @@ export default function Consultations() {
             <em className="text-forest not-italic">מותאמת, מלאה ומאוזנת.</em>
           </h1>
 
-          <p className="text-bark text-lg leading-[1.75] max-w-xl mb-9">
+          <p className="text-bark text-lg leading-[1.75] max-w-xl mb-9" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
             אם אתם רוצים לעבור מגרגרים יבשים לתזונה ביתית, לשפר תפריט קיים, או לבנות מתכון מלא ומאוזן לכלב שלכם — אתם במקום הנכון.
           </p>
 
-          <div className="flex items-center mt-1">
+          <div className="flex flex-col items-start gap-4 mt-1">
             <a
+              href="#"
+              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-forest text-cream font-bold rounded-xl hover:bg-forest/90 transition-colors duration-200 text-sm"
+              onClick={e => {
+                e.preventDefault()
+                window.Calendly?.initPopupWidget({ url: 'https://calendly.com/gaiapetnutrition/meet-with-me?background_color=faf7f0&text_color=1e1e1b&primary_color=3b5e41' })
+              }}
+            >
+              לקביעת פגישה
+            </a>
+            <a
+              id="intro-call-button"
               href="#contact"
               className="inline-flex items-center gap-2 text-forest font-semibold text-sm hover:text-forest-dark transition-colors duration-200"
+              onClick={e => {
+                e.preventDefault()
+                window.Calendly?.initPopupWidget({ url: 'https://calendly.com/gaiapetnutrition/30min?background_color=faf7f0&text_color=1e1e1b&primary_color=3b5e41' })
+              }}
             >
               רוצים לדבר קודם? שיחת היכרות חינם
               <ArrowLeft className="w-3.5 h-3.5" />
@@ -309,7 +544,7 @@ export default function Consultations() {
         <div className="container-gaia">
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2.5">
             {[
-              'תזונאי מוסמך — Southern Illinois University',
+              'תזונאי כלבים מוסמך — Southern Illinois University',
               'הרכבת מתכונים עם תוכנה ייעודית',
               'מבוסס תקני AAFCO / NRC',
               'ליווי פרקטי ויסודי בכל צעד',
@@ -358,7 +593,7 @@ export default function Consultations() {
               },
               {
                 title: '"מגוון" ≠ מלא ומאוזן',
-                desc: 'אם כל אחד מהמתכונים לא מלא ומאוזן, גיוון לא יעזור וחוסרים יכולים להיווצר שבסופו של דבר עלולים לפגוע בבריאות הכלבים.',
+                desc: 'גיוון הוא חשוב ומצוין, אך אם כל אחד מהמתכונים לא מלא ומאוזן, גיוון לא יעזור וחוסרים יכולים להיווצר שבסופו של דבר עלולים לפגוע בבריאות הכלבים.',
               },
             ].map(({ title, desc }) => (
               <div key={title} className="bg-white/[0.08] rounded-2xl p-5">
@@ -425,7 +660,111 @@ export default function Consultations() {
       </section>
 
       {/* ══════════════════════════════════════════════════════
-          §5 WHO AM I
+          §5 WHAT MAKES THIS DIFFERENT
+      ══════════════════════════════════════════════════════ */}
+      <section className="pt-10 pb-section bg-parchment relative overflow-hidden">
+        <img src="/gaia-paw.png" alt="" aria-hidden="true"
+          className="absolute -top-6 -right-8 w-64 h-64 opacity-[0.07] pointer-events-none select-none"
+          style={{ transform: 'rotate(15deg)' }}
+        />
+        <div ref={refDiff} className={`container-gaia max-w-3xl ${rx(visDiff, doneDiff)}`}>
+          <div className="text-center mb-10">
+            <h2 className="text-display-md font-serif text-forest mb-4">
+              לא רק עצות — תוצאות.
+            </h2>
+            <p className="text-mist text-base max-w-md mx-auto leading-relaxed">
+              הייעוץ שלנו מסתיים במתכונים מחושבים ובתוכנית פרקטית שאפשר לעבוד איתה.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              {
+                title: 'מחושב, לא אינטואיטיבי',
+                desc: 'כל מתכון מנוסח עם כמויות מדויקות, מבוסס על נתוני הכלב הספציפי — לא "לפי הגיון".',
+              },
+              {
+                title: 'מבוסס תקנים מוכרים',
+                desc: 'אני עובד לפי AAFCO ו-NRC — לא לפי טרנדים, קבוצות פייסבוק, או אינסטגרם.',
+              },
+              {
+                title: 'תוצר ברור',
+                desc: 'מתכון כתוב, רשימת תוספים, כמויות. לא יציאה משיחה עם "תנסו ותראו".',
+              },
+            ].map(({ title, desc }) => (
+              <div key={title} className="card p-5 text-center">
+                <h3 className="font-semibold text-earth text-sm mb-2">{title}</h3>
+                <p className="text-mist text-sm leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════
+          §6.5 ADF VIDEO SHOWCASE
+      ══════════════════════════════════════════════════════ */}
+      <ADFShowcase />
+
+      {/* ══════════════════════════════════════════════════════
+          §7 WHO THIS IS FOR
+      ══════════════════════════════════════════════════════ */}
+      <section className="pt-10 pb-section bg-parchment relative overflow-hidden">
+        <img src="/gaia-paw.png" alt="" aria-hidden="true"
+          className="absolute -top-6 -left-8 w-64 h-64 opacity-[0.07] pointer-events-none select-none"
+          style={{ transform: 'rotate(-15deg)' }}
+        />
+        <div ref={refWhoFor} className={`container-gaia max-w-3xl ${rx(visWhoFor, doneWhoFor)}`}>
+          <div className="text-center mb-10">
+            <h2 className="text-display-md font-serif text-forest mb-4">
+              למי זה מתאים?
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {WHO_FOR.map(({ title, desc }) => (
+              <div key={title} className="card px-4 py-3.5 bg-white">
+                <h3 className="font-semibold text-earth text-sm mb-1">{title}</h3>
+                <p className="text-mist text-xs leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════
+          §8 PROCESS
+      ══════════════════════════════════════════════════════ */}
+      <section className="pt-8 pb-section bg-cream relative overflow-hidden">
+        <img src="/gaia-paw.png" alt="" aria-hidden="true"
+          className="absolute -top-6 -right-8 w-64 h-64 opacity-[0.07] pointer-events-none select-none"
+          style={{ transform: 'rotate(15deg)' }}
+        />
+        <div ref={refProcess} className={`container-gaia max-w-2xl ${rx(visProcess, doneProcess)}`}>
+          <div className="text-center mb-12">
+            <h2 className="text-display-md font-serif text-earth mb-4">איך זה עובד?</h2>
+          </div>
+          <div className="space-y-0">
+            {STEPS.map(({ n, title, desc }, i) => (
+              <div key={n} className="flex gap-5 items-start relative">
+                {/* Connector line */}
+                {i < STEPS.length - 1 && (
+                  <div className="absolute top-10 right-[1.2rem] w-px h-[calc(100%-2rem)] bg-stone" />
+                )}
+                {/* Step number circle */}
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-forest/[0.08] border border-forest/20 flex items-center justify-center z-10">
+                  <span className="text-[11px] font-bold text-forest">{n}</span>
+                </div>
+                <div className={`flex-1 pt-1.5 ${i < STEPS.length - 1 ? 'pb-8' : 'pb-0'}`}>
+                  <h3 className="font-semibold text-earth mb-1">{title}</h3>
+                  <p className="text-mist text-sm leading-relaxed">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════
+          §8.5 WHO AM I
       ══════════════════════════════════════════════════════ */}
       <section className="section-padding bg-parchment">
         <div ref={refBio} className={`container-gaia max-w-4xl ${rx(visBio, doneBio)}`}>
@@ -486,105 +825,6 @@ export default function Consultations() {
                   {label}
                 </span>
                 <span className="text-bark text-[13px] leading-snug">{value}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════
-          §6 WHAT MAKES THIS DIFFERENT
-      ══════════════════════════════════════════════════════ */}
-      <section className="pt-10 pb-section bg-cream relative overflow-hidden">
-        <img src="/gaia-paw.png" alt="" aria-hidden="true"
-          className="absolute -top-6 -right-8 w-64 h-64 opacity-[0.07] pointer-events-none select-none"
-          style={{ transform: 'rotate(15deg)' }}
-        />
-        <div ref={refDiff} className={`container-gaia max-w-3xl ${rx(visDiff, doneDiff)}`}>
-          <div className="text-center mb-10">
-            <h2 className="text-display-md font-serif text-forest mb-4">
-              לא רק עצות — תוצאות.
-            </h2>
-            <p className="text-mist text-base max-w-md mx-auto leading-relaxed">
-              הייעוץ שלנו מסתיים במתכונים מחושבים ובתוכנית פרקטית שאפשר לעבוד איתה.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[
-              {
-                title: 'מחושב, לא אינטואיטיבי',
-                desc: 'כל מתכון מנוסח עם כמויות מדויקות, מבוסס על נתוני הכלב הספציפי — לא "לפי הגיון".',
-              },
-              {
-                title: 'מבוסס תקנים מוכרים',
-                desc: 'אני עובד לפי AAFCO ו-NRC — לא לפי טרנדים, קבוצות פייסבוק, או אינסטגרם.',
-              },
-              {
-                title: 'תוצר ברור',
-                desc: 'מתכון כתוב, רשימת תוספים, כמויות. לא יציאה משיחה עם "תנסו ותראו".',
-              },
-            ].map(({ title, desc }) => (
-              <div key={title} className="card p-5 text-center">
-                <h3 className="font-semibold text-earth text-sm mb-2">{title}</h3>
-                <p className="text-mist text-sm leading-relaxed">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════
-          §7 WHO THIS IS FOR
-      ══════════════════════════════════════════════════════ */}
-      <section className="pt-10 pb-section bg-parchment relative overflow-hidden">
-        <img src="/gaia-paw.png" alt="" aria-hidden="true"
-          className="absolute -top-6 -left-8 w-64 h-64 opacity-[0.07] pointer-events-none select-none"
-          style={{ transform: 'rotate(-15deg)' }}
-        />
-        <div ref={refWhoFor} className={`container-gaia max-w-3xl ${rx(visWhoFor, doneWhoFor)}`}>
-          <div className="text-center mb-10">
-            <h2 className="text-display-md font-serif text-forest mb-4">
-              למי זה מתאים?
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {WHO_FOR.map(({ title, desc }) => (
-              <div key={title} className="card px-4 py-3.5 bg-white">
-                <h3 className="font-semibold text-earth text-sm mb-1">{title}</h3>
-                <p className="text-mist text-xs leading-relaxed">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════
-          §8 PROCESS
-      ══════════════════════════════════════════════════════ */}
-      <section className="pt-8 pb-section bg-cream relative overflow-hidden">
-        <img src="/gaia-paw.png" alt="" aria-hidden="true"
-          className="absolute -top-6 -right-8 w-64 h-64 opacity-[0.07] pointer-events-none select-none"
-          style={{ transform: 'rotate(15deg)' }}
-        />
-        <div ref={refProcess} className={`container-gaia max-w-2xl ${rx(visProcess, doneProcess)}`}>
-          <div className="text-center mb-12">
-            <h2 className="text-display-md font-serif text-earth mb-4">איך זה עובד?</h2>
-          </div>
-          <div className="space-y-0">
-            {STEPS.map(({ n, title, desc }, i) => (
-              <div key={n} className="flex gap-5 items-start relative">
-                {/* Connector line */}
-                {i < STEPS.length - 1 && (
-                  <div className="absolute top-10 right-[1.2rem] w-px h-[calc(100%-2rem)] bg-stone" />
-                )}
-                {/* Step number circle */}
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-forest/[0.08] border border-forest/20 flex items-center justify-center z-10">
-                  <span className="text-[11px] font-bold text-forest">{n}</span>
-                </div>
-                <div className={`flex-1 pt-1.5 ${i < STEPS.length - 1 ? 'pb-8' : 'pb-0'}`}>
-                  <h3 className="font-semibold text-earth mb-1">{title}</h3>
-                  <p className="text-mist text-sm leading-relaxed">{desc}</p>
-                </div>
               </div>
             ))}
           </div>
@@ -698,7 +938,7 @@ export default function Consultations() {
       {/* ══════════════════════════════════════════════════════
           §10 FAQ
       ══════════════════════════════════════════════════════ */}
-      <section className="section-padding bg-parchment relative overflow-hidden">
+      <section className="section-padding bg-cream relative overflow-hidden">
         <img src="/gaia-paw.png" alt="" aria-hidden="true"
           className="absolute -top-6 -left-8 w-64 h-64 opacity-[0.07] pointer-events-none select-none"
           style={{ transform: 'rotate(-15deg)' }}
@@ -732,7 +972,7 @@ export default function Consultations() {
           style={{ transform: 'rotate(45deg)', filter: 'brightness(0) invert(1)' }}
         />
 
-        <div ref={refCta} className={`container-gaia max-w-xl text-center relative ${rx(visCta, doneCta)}`}>
+        <div ref={refCta} className={`container-gaia max-w-xl text-center relative mt-10 ${rx(visCta, doneCta)}`}>
           <h2 className="text-display-md font-serif text-white mb-4 leading-[1.2]">
             מוכנים לבנות תפריט שאפשר לסמוך עליו?
           </h2>
@@ -742,16 +982,21 @@ export default function Consultations() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="https://wa.me/972XXXXXXXXX"
+              href="#"
               className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-white text-forest font-bold rounded-xl hover:bg-cream transition-colors duration-200 text-sm"
+              onClick={e => {
+                e.preventDefault()
+                window.Calendly?.initPopupWidget({ url: 'https://calendly.com/gaiapetnutrition/meet-with-me?background_color=faf7f0&text_color=1e1e1b&primary_color=3b5e41' })
+              }}
             >
-              הודעה בווטסאפ
+              לפגישת ייעוץ
             </a>
             <a
-              href="mailto:gaia@gaia-nutrition.co.il"
-              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 border border-white/30 text-white font-semibold rounded-xl hover:bg-white/[0.08] transition-colors duration-200 text-sm"
+              href="#"
+              onClick={e => { e.preventDefault(); window.Calendly?.initPopupWidget({ url: 'https://calendly.com/gaiapetnutrition/30min?background_color=faf7f0&text_color=1e1e1b&primary_color=3b5e41' }) }}
+              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 border border-white/30 text-white font-semibold rounded-xl hover:bg-white/[0.08] transition-colors duration-200 text-sm cursor-pointer"
             >
-              שלחו מייל
+              לשיחת היכרות
             </a>
           </div>
 

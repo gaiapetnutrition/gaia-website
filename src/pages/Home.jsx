@@ -114,7 +114,7 @@ function Hero() {
               textShadow: '0 1px 8px rgba(250,247,240,0.9), 0 0 20px rgba(250,247,240,0.6)',
             }}
           >
-            הידע, הכלים, והליווי לתזונה שהכלב שלך באמת צריך. מבוסס מחקרים, כלים טכנולוגיים והוליסטיות. בלי ניחושים, להאכיל בביטחון.
+            הידע, הכלים, והליווי לתזונה שהכלב שלך באמת צריך. מבוסס מחקרים, כלים טכנולוגיים והוליסטיות.<br />בלי ניחושים, להאכיל בביטחון.
           </p>
 
           {/* CTAs */}
@@ -130,7 +130,7 @@ function Hero() {
               icon={<Calculator className="w-4 h-4" />}
               onClick={() => {}}
             >
-              בדוק את התפריט של הכלב שלך
+              בדקו את התפריט של הכלב שלכם
             </Button>
             <Link
               to="/consultations"
@@ -319,12 +319,12 @@ function ScrollSplitBowl() {
     <div>
       {/* Section heading — scrolls in before bowl pins */}
       <div className="bg-cream text-center px-4 pt-14 pb-4">
-        <span className="eyebrow block mb-3 text-[1.15em]">החלטתם לעבור לתזונה טבעית — מצוין! אבל...</span>
-        <h2 className="text-display-md font-serif text-earth">
+        <span className="eyebrow block mb-3 text-[1.15em]" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>החלטתם לעבור לתזונה טבעית — מצוין!<br /><br />אבל...</span>
+        <h2 className="text-display-md font-serif text-earth" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
           טבעי זה לא מספיק ויכול גם לפגוע — צריך גם{' '}
           <span className="text-forest font-bold underline decoration-2 underline-offset-4 pb-0.5">נכון</span>
         </h2>
-        <p className="text-mist mt-3 max-w-md mx-auto text-[0.9375rem] leading-relaxed">
+        <p className="text-mist mt-3 max-w-xl mx-auto text-[1.218rem] leading-relaxed" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
           אנחנו בוחרים מה להאכיל את הכלבים שלנו <strong className="font-semibold text-earth/80">לשארית ימי חייהם</strong>.<br />בלי <strong className="font-semibold text-earth/80">האיזון</strong> הנכון — אנחנו עלולים להזיק יותר מאשר להועיל.
         </p>
       </div>
@@ -402,9 +402,9 @@ function Philosophy() {
           }`}
         >
           <span className="eyebrow inline-flex items-center gap-2">
-            הגישה שלנו
+            הגישה שלנו:
           </span>
-          <p className="text-display-md font-serif text-forest font-bold mb-3 mt-1">הגשר בין מחקר להוליסטיות</p>
+          <p className="text-display-md text-forest font-bold mb-3 mt-1" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>הגשר בין מחקר להוליסטיות</p>
           <div className="w-10 border-t border-earth/20 mx-auto my-3" />
           <div className="flex justify-center my-3">
             <h2 className="text-display-md font-serif text-earth whitespace-nowrap">
@@ -444,6 +444,83 @@ function Philosophy() {
 }
 
 /* ─── How it works ───────────────────────────────────────── */
+function WhatYouFind() {
+  const [ref, visible, done] = useReveal(0.08)
+
+  const ITEMS = [
+    {
+      icon: <Calculator className="w-5 h-5" />,
+      color: 'bg-forest/[0.08] text-forest',
+      title: 'מחשבונים',
+      desc: 'כלים חינמיים לחישוב כמויות האכלה, קלוריות, ובניית תפריט לפי תקני AAFCO.',
+      cta: { label: 'למחשבונים', path: '/calculators' },
+    },
+    {
+      icon: <BookOpen className="w-5 h-5" />,
+      color: 'bg-honey/10 text-honey',
+      title: 'מאמרים',
+      desc: 'תוכן מקצועי על תזונה טבעית — מבוסס מחקר, נגיש ומעשי.',
+      cta: { label: 'לקריאת המאמרים', path: '/articles' },
+    },
+    {
+      icon: <Users className="w-5 h-5" />,
+      color: 'bg-olive/10 text-olive',
+      title: 'ייעוץ אישי',
+      desc: 'ליווי מותאם לצרכי הכלב שלכם — תפריט מדויק, מחושב ומאוזן.',
+      cta: { label: 'לתיאום ייעוץ', path: '/consultations' },
+    },
+  ]
+
+  return (
+    <section className="pt-10 pb-section-sm md:pt-14 md:pb-section bg-cream relative overflow-hidden">
+      <img src="/gaia-paw.png" alt="" aria-hidden="true"
+        className="absolute -top-8 -left-8 w-64 h-64 opacity-[0.07] pointer-events-none select-none"
+        style={{ transform: 'rotate(-12deg)' }}
+      />
+      <div className="container-gaia max-w-4xl">
+        <div
+          ref={ref}
+          className={`text-center max-w-xl mx-auto mb-10 ${
+            done ? '' : `transition-[opacity,transform] duration-500 [transition-timing-function:cubic-bezier(0.23,1,0.32,1)] ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`
+          }`}
+        >
+          <h2 className="text-display-sm text-forest mt-1">מה תמצאו פה</h2>
+          <p className="text-mist text-sm mt-3 leading-relaxed">
+            כלים פרקטיים, ידע מקצועי וליווי אישי — לתזונה טבעית, מדויקת ומאוזנת.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {ITEMS.map((item, i) => (
+            <div
+              key={item.title}
+              className={`card p-6 flex flex-col gap-3 ${
+                done ? '' : `transition-[opacity,transform] duration-[450ms] [transition-timing-function:cubic-bezier(0.23,1,0.32,1)] ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`
+              }`}
+              style={!done ? { transitionDelay: `${120 + i * 110}ms` } : undefined}
+            >
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${item.color}`}>
+                {item.icon}
+              </div>
+              <div>
+                <h3 className="font-semibold text-earth text-sm mb-1">{item.title}</h3>
+                <p className="text-mist text-sm leading-relaxed">{item.desc}</p>
+              </div>
+              <Link
+                to={item.cta.path}
+                className="mt-auto text-sm font-semibold text-forest hover:text-forest-dark flex items-center gap-1.5 transition-colors cursor-pointer group/link"
+              >
+                {item.cta.label}
+                <ArrowLeft className="w-3.5 h-3.5 transition-transform duration-200 group-hover/link:-translate-x-0.5" />
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function HowItWorks() {
   const [ref, visible, done] = useReveal(0.08)
 
@@ -472,8 +549,8 @@ function HowItWorks() {
   ]
 
   return (
-    <section className="section-padding bg-cream relative overflow-hidden">
-      <img src="/gaia-paw.png" alt="" aria-hidden="true" className="absolute -top-8 -left-8 w-64 h-64 opacity-[0.07] pointer-events-none select-none" style={{ transform: 'rotate(-12deg)' }} />
+    <section className="section-padding bg-parchment relative overflow-hidden">
+      <img src="/gaia-paw.png" alt="" aria-hidden="true" className="absolute -top-8 -right-8 w-64 h-64 opacity-[0.07] pointer-events-none select-none" style={{ transform: 'rotate(15deg)' }} />
       <div className="container-gaia">
         {/* Heading */}
         <div
@@ -484,7 +561,6 @@ function HowItWorks() {
         >
           <span className="eyebrow inline-flex items-center gap-2 text-[1.15em]">
             מאיפה מתחילים?
-            <img src="/gaia-paw.png" alt="" className="w-[1.05rem] h-[1.05rem] opacity-70" />
           </span>
           <h2 className="text-display-md font-serif text-earth mt-1 text-[1.15em]">
             מאיפה שאתם היום.
@@ -559,7 +635,7 @@ function Testimonials() {
   ]
 
   return (
-    <section className="pt-10 pb-section bg-parchment">
+    <section className="pt-10 pb-section bg-cream">
       <div className="container-gaia">
         {/* Heading */}
         <div
@@ -618,7 +694,7 @@ function CTABanner() {
   const [ref, visible, done] = useReveal(0.1)
 
   return (
-    <section className="section-padding" ref={ref}>
+    <section className="section-padding bg-parchment" ref={ref}>
       <div className="container-gaia">
         <div
           className={`relative overflow-hidden rounded-4xl bg-green-gradient p-10 md:p-16 text-center ${
@@ -693,6 +769,7 @@ export default function Home() {
       </div>
       <ScrollSplitBowl />
       <Philosophy />
+      <WhatYouFind />
       <HowItWorks />
       <Testimonials />
       <CTABanner />

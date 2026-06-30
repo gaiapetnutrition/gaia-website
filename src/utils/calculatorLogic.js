@@ -62,7 +62,7 @@ export const FOOD_TYPES = [
   { id: 'homecooked', label: 'מבושל',                kcalPer100g: 140, icon: '🍲' },
   { id: 'raw',        label: 'נא',                  kcalPer100g: 160, icon: '🥩' },
   { id: 'wet',        label: 'שימורים',              kcalPer100g: 120, icon: '🫙' },
-  { id: 'dry',        label: 'יבש (גרגרים)',       kcalPer100g: 360, icon: '🥩' },
+  { id: 'dry',        label: 'יבש (גרגרים)',       kcalPer100g: 360, icon: '🫘' },
 ]
 
 /* ─── Daily food amount in grams ──────────────────────────── */

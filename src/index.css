@@ -57,9 +57,9 @@
     @apply text-earth font-semibold tracking-tight;
   }
 
-  /* Body paragraphs use Heebo for readability contrast against Secular One headings */
+  /* Body paragraphs — Secular One (trial) */
   p, li {
-    font-family: 'Heebo', system-ui, sans-serif;
+    font-family: 'Secular One', system-ui, sans-serif;
     line-height: 1.75;
   }
 

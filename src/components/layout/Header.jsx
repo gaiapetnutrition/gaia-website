@@ -61,7 +61,7 @@ export default function Header() {
             to="/consultations"
             className="flex-shrink-0 bg-white/12 hover:bg-white/22 border border-white/25 text-white text-[13px] font-semibold px-3.5 py-1 rounded-lg transition-colors duration-150 cursor-pointer"
           >
-            לקביעת פגישה
+            לייעוץ
           </Link>
         </div>
       </div>

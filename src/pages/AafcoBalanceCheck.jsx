@@ -70,14 +70,14 @@ function GrowthInfoTooltip() {
       {open && (
         <span
           className="absolute bottom-full right-0 mb-2 z-50 w-64 rounded-2xl
-                     bg-earth text-white text-xs leading-relaxed p-3 shadow-lg
+                     bg-parchment text-bark text-xs leading-relaxed p-3 shadow-warm-sm border border-stone
                      before:absolute before:bottom-[-6px] before:right-3
-                     before:border-4 before:border-transparent before:border-t-earth"
+                     before:border-4 before:border-transparent before:border-t-parchment"
           dir="rtl"
         >
-          <span className="font-semibold block mb-1">הידעתם?</span>
+          <span className="font-semibold block mb-1 text-earth">הידעתם?</span>
           גזעים קטנים יכולים להחשב גורים עד גיל ~10 חודשים, בינוניים עד ~12 חודשים, גדולים עד ~15 חודשים, וענקיים עד ~24 חודשים.
-          <span className="block mt-1.5 font-semibold">חשוב לזכור שמדובר בהערכות כלליות, והקצב עשוי להשתנות בין כלב לכלב.</span>
+          <span className="block mt-1.5 font-semibold text-earth">חשוב לזכור שמדובר בהערכות כלליות, והקצב עשוי להשתנות בין כלב לכלב.</span>
         </span>
       )}
     </span>
@@ -397,7 +397,7 @@ function ResultsTable({ rows, totalKcal }) {
           <span className="pill bg-amber-100 text-amber-700">{above} מעל המקסימום</span>
         )}
         {ok > 0 && (
-          <span className="pill bg-emerald-100 text-emerald-700">{ok} בטווח התקין</span>
+          <span className="pill bg-emerald-100 text-emerald-700">{ok} בטווח התקין<sup className="text-[9px] ml-0.5 opacity-70">*</sup></span>
         )}
       </div>
 
@@ -442,7 +442,9 @@ function ResultsTable({ rows, totalKcal }) {
                     <CoverageBar pct={row.coveragePct} />
                   </td>
                   <td className="py-2.5 px-3">
-                    <span className={clsx('pill text-[11px]', meta.badge)}>{meta.label}</span>
+                    <span className={clsx('pill text-[11px]', meta.badge)}>
+                      {meta.label}{row.status === 'OK' && <sup className="text-[9px] ml-0.5 opacity-70">*</sup>}
+                    </span>
                   </td>
                 </tr>
               )
@@ -450,6 +452,14 @@ function ResultsTable({ rows, totalKcal }) {
           </tbody>
         </table>
       </div>
+
+      {/* Footnote for "בטווח התקין*" */}
+      {ok > 0 && (
+        <p className="text-[11px] text-mist leading-relaxed pt-1 pr-0.5">
+          <sup className="text-[9px] mr-0.5">*</sup>
+          עמידה בטווח התקין לפי הנחיות AAFCO פירושה רק שמזון זה עומד ברמות המינימום (ואם מוגדר – גם המקסימום) של רכיבי התזונה עבור שלב החיים המצוין. היא אינה מבטיחה שהרכיב התזונתי נמצא ברמה האופטימלית עבור חיית המחמד האישית שלך או עבור צרכים בריאותיים ספציפיים, ולכן יש להשתמש בתוצאות אלו כהנחיה כללית בלבד ולהתייעץ עם וטרינר/ית או תזונאי/ת לקבלת ייעוץ מותאם אישית.
+        </p>
+      )}
     </div>
   )
 }
@@ -572,7 +582,7 @@ export default function AafcoBalanceCheck() {
             <div className="flex-1 min-w-0">
               <h1 className="text-display-lg font-serif text-white mb-3">בדיקת מלא ומאוזן לפי AAFCO</h1>
               <p className="text-white/60 max-w-lg text-base leading-relaxed">
-                הזינו את מרכיבי המתכון וקבלו השוואה מלאה לתקני AAFCO לכלבים — מינימום ומקסימום לכל רכיב תזונתי.
+                הזינו את מרכיבי המתכון וקבלו השוואה מלאה לתקני AAFCO לכלבים — מינימום ומקסימום למגוון רכיבים תזונתיים.
               </p>
             </div>
             {/* Image — left side, decorative */}

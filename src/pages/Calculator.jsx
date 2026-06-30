@@ -115,7 +115,7 @@ function Results({ result, inputs, onReset, onBack }) {
       {/* Hero stats */}
       <div className="bg-green-gradient rounded-3xl p-6 text-white">
         <div className="flex items-center gap-2 mb-1">
-          <PawPrint className="w-4 h-4 text-olive-light" />
+          <img src="/gaia-paw.png" alt="" className="w-4 h-4 opacity-70 flex-shrink-0" style={{ filter: 'brightness(0) invert(1)' }} />
           <span className="text-xs font-medium text-white/70 uppercase tracking-wider">
             צרכים קלוריים יומיים{inputs.name ? ` ל${inputs.name}` : ''}
           </span>
@@ -233,13 +233,13 @@ function Results({ result, inputs, onReset, onBack }) {
 // 7 positions — all sheet levels exposed (Inactive → Working).
 // Scale renders RTL: low (right) → work (left), matching Hebrew reading direction.
 const ACTIVITY_STEPS = [
-  { id: 'low',           anchor: 'לא פעיל',   desc: 'לא פעיל — טיולים קצרים ושגרה ביתית רגועה, עם מעט פעילות מאומצת.'            },
-  { id: 'low_plus',      anchor: null,          desc: 'לא פעיל+ — טיולים קצרים ושגרה ביתית רגועה, עם מעט פעילות מאומצת.'          },
-  { id: 'moderate',      anchor: 'רגיל',       desc: 'רגיל — טיולים ומשחקים יומיומיים כחלק משגרת כלב בית רגילה.'                  },
-  { id: 'moderate_plus', anchor: null,          desc: 'רגיל+ — טיולים ומשחקים יומיומיים כחלק משגרת כלב בית רגילה.'                },
-  { id: 'active',        anchor: 'פעיל',       desc: 'פעיל — טיולים ארוכים, ריצות, אימונים או משחק אנרגטי כמה פעמים בשבוע.'      },
-  { id: 'active_plus',   anchor: null,          desc: 'פעיל+ — טיולים ארוכים, ריצות, אימונים או משחק אנרגטי כמה פעמים בשבוע.'    },
-  { id: 'work',          anchor: 'כלב עבודה',  desc: 'כלב עבודה — פעילות גופנית גבוהה ומובנית כמו ספורט, שמירה, ציד או רעייה.'   },
+  { id: 'low',           anchor: 'לא פעיל',   desc: 'לא פעיל — כלב ביתי לגמרי, מסתפק בטיולים קצרצרים לצרכים ושגרה ביתית שקטה עם מעט מאמץ פיזי.'                        },
+  { id: 'low_plus',      anchor: null,          desc: 'לא פעיל+ — כלב עם שגרה ביתית רגועה מאוד, רגיש לעומס, טיולים קצרצרים ושקטים וגירוי מנטלי עדין.'                },
+  { id: 'moderate',      anchor: 'רגיל',       desc: 'רגיל — כלב בית טיפוסי, נהנה מטיול יומי ומשחקים פשוטים, רמת פעילות מתונה לבית עירוני.'                        },
+  { id: 'moderate_plus', anchor: null,          desc: 'רגיל+ — כלב עם יותר אנרגיה וגירוי, טיולים ומשחקים יומיים מגוונים, מסתגל לשגרה משפחתית פעילה.'              },
+  { id: 'active',        anchor: 'פעיל',       desc: 'פעיל — כלב הזקוק לטיולים ארוכים יותר, ריצות קצרות או משחק אנרגטי כמה פעמים בשבוע ואילוף בסיסי.'            },
+  { id: 'active_plus',   anchor: null,          desc: 'פעיל+ — כלב אנרגטי מאוד, נהנה מפעילות פיזית משמעותית ורב‑שבועית וגירוי קוגניטיבי עקבי.'                    },
+  { id: 'work',          anchor: 'כלב עבודה',  desc: 'כלב עבודה — כלב עם פעילות גבוהה ומובנית למשימות כמו ספורט, שמירה, ציד או רעייה, כולל אימון פיזי ומנטלי.'   },
 ]
 
 /* ─── Main Calculator ─────────────────────────────────────── */
@@ -312,15 +312,25 @@ export default function Calculator() {
   return (
     <div className="min-h-screen bg-cream">
       {/* Page header */}
-      <div className="bg-green-gradient text-white">
+      <div className="bg-green-gradient text-white overflow-hidden">
         <div className="container-gaia py-14 md:py-20">
           <div ref={topRef} />
-          <h1 className="text-display-lg font-serif text-white mb-3">
-            מחשבון האכלה לכלב
-          </h1>
-          <p className="text-white/60 max-w-lg text-base leading-relaxed">
-            החישוב מבוסס על נוסחאות אנרגיה וטרינריות מקובלות (RER ו‑MER), יחד עם התחשבות במגוון גורמים כמו: שלב חיים, מצב גוף, פעילות ומצב סירוס/עיקור. עם זאת, לכל כלב גוף וחילוף חומרים שונים ויש להתייחס לתוצאה כנקודת פתיחה בלבד - לעקוב אחר מצב הכלב לאורך זמן ולהתאים את הכמות בהתאם. לא מחליף אבחון וייעוץ עם וטרינר/ית או תזונאי/ת.
-          </p>
+          <div className="flex items-end justify-between gap-8">
+            <div className="flex-1">
+              <h1 className="text-display-lg font-serif text-white mb-3">
+                מחשבון האכלה לכלב
+              </h1>
+              <p className="text-white/60 max-w-lg text-base leading-relaxed">
+                החישוב מבוסס על נוסחאות אנרגיה וטרינריות מקובלות (RER ו‑MER), יחד עם התחשבות במגוון גורמים כמו: שלב חיים, מצב גוף, פעילות ומצב סירוס/עיקור. עם זאת, לכל כלב גוף וחילוף חומרים שונים ויש להתייחס לתוצאה כנקודת פתיחה בלבד - לעקוב אחר מצב הכלב לאורך זמן ולהתאים את הכמות בהתאם. לא מחליף אבחון וייעוץ עם וטרינר/ית או תזונאי/ת.
+              </p>
+            </div>
+            <img
+              src="/mascot_feeding_calculator2.png"
+              alt=""
+              aria-hidden="true"
+              className="hidden md:block w-[27rem] lg:w-[30rem] flex-shrink-0 object-contain self-end"
+            />
+          </div>
         </div>
       </div>
 

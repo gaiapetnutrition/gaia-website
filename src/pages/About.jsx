@@ -25,7 +25,7 @@ export default function About() {
         <div className="container-gaia max-w-2xl relative">
 
 
-          <div className="space-y-6 text-bark leading-[1.9] text-base">
+          <div className="space-y-6 text-bark leading-[1.9] text-base" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
             <p>
               גאיה נולדה מתוך שילוב של יזמות, אהבה לכלבים ותשוקה אמיתית לתזונה טבעית. מאחורי גאיה עומדים יזם ותזונאי כלבים מוסמך, עם מטרה פשוטה: להפוך תזונה טבעית והוליסטית לכלבים לנגישה, פרקטית ומבוססת מדע.
             </p>
