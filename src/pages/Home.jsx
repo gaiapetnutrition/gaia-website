@@ -207,14 +207,17 @@ function TrustBar() {
 }
 
 /* ─── Scroll-split bowl animation ───────────────────────── */
+// Module-level: survives React remounts (tab switch) but resets on page reload
+let bowlHasPlayed = false
+
 function ScrollSplitBowl() {
   const containerRef = useRef(null)
   const frontRef     = useRef(null)
   const dividerRef   = useRef(null)
-  const [played, setPlayed] = useState(() => sessionStorage.getItem('bowlPlayed') === '1')
+  const [played, setPlayed] = useState(bowlHasPlayed)
 
   function markPlayed() {
-    sessionStorage.setItem('bowlPlayed', '1')
+    bowlHasPlayed = true
     setPlayed(true)
   }
 
@@ -226,7 +229,7 @@ function ScrollSplitBowl() {
     }
 
     // Already played this session — show fully revealed immediately
-    if (sessionStorage.getItem('bowlPlayed') === '1') {
+    if (bowlHasPlayed) {
       applyClip(1)
       return
     }
