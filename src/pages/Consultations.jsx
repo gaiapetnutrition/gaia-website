@@ -56,22 +56,21 @@ function ADFShowcase() {
   const [activeIdx, setActiveIdx] = useState(-1)
   const [inView, setInView]       = useState(false)
 
-  const sectionRef    = useRef(null)
-  const videoRefsDesk = useRef([])  // desktop flex row refs
-  const timerRef      = useRef(null)
+  const sectionRef     = useRef(null)
+  const videoRefsDesk  = useRef([])  // desktop flex row refs
+  const videoRefsMob   = useRef([])  // mobile grid refs
+  const timerRef       = useRef(null)
 
   const reducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  const isTouch       = typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0
-  // Sequence runs on desktop when motion is allowed
-  const autoEnabled   = !isTouch && !reducedMotion
+  const autoEnabled   = !reducedMotion
 
-  // Start the sequence once the first video card is 50% visible
+  // Start the sequence once the first video card is visible (desktop or mobile)
   useEffect(() => {
-    const el = videoRefsDesk.current[0]
+    const el = videoRefsDesk.current[0] || videoRefsMob.current[0]
     if (!el) return
     const obs = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) { setInView(true); obs.disconnect() }
-    }, { threshold: 0.9 })
+    }, { threshold: 0.5 })
     obs.observe(el)
     return () => obs.disconnect()
   }, [])
@@ -86,21 +85,22 @@ function ADFShowcase() {
   useEffect(() => {
     if (activeIdx < 0 || activeIdx === null) return
 
-    const vid = videoRefsDesk.current[activeIdx]
+    // Play whichever ref set is rendered (desktop or mobile)
+    const vid = videoRefsDesk.current[activeIdx] || videoRefsMob.current[activeIdx]
     if (vid) { vid.currentTime = 0; vid.muted = true; vid.play().catch(() => {}) }
 
     // Last card — play and stop; no advance
     if (activeIdx === ADF_VIDEOS.length - 1) return
 
     timerRef.current = setTimeout(() => {
-      const v = videoRefsDesk.current[activeIdx]
+      const v = videoRefsDesk.current[activeIdx] || videoRefsMob.current[activeIdx]
       if (v) { v.pause(); v.currentTime = 0 }
       setActiveIdx(i => i + 1)
     }, PREVIEW_MS)
 
     return () => {
       clearTimeout(timerRef.current)
-      const v = videoRefsDesk.current[activeIdx]
+      const v = videoRefsDesk.current[activeIdx] || videoRefsMob.current[activeIdx]
       if (v && !v.paused) { v.pause(); v.currentTime = 0 }
     }
   }, [activeIdx])
@@ -181,29 +181,41 @@ function ADFShowcase() {
           })}
         </div>
 
-        {/* ── Mobile: static 2-col grid, fully passive ── */}
+        {/* ── Mobile: 2-col grid with auto-play sequence ── */}
         <div className="grid grid-cols-2 gap-3 sm:hidden">
-          {ADF_VIDEOS.map((v, i) => (
-            <div
-              key={i}
-              className="flex flex-col rounded-xl overflow-hidden bg-white shadow-card"
-              aria-label={`סרטון ${i + 1}: ${v.caption}`}
-            >
-              <div className="relative overflow-hidden" style={{ aspectRatio: '16/9' }}>
-                <video
-                  src={v.src}
-                  className="w-full h-full object-cover"
-                  playsInline
-                  controls
-                  preload="metadata"
-                  tabIndex={-1}
-                />
+          {ADF_VIDEOS.map((v, i) => {
+            const isActive = i === activeIdx
+            return (
+              <div
+                key={i}
+                className="flex flex-col rounded-xl overflow-hidden bg-white shadow-card"
+                aria-label={`סרטון ${i + 1}: ${v.caption}`}
+                style={{ boxShadow: isActive ? '0 6px 28px rgba(0,0,0,0.11)' : '0 1px 6px rgba(0,0,0,0.06)', transition: 'box-shadow 300ms ease' }}
+              >
+                <div className="relative overflow-hidden" style={{ aspectRatio: '16/9' }}>
+                  <video
+                    ref={el => { videoRefsMob.current[i] = el }}
+                    src={v.src}
+                    className="w-full h-full object-cover"
+                    muted
+                    playsInline
+                    preload="metadata"
+                    tabIndex={-1}
+                  />
+                  <div
+                    className="absolute inset-0 bg-bark/25 pointer-events-none transition-opacity duration-300"
+                    style={{ opacity: isActive ? 0 : 1 }}
+                  />
+                </div>
+                <div className="px-2.5 py-2">
+                  <p className="text-[11px] leading-snug line-clamp-2 transition-colors duration-300 font-semibold"
+                    style={{ color: isActive ? '#5a4637' : '#b0a096' }}>
+                    {v.caption}
+                  </p>
+                </div>
               </div>
-              <div className="px-2.5 py-2">
-                <p className="text-[11px] text-mist leading-snug line-clamp-2">{v.caption}</p>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
 
       </div>
@@ -450,20 +462,48 @@ export default function Consultations() {
     }
   }, [])
 
-  // Move Calendly's X button to the popup's top-right corner
+  // Replace Calendly's X with a custom "לסגירה" button at bottom-center of popup
   useEffect(() => {
-    const obs = new MutationObserver(() => {
+    let customBtn = null
+
+    function syncCalendly() {
       const closeBtn = document.querySelector('.calendly-popup-close')
       const popup    = document.querySelector('.calendly-popup')
-      if (!closeBtn || !popup) return
-      const rect = popup.getBoundingClientRect()
-      closeBtn.style.position = 'fixed'
-      closeBtn.style.top      = (rect.top + 20) + 'px'
-      closeBtn.style.right    = (window.innerWidth - rect.right + 20) + 'px'
-      closeBtn.style.left     = 'auto'
-    })
+      if (closeBtn) closeBtn.style.display = 'none'
+      if (popup && !customBtn) {
+        customBtn = document.createElement('button')
+        customBtn.textContent = 'לסגירה ✕'
+        customBtn.setAttribute('aria-label', 'סגור')
+        Object.assign(customBtn.style, {
+          position: 'fixed',
+          bottom: '24px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: '9999',
+          background: '#FAF7F0',
+          color: '#3b5e41',
+          border: '1.5px solid #3b5e41',
+          borderRadius: '999px',
+          padding: '8px 22px',
+          fontSize: '14px',
+          fontWeight: '600',
+          cursor: 'pointer',
+          boxShadow: '0 2px 12px rgba(0,0,0,0.12)',
+          direction: 'rtl',
+        })
+        customBtn.addEventListener('click', () => window.Calendly?.closePopupWidget())
+        document.body.appendChild(customBtn)
+      }
+      if (!popup && customBtn) {
+        customBtn.remove()
+        customBtn = null
+      }
+    }
+
+    syncCalendly() // handle already-open popup
+    const obs = new MutationObserver(syncCalendly)
     obs.observe(document.body, { childList: true, subtree: true })
-    return () => obs.disconnect()
+    return () => { obs.disconnect(); customBtn?.remove() }
   }, [])
 
   const [refProblem,  visProblem,  doneProblem]  = useReveal(0.08)
@@ -490,7 +530,7 @@ export default function Consultations() {
         {/* Background paw */}
         <img
           src="/gaia-paw.png" alt="" aria-hidden="true"
-          className="absolute -top-8 -left-8 w-72 h-72 opacity-[0.07] pointer-events-none select-none"
+          className="absolute top-4 left-2 w-20 h-20 md:-top-8 md:-left-8 md:w-72 md:h-72 opacity-[0.07] pointer-events-none select-none"
           style={{ transform: 'rotate(-12deg)' }}
         />
 
@@ -610,7 +650,7 @@ export default function Consultations() {
       ══════════════════════════════════════════════════════ */}
       <section className="pt-8 pb-section bg-cream relative overflow-hidden">
         <img src="/gaia-paw.png" alt="" aria-hidden="true"
-          className="absolute -top-6 -right-8 w-64 h-64 opacity-[0.07] pointer-events-none select-none"
+          className="absolute -top-3 -right-4 w-20 h-20 md:-top-6 md:-right-8 md:w-64 md:h-64 opacity-[0.07] pointer-events-none select-none"
           style={{ transform: 'rotate(15deg)' }}
         />
         <div ref={refHelp} className={`container-gaia max-w-3xl ${rx(visHelp, doneHelp)}`}>
@@ -664,7 +704,7 @@ export default function Consultations() {
       ══════════════════════════════════════════════════════ */}
       <section className="pt-10 pb-section bg-parchment relative overflow-hidden">
         <img src="/gaia-paw.png" alt="" aria-hidden="true"
-          className="absolute -top-6 -right-8 w-64 h-64 opacity-[0.07] pointer-events-none select-none"
+          className="absolute -top-3 -right-4 w-20 h-20 md:-top-6 md:-right-8 md:w-64 md:h-64 opacity-[0.07] pointer-events-none select-none"
           style={{ transform: 'rotate(15deg)' }}
         />
         <div ref={refDiff} className={`container-gaia max-w-3xl ${rx(visDiff, doneDiff)}`}>
@@ -710,7 +750,7 @@ export default function Consultations() {
       ══════════════════════════════════════════════════════ */}
       <section className="pt-10 pb-section bg-parchment relative overflow-hidden">
         <img src="/gaia-paw.png" alt="" aria-hidden="true"
-          className="absolute -top-6 -left-8 w-64 h-64 opacity-[0.07] pointer-events-none select-none"
+          className="absolute -top-3 -left-4 w-20 h-20 md:-top-6 md:-left-8 md:w-64 md:h-64 opacity-[0.07] pointer-events-none select-none"
           style={{ transform: 'rotate(-15deg)' }}
         />
         <div ref={refWhoFor} className={`container-gaia max-w-3xl ${rx(visWhoFor, doneWhoFor)}`}>
@@ -735,7 +775,7 @@ export default function Consultations() {
       ══════════════════════════════════════════════════════ */}
       <section className="pt-8 pb-section bg-cream relative overflow-hidden">
         <img src="/gaia-paw.png" alt="" aria-hidden="true"
-          className="absolute -top-6 -right-8 w-64 h-64 opacity-[0.07] pointer-events-none select-none"
+          className="absolute -top-3 -right-4 w-20 h-20 md:-top-6 md:-right-8 md:w-64 md:h-64 opacity-[0.07] pointer-events-none select-none"
           style={{ transform: 'rotate(15deg)' }}
         />
         <div ref={refProcess} className={`container-gaia max-w-2xl ${rx(visProcess, doneProcess)}`}>
@@ -940,7 +980,7 @@ export default function Consultations() {
       ══════════════════════════════════════════════════════ */}
       <section className="section-padding bg-cream relative overflow-hidden">
         <img src="/gaia-paw.png" alt="" aria-hidden="true"
-          className="absolute -top-6 -left-8 w-64 h-64 opacity-[0.07] pointer-events-none select-none"
+          className="absolute -top-3 -left-4 w-20 h-20 md:-top-6 md:-left-8 md:w-64 md:h-64 opacity-[0.07] pointer-events-none select-none"
           style={{ transform: 'rotate(-15deg)' }}
         />
         <div ref={refFaq} className={`container-gaia max-w-2xl ${rx(visFaq, doneFaq)}`}>
@@ -962,13 +1002,13 @@ export default function Consultations() {
         {/* Decorative paw — left */}
         <img
           src="/gaia-paw.png" alt="" aria-hidden="true"
-          className="absolute -bottom-6 left-4 w-44 opacity-[0.07] pointer-events-none select-none"
+          className="absolute -bottom-6 left-4 w-16 md:w-44 opacity-[0.07] pointer-events-none select-none"
           style={{ transform: 'rotate(-8deg)', filter: 'brightness(0) invert(1)' }}
         />
         {/* Decorative paw — right (mirror) */}
         <img
           src="/gaia-paw.png" alt="" aria-hidden="true"
-          className="absolute -bottom-4 right-8 w-44 opacity-[0.07] pointer-events-none select-none"
+          className="absolute -bottom-4 right-8 w-16 md:w-44 opacity-[0.07] pointer-events-none select-none"
           style={{ transform: 'rotate(45deg)', filter: 'brightness(0) invert(1)' }}
         />
 
@@ -1018,7 +1058,7 @@ export default function Consultations() {
               onClick={() => setCertOpen(false)}
               className="absolute -top-10 left-0 text-white/80 hover:text-white text-sm font-medium"
             >
-              ✕ סגור
+              ✕ סגירה
             </button>
             <img src="/SIU_cert.png" alt="תעודת הסמכה" className="w-full rounded-2xl shadow-2xl" />
           </div>

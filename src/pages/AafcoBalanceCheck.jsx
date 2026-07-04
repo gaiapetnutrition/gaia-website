@@ -385,20 +385,22 @@ function ResultsTable({ rows, totalKcal }) {
   return (
     <div className="space-y-4">
       {/* Summary chips */}
-      <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex items-center gap-2">
         <span className="text-sm font-semibold text-bark">
           סה"כ: {Math.round(totalKcal).toLocaleString('he-IL')} קק"ל/יום
         </span>
         <span className="flex-1" />
-        {below > 0 && (
-          <span className="pill bg-red-100 text-red-700">{below} מתחת למינימום!</span>
-        )}
-        {above > 0 && (
-          <span className="pill bg-amber-100 text-amber-700">{above} מעל המקסימום</span>
-        )}
-        {ok > 0 && (
-          <span className="pill bg-emerald-100 text-emerald-700">{ok} בטווח התקין<sup className="text-[9px] ml-0.5 opacity-70">*</sup></span>
-        )}
+        <div className="flex flex-col sm:flex-row items-end sm:items-center gap-1.5">
+          {below > 0 && (
+            <span className="pill bg-red-100 text-red-700">{below} מתחת למינימום!</span>
+          )}
+          {above > 0 && (
+            <span className="pill bg-amber-100 text-amber-700">{above} מעל המקסימום</span>
+          )}
+          {ok > 0 && (
+            <span className="pill bg-emerald-100 text-emerald-700">{ok} בטווח התקין<sup className="text-[9px] ml-0.5 opacity-70">*</sup></span>
+          )}
+        </div>
       </div>
 
       {/* Table */}

@@ -31,10 +31,12 @@
 }
 
 /* ─── Display headlines → Fraunces ─────────────────────────────────── */
+/* Heebo first so Hebrew glyphs always render with a real Hebrew font.
+   Fraunces stays in the stack for any Latin characters (e.g. "AAFCO"). */
 .text-display-xl,
 .text-display-lg,
 .text-display-md {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: 'Heebo', 'Fraunces', Georgia, serif;
   font-weight: 700;
 }
 
@@ -226,6 +228,15 @@ input[type='range']::-moz-range-thumb {
 @keyframes floatY {
   0%, 100% { transform: translateY(0px); }
   50%       { transform: translateY(-4px); }
+}
+
+/* ─── ScrollSplitBowl — mobile: collapse scroll-jacking height ──────── */
+/* On mobile the bowl auto-plays (no scroll-jacking), so the tall        */
+/* container height that enables desktop wheel-scrub is not needed.      */
+/* CSS !important overrides the inline styles set by JS.                 */
+@media (max-width: 767px) {
+  .bowl-scroll-container { height: auto !important; }
+  .bowl-scroll-section   { height: auto !important; position: relative !important; }
 }
 
 /* ─── prefers-reduced-motion ────────────────────────────────────────── */

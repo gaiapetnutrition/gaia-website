@@ -7,7 +7,7 @@ export default function About() {
 
       {/* Header */}
       <div className="flex justify-center items-center py-12 md:py-16 border-b border-earth/8">
-        <img src="/gaia-logo.png" alt="GAiA" className="h-[calc(6rem*1.15)] md:h-[calc(8rem*1.15)] w-auto rounded-[2rem]" />
+        <img src="/gaia-logo.png" alt="GAiA" className="h-[calc(6rem*1.4)] md:h-[calc(8rem*1.4)] w-auto rounded-[2rem]" />
       </div>
 
       {/* Content */}
@@ -40,9 +40,9 @@ export default function About() {
               זו רק ההתחלה. בעתיד אנחנו מתכננים להרחיב את גאיה עם כלים נוספים, אפליקציות, תוספים ומוצרים מומלצים שיסייעו להפוך תזונה טבעית לברורה ופשוטה יותר. אז הישארו לעקוב!
             </div>
 
-            <p className="text-earth/80 inline-flex items-center gap-2">
-              אם גם אתם מאמינים שכלבים ראויים לתזונה טובה יותר, אנחנו שמחים שאתם כאן.
-              <img src="/gaia-paw.png" alt="" className="w-[1.1em] h-[1.1em] opacity-70 inline-block" />
+            <p className="text-earth/80">
+              אם גם אתם מאמינים שכלבים ראויים לתזונה טובה יותר, אנחנו שמחים שאתם כאן.{' '}
+              <img src="/gaia-paw.png" alt="" className="w-[1.1em] h-[1.1em] opacity-70 inline-block align-middle" />
             </p>
 
             <p className="font-semibold text-earth text-lg">
@@ -59,7 +59,7 @@ export default function About() {
               to="/aafco-balance-check"
               className="inline-flex items-center gap-2 text-sm font-semibold text-forest hover:text-forest-dark transition-colors duration-200 group"
             >
-              התחל עם הבדיקה החינמית
+              התחילו עם הבדיקה החינמית
               <ArrowLeft className="w-3.5 h-3.5 transition-transform duration-200 group-hover:-translate-x-0.5" />
             </Link>
           </div>

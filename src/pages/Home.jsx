@@ -47,7 +47,7 @@ function useReveal(threshold = 0.1) {
 function Hero() {
   return (
     <section
-      className="relative flex items-center overflow-hidden bg-cream"
+      className="relative flex items-end md:items-center overflow-hidden bg-cream"
       style={{ height: 'calc(100svh - 204px)', minHeight: 520, maxHeight: 860 }}
     >
       {/* Full-bleed photo — cover + left-center anchors bowl/ingredients */}
@@ -59,31 +59,35 @@ function Hero() {
           backgroundPosition: 'left center',
           backgroundRepeat: 'no-repeat',
         }}
-      >
-        {/* Bottom fade into next section */}
-        <div className="absolute bottom-0 inset-x-0 h-28 bg-gradient-to-t from-cream to-transparent" />
-      </div>
-
-      {/* Decorative paw — bottom-left, barely visible */}
-      <img
-        src="/gaia-paw.png"
-        alt=""
-        className="absolute bottom-10 left-6 w-36 opacity-[4%] mix-blend-multiply pointer-events-none select-none rotate-12 z-[2]"
       />
 
-      {/* ── Immersive Frame panel ──────────────────────────── */}
-      {/* Two overlapping gradients create a soft angled-feel fade without a hard clip edge.
-          The top gradient starts further right than the bottom, mimicking an angle. */}
+      {/* Bottom fade into next section */}
+      <div className="absolute bottom-0 inset-x-0 h-28 bg-gradient-to-t from-cream to-transparent z-[1]" />
+
+      {/* Mobile overlay — image shows at top, solid cream rises from bottom where text sits */}
       <div
-        className="absolute inset-0 z-[1] pointer-events-none"
+        className="absolute inset-0 z-[1] md:hidden pointer-events-none"
+        style={{ background: 'linear-gradient(to top, #FAF7F0 50%, rgba(250,247,240,0.80) 66%, rgba(250,247,240,0) 100%)' }}
+      />
+
+      {/* Desktop right-side gradient panel (unchanged) */}
+      <div
+        className="absolute inset-0 z-[1] pointer-events-none hidden md:block"
         style={{
           background: 'linear-gradient(to right, rgba(250,247,240,0) 0%, rgba(250,247,240,0) 40%, rgba(250,247,240,0.5) 52%, rgba(250,247,240,0.9) 62%, #FAF7F0 72%)',
         }}
       />
 
+      {/* Decorative paw — bottom-left, barely visible */}
+      <img
+        src="/gaia-paw.png"
+        alt=""
+        className="absolute bottom-4 left-6 w-14 md:bottom-10 md:w-36 opacity-[4%] mix-blend-multiply pointer-events-none select-none rotate-12 z-[2]"
+      />
+
       {/* ── Text block ────────────────────────────────────── */}
-      <div className="relative z-10 py-14 md:py-24 flex w-full">
-        <div className="mr-[4%] ml-auto w-[44%] min-w-[300px] text-right pr-2 md:pr-4">
+      <div className="relative z-10 pb-6 md:py-24 flex w-full">
+        <div className="w-full px-5 md:w-[44%] md:min-w-[300px] md:mr-[4%] md:ml-auto text-right md:pr-4">
 
           {/* Eyebrow — first in the sequence */}
           <span
@@ -216,6 +220,9 @@ function ScrollSplitBowl() {
   const dividerRef   = useRef(null)
   const [played, setPlayed] = useState(bowlHasPlayed)
 
+  // Detect touch at render time so heights are correct on first paint (no flash)
+  const isTouch = typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0
+
   function markPlayed() {
     bowlHasPlayed = true
     setPlayed(true)
@@ -241,32 +248,25 @@ function ScrollSplitBowl() {
     const isTouch = navigator.maxTouchPoints > 0
 
     if (isTouch) {
-      // Touch devices: auto-play reveal on IntersectionObserver entry
+      // Touch: scroll-driven reveal — maps bowl's viewport position to clip progress
       const el = containerRef.current
       if (!el) return
       applyClip(0)
-      const obs = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting && !hasPlayed) {
-            hasPlayed = true
-            setTimeout(() => {
-              if (frontRef.current) {
-                frontRef.current.style.transition   = 'clip-path 900ms cubic-bezier(0.23,1,0.32,1)'
-                frontRef.current.style.clipPath      = 'inset(0 100% 0 0)'
-              }
-              if (dividerRef.current) {
-                dividerRef.current.style.transition = 'transform 900ms cubic-bezier(0.23,1,0.32,1)'
-                dividerRef.current.style.transform  = 'translateX(-100%)'
-              }
-              setTimeout(() => { animProgress = 1; markPlayed() }, 950)
-            }, 350)
-            obs.disconnect()
-          }
-        },
-        { threshold: 0.55 }
-      )
-      obs.observe(el)
-      return () => obs.disconnect()
+
+      function onScrollTouch() {
+        const rect  = el.getBoundingClientRect()
+        const vh    = window.innerHeight
+        // progress 0 when element top hits viewport bottom; 1 when top reaches 25% from top
+        const start = vh * 0.60
+        const end   = vh * 0.40
+        const p     = Math.max(0, Math.min(1, (start - rect.top) / (start - end)))
+        if (!hasPlayed) applyClip(p)
+        if (p >= 1 && !hasPlayed) { hasPlayed = true; markPlayed(); applyClip(1) }
+      }
+
+      onScrollTouch()
+      window.addEventListener('scroll', onScrollTouch, { passive: true })
+      return () => window.removeEventListener('scroll', onScrollTouch)
     }
 
     // Desktop: scroll-jacking wheel reveal
@@ -332,10 +332,10 @@ function ScrollSplitBowl() {
         </p>
       </div>
 
-      <div ref={containerRef} style={{ height: played ? 'auto' : 'calc(100svh - 91px)' }}>
+      <div ref={containerRef} className="bowl-scroll-container" style={{ height: (isTouch || played) ? 'auto' : 'calc(100svh - 91px)' }}>
         <section
-          className={`${played ? 'relative' : 'sticky top-0'} flex flex-col items-center justify-start bg-cream overflow-hidden pt-4 pb-12`}
-          style={{ height: played ? 'auto' : 'min(calc(100svh - 95px), calc(min(480px, 90vw) + 80px))' }}
+          className={`bowl-scroll-section ${(!isTouch && !played) ? 'sticky top-0' : 'relative'} flex flex-col items-center justify-start bg-cream overflow-hidden pt-4 pb-12`}
+          style={{ height: (!isTouch && !played) ? 'min(calc(100svh - 95px), calc(min(480px, 90vw) + 80px))' : 'auto' }}
         >
           {/* Bowl */}
           <div
@@ -395,7 +395,7 @@ function Philosophy() {
 
   return (
     <section className="pt-8 pb-section-sm md:pt-12 md:pb-section bg-parchment relative overflow-hidden">
-      <img src="/gaia-paw.png" alt="" aria-hidden="true" className="absolute -top-8 -right-8 w-64 h-64 opacity-[0.07] pointer-events-none select-none" style={{ transform: 'rotate(35deg)' }} />
+      <img src="/gaia-paw.png" alt="" aria-hidden="true" className="absolute -top-4 -right-4 w-20 h-20 md:-top-8 md:-right-8 md:w-64 md:h-64 opacity-[0.07] pointer-events-none select-none" style={{ transform: 'rotate(35deg)' }} />
       <div className="container-gaia">
         {/* Heading */}
         <div
@@ -410,7 +410,7 @@ function Philosophy() {
           <p className="text-display-md text-forest font-bold mb-3 mt-1" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>הגשר בין מחקר להוליסטיות</p>
           <div className="w-10 border-t border-earth/20 mx-auto my-3" />
           <div className="flex justify-center my-3">
-            <h2 className="text-display-md font-serif text-earth whitespace-nowrap">
+            <h2 className="text-display-md font-serif text-earth md:whitespace-nowrap text-balance text-center">
               נקודת התחלה של מלא ומאוזן — לפי תקנים בינלאומיים
             </h2>
           </div>
@@ -477,7 +477,7 @@ function WhatYouFind() {
   return (
     <section className="pt-10 pb-section-sm md:pt-14 md:pb-section bg-cream relative overflow-hidden">
       <img src="/gaia-paw.png" alt="" aria-hidden="true"
-        className="absolute -top-8 -left-8 w-64 h-64 opacity-[0.07] pointer-events-none select-none"
+        className="absolute -top-4 -left-4 w-20 h-20 md:-top-8 md:-left-8 md:w-64 md:h-64 opacity-[0.07] pointer-events-none select-none"
         style={{ transform: 'rotate(-12deg)' }}
       />
       <div className="container-gaia max-w-4xl">
@@ -487,7 +487,7 @@ function WhatYouFind() {
             done ? '' : `transition-[opacity,transform] duration-500 [transition-timing-function:cubic-bezier(0.23,1,0.32,1)] ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`
           }`}
         >
-          <h2 className="text-display-sm text-forest mt-1">מה תמצאו פה</h2>
+          <h2 className="text-display-sm text-forest mt-1">מה תמצאו פה?</h2>
           <p className="text-mist text-sm mt-3 leading-relaxed">
             כלים פרקטיים, ידע מקצועי וליווי אישי — לתזונה טבעית, מדויקת ומאוזנת.
           </p>
@@ -502,13 +502,13 @@ function WhatYouFind() {
               }`}
               style={!done ? { transitionDelay: `${120 + i * 110}ms` } : undefined}
             >
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${item.color}`}>
-                {item.icon}
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${item.color}`}>
+                  {item.icon}
+                </div>
+                <h3 className="font-semibold text-earth text-sm">{item.title}</h3>
               </div>
-              <div>
-                <h3 className="font-semibold text-earth text-sm mb-1">{item.title}</h3>
-                <p className="text-mist text-sm leading-relaxed">{item.desc}</p>
-              </div>
+              <p className="text-mist text-sm leading-relaxed">{item.desc}</p>
               <Link
                 to={item.cta.path}
                 className="mt-auto text-sm font-semibold text-forest hover:text-forest-dark flex items-center gap-1.5 transition-colors cursor-pointer group/link"
@@ -553,7 +553,7 @@ function HowItWorks() {
 
   return (
     <section className="section-padding bg-parchment relative overflow-hidden">
-      <img src="/gaia-paw.png" alt="" aria-hidden="true" className="absolute -top-8 -right-8 w-64 h-64 opacity-[0.07] pointer-events-none select-none" style={{ transform: 'rotate(15deg)' }} />
+      <img src="/gaia-paw.png" alt="" aria-hidden="true" className="absolute -top-4 -right-4 w-20 h-20 md:-top-8 md:-right-8 md:w-64 md:h-64 opacity-[0.07] pointer-events-none select-none" style={{ transform: 'rotate(15deg)' }} />
       <div className="container-gaia">
         {/* Heading */}
         <div
@@ -708,7 +708,7 @@ function CTABanner() {
           <div className="absolute inset-0 pointer-events-none"
             style={{ background: 'radial-gradient(ellipse at 50% 50%, transparent 50%, rgba(0,0,0,0.18) 100%)' }} />
           {/* Paw */}
-          <img src="/gaia-paw.png" alt="" className="absolute bottom-0 left-4 w-40 opacity-[0.08] rotate-[-8deg] mix-blend-screen pointer-events-none select-none" />
+          <img src="/gaia-paw.png" alt="" className="absolute bottom-0 left-4 w-16 md:w-40 opacity-[0.08] rotate-[-8deg] mix-blend-screen pointer-events-none select-none" />
 
           <div className="relative z-10 max-w-lg mx-auto">
             <span className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-[0.08em] uppercase text-white/55 border border-white/20 px-3 py-1 rounded-full mb-6">

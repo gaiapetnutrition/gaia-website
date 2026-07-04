@@ -106,6 +106,16 @@ function MacroChart({ macros }) {
 
 /* ─── Results panel ──────────────────────────────────────── */
 function Results({ result, inputs, onReset, onBack }) {
+  const heroRef = useRef(null)
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (!heroRef.current) return
+      const top = heroRef.current.getBoundingClientRect().top + window.scrollY - 112
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
+    }, 80)
+  }, [])
+
   if (!result) return null
 
   const { mer, rer, dailyGrams, perMeal, frequency, macros, foodType, idealWeightKg, bcsScore, bodyCondition } = result
@@ -113,7 +123,7 @@ function Results({ result, inputs, onReset, onBack }) {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Hero stats */}
-      <div className="bg-green-gradient rounded-3xl p-6 text-white">
+      <div ref={heroRef} className="bg-green-gradient rounded-3xl p-6 text-white">
         <div className="flex items-center gap-2 mb-1">
           <img src="/gaia-paw.png" alt="" className="w-4 h-4 opacity-70 flex-shrink-0" style={{ filter: 'brightness(0) invert(1)' }} />
           <span className="text-xs font-medium text-white/70 uppercase tracking-wider">
@@ -273,6 +283,20 @@ export default function Calculator() {
   const [showCalorieInfo,  setShowCalorieInfo]  = useState(false)
   const [showNeuteredInfo, setShowNeuteredInfo] = useState(false)
   const topRef = useRef(null)
+  const calorieInfoRef = useRef(null)
+
+  useEffect(() => {
+    if (!showCalorieInfo) return
+    const onClickOutside = (e) => {
+      if (calorieInfoRef.current && !calorieInfoRef.current.contains(e.target)) {
+        setShowCalorieInfo(false)
+      }
+    }
+    document.addEventListener('click', onClickOutside)
+    return () => {
+      document.removeEventListener('click', onClickOutside)
+    }
+  }, [showCalorieInfo])
 
   useEffect(() => {
     const onKey = (e) => {
@@ -689,27 +713,29 @@ export default function Calculator() {
                       <label className="text-sm font-medium text-bark block mb-0.5">
                         קלוריות המזון שלכם (אופציונלי - מומלץ!)
                       </label>
-                      <div className="flex items-center gap-1.5 mb-2">
-                        <p className="text-xs text-mist">אם ידועה לכם הצפיפות הקלורית המדויקת מתווית המוצר — הזינו אותה כאן</p>
-                        <button
-                          type="button"
-                          onClick={() => setShowCalorieInfo(v => !v)}
-                          className={clsx(
-                            'w-[18px] h-[18px] rounded-full border text-[10px] font-bold flex items-center justify-center transition-colors duration-150 flex-shrink-0 leading-none',
-                            showCalorieInfo
-                              ? 'bg-forest border-forest text-white'
-                              : 'border-mist text-mist hover:border-forest hover:text-forest',
-                          )}
-                        >i</button>
+                      <div className="mb-2" ref={calorieInfoRef}>
+                        <p className="text-xs text-mist">אם ידועה לכם הצפיפות הקלורית המדויקת מתווית המוצר — הזינו אותה כאן{'  '}
+                          <button
+                            type="button"
+                            onClick={() => setShowCalorieInfo(v => !v)}
+                            className={clsx(
+                              'w-[18px] h-[18px] rounded-full border text-[10px] font-bold inline-flex items-center justify-center transition-colors duration-150 leading-none align-middle',
+                              showCalorieInfo
+                                ? 'bg-forest border-forest text-white'
+                                : 'border-mist text-mist hover:border-forest hover:text-forest',
+                            )}
+                          >i</button>
+                        </p>
                       </div>
 
                       {/* Collapsible info panel */}
                       <div className={clsx(
                         'overflow-hidden transition-all duration-300',
-                        showCalorieInfo ? 'max-h-48 opacity-100 mb-3' : 'max-h-0 opacity-0',
+                        showCalorieInfo ? 'max-h-96 opacity-100 mb-3' : 'max-h-0 opacity-0',
                       )}>
                         <div className="bg-parchment rounded-2xl p-4 text-xs text-bark leading-relaxed">
-                          מומלץ להזין את הצפיפות הקלורית המדויקת של המזון כדי לקבל חישוב מדויק יותר. במוצרים קנויים לרוב ניתן למצוא את כמות הקלוריות על גבי האריזה. אם אין לכם את הנתון, המחשבון ישתמש בערך ברירת מחדל המבוסס על הערכה ממוצעת של מוצרים דומים בשוק ומתכונים נפוצים — כנקודת התחלה הגיונית.
+                          מומלץ להזין את הצפיפות הקלורית המדויקת של המזון כדי לקבל חישוב מדויק יותר. במוצרים קנויים לרוב ניתן למצוא את כמות הקלוריות על גבי האריזה. אם אין לכם את הנתון, המחשבון ישתמש בערך ברירת מחדל המבוסס על הערכה ממוצעת של מוצרים דומים בשוק ומתכונים נפוצים — כנקודת התחלה הגיונית.{' '}
+                          רוצים לחשב כמה קלוריות בתזונה של הכלב שלכם? השתמשו ב<Link to="/natural-calorie-calculator" className="font-semibold text-forest underline underline-offset-2 hover:text-forest-dark">מחשבון</Link>!
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
@@ -786,8 +812,11 @@ export default function Calculator() {
             <img
               src="/bcs3.png"
               alt="סולם מצב גוף BCS 1-9"
-              className="max-w-[80vw] max-h-[80vh] object-contain rounded-3xl shadow-2xl"
+              className="max-w-[95vw] max-h-[85vh] object-contain rounded-3xl shadow-2xl md:max-w-[80vw] md:max-h-[80vh]"
+              style={{ rotate: 'none' }}
             />
+            {/* Rotate hint — mobile only */}
+            <p className="md:hidden text-center text-white/50 text-xs mt-3">סובבו את המכשיר לתצוגה טובה יותר</p>
             {/* Close hint */}
             <button
               type="button"
