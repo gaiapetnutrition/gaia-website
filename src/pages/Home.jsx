@@ -47,12 +47,12 @@ function useReveal(threshold = 0.1) {
 function Hero() {
   return (
     <section
-      className="relative flex items-end md:items-center overflow-hidden bg-cream"
+      className="relative flex items-end md:items-center md:overflow-hidden bg-cream mb-16 md:mb-0"
       style={{ height: 'calc(100svh - 204px)', minHeight: 520, maxHeight: 860 }}
     >
       {/* Full-bleed photo — cover + left-center anchors bowl/ingredients */}
       <div
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 z-0 hero-bg"
         style={{
           backgroundImage: 'url(/long_image_chat_new.png)',
           backgroundSize: 'cover',
@@ -67,7 +67,7 @@ function Hero() {
       {/* Mobile overlay — image shows at top, solid cream rises from bottom where text sits */}
       <div
         className="absolute inset-0 z-[1] md:hidden pointer-events-none"
-        style={{ background: 'linear-gradient(to top, #FAF7F0 50%, rgba(250,247,240,0.80) 66%, rgba(250,247,240,0) 100%)' }}
+        style={{ background: 'linear-gradient(to top, #FAF7F0 30%, rgba(250,247,240,0.75) 48%, rgba(250,247,240,0) 68%)' }}
       />
 
       {/* Desktop right-side gradient panel (unchanged) */}
@@ -86,12 +86,12 @@ function Hero() {
       />
 
       {/* ── Text block ────────────────────────────────────── */}
-      <div className="relative z-10 pb-6 md:py-24 flex w-full">
+      <div className="relative z-10 pb-6 md:py-24 flex w-full mt-auto md:mt-0 translate-y-32 md:translate-y-0">
         <div className="w-full px-5 md:w-[44%] md:min-w-[300px] md:mr-[4%] md:ml-auto text-right md:pr-4">
 
           {/* Eyebrow — first in the sequence */}
           <span
-            className="inline-flex items-center gap-2 mb-5 text-xs font-semibold tracking-[0.1em] uppercase text-forest bg-forest/[0.08] px-3 py-1.5 rounded-full animate-fade-up"
+            className="hidden md:inline-flex items-center gap-2 mb-5 text-xs font-semibold tracking-[0.1em] uppercase text-forest bg-forest/[0.08] px-3 py-1.5 rounded-full animate-fade-up"
             style={{ animationFillMode: 'both' }}
           >
             <img src="/gaia-paw.png" alt="" className="w-3.5 h-3.5 opacity-80" style={{ filter: 'hue-rotate(0deg) saturate(0.8)' }} />
@@ -111,19 +111,19 @@ function Hero() {
 
           {/* Body text */}
           <p
-            className="text-base md:text-lg text-earth/70 mb-7 animate-fade-up"
+            className="text-base md:text-lg text-earth/70 mb-3 md:mb-7 -mt-2 md:mt-0 animate-fade-up"
             style={{
               animationDelay: '260ms',
               animationFillMode: 'both',
               textShadow: '0 1px 8px rgba(250,247,240,0.9), 0 0 20px rgba(250,247,240,0.6)',
             }}
           >
-            הידע, הכלים, והליווי לתזונה שהכלב שלך באמת צריך. מבוסס מחקרים, כלים טכנולוגיים והוליסטיות.<br />בלי ניחושים, להאכיל בביטחון.
+            הידע, הכלים, והליווי לתזונה שהכלב שלך באמת צריך. מבוסס מחקרים, כלים טכנולוגיים והוליסטיות.<br className="hidden md:block" /> בלי ניחושים, להאכיל בביטחון.
           </p>
 
           {/* CTAs */}
           <div
-            className="flex flex-col gap-4 animate-fade-up"
+            className="flex flex-col gap-1 md:gap-4 animate-fade-up -mt-1 md:mt-0"
             style={{ animationDelay: '340ms', animationFillMode: 'both' }}
           >
             <Button
@@ -150,7 +150,7 @@ function Hero() {
             className="flex items-center gap-4 mt-9 pt-7 border-t border-earth/10 animate-fade-up"
             style={{ animationDelay: '420ms', animationFillMode: 'both' }}
           >
-            <div className="flex -space-x-2 space-x-reverse">
+            <div className="hidden md:flex -space-x-2 space-x-reverse">
               {['A','i','A','G'].map((letter, i) => (
                 <div
                   key={i}
@@ -160,7 +160,7 @@ function Hero() {
                 </div>
               ))}
             </div>
-            <div>
+            <div className="hidden md:block">
               <div className="flex items-center gap-0.5 mb-0.5">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="w-3 h-3 fill-[#B8882A] text-[#B8882A]" />

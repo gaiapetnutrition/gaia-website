@@ -230,6 +230,14 @@ input[type='range']::-moz-range-thumb {
   50%       { transform: translateY(-4px); }
 }
 
+/* ─── Hero background — mobile: shift position to reveal bowl ──────── */
+@media (max-width: 767px) {
+  .hero-bg {
+    background-size: auto 120% !important;
+    background-position: left 70% !important;
+  }
+}
+
 /* ─── ScrollSplitBowl — mobile: collapse scroll-jacking height ──────── */
 /* On mobile the bowl auto-plays (no scroll-jacking), so the tall        */
 /* container height that enables desktop wheel-scrub is not needed.      */
