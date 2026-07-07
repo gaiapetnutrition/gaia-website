@@ -51,28 +51,42 @@ const EXPAND_RATIO = 1.75
 const EXPAND_MS    = 420
 const EXPAND_EASING = 'cubic-bezier(0.16, 1, 0.3, 1)'
 
+const ADF_PLAYED_KEY = 'adf_sequence_played'
+
 function ADFShowcase() {
+  const alreadyPlayed = typeof sessionStorage !== 'undefined' && sessionStorage.getItem(ADF_PLAYED_KEY) === '1'
+
   // -1 = not yet started, 0–3 = active card index, null = sequence done
-  const [activeIdx, setActiveIdx] = useState(-1)
+  // If already played this session, skip straight to final card (static state)
+  const [activeIdx, setActiveIdx] = useState(alreadyPlayed ? ADF_VIDEOS.length - 1 : -1)
   const [inView, setInView]       = useState(false)
 
   const sectionRef     = useRef(null)
   const videoRefsDesk  = useRef([])  // desktop flex row refs
   const videoRefsMob   = useRef([])  // mobile grid refs
   const timerRef       = useRef(null)
+  const pendingObsRef  = useRef(null)
 
   const reducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  const autoEnabled   = !reducedMotion
+  const autoEnabled   = !reducedMotion && !alreadyPlayed
 
-  // Start the sequence once the first video card is visible (desktop or mobile)
+  // Start the sequence once all cards are visible.
+  // On mobile the last card (index 3) is in the bottom row — observe it so the
+  // sequence only kicks off after the user has scrolled the full grid into view.
   useEffect(() => {
-    const el = videoRefsDesk.current[0] || videoRefsMob.current[0]
-    if (!el) return
-    const obs = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) { setInView(true); obs.disconnect() }
-    }, { threshold: 0.5 })
-    obs.observe(el)
-    return () => obs.disconnect()
+    if (alreadyPlayed) return  // sequence already ran this session
+    // Use the last mobile card if rendered, otherwise fall back to the section
+    const waitFor = () => videoRefsMob.current[ADF_VIDEOS.length - 1]?.closest('[aria-label]') || sectionRef.current
+    // Defer slightly so refs are populated after first render
+    const t = setTimeout(() => {
+      const el = waitFor()
+      if (!el) return
+      const obs = new IntersectionObserver(([e]) => {
+        if (e.isIntersecting) { setInView(true); obs.disconnect() }
+      }, { threshold: 0.5 })
+      obs.observe(el)
+    }, 50)
+    return () => clearTimeout(t)
   }, [])
 
   // Kick off sequence when inView flips true
@@ -81,36 +95,66 @@ function ADFShowcase() {
     setActiveIdx(0)
   }, [autoEnabled, inView])
 
+  // Returns the visible video element for a given index
+  const getVid = (idx) => {
+    const desk = videoRefsDesk.current[idx]
+    // offsetParent is null when an element or ancestor has display:none
+    if (desk && desk.offsetParent !== null) return desk
+    return videoRefsMob.current[idx] || null
+  }
+
   // Advance through cards 0→1→2→3, then stop (activeIdx stays at 3)
   useEffect(() => {
     if (activeIdx < 0 || activeIdx === null) return
 
-    // Play whichever ref set is rendered (desktop or mobile)
-    const vid = videoRefsDesk.current[activeIdx] || videoRefsMob.current[activeIdx]
-    if (vid) { vid.currentTime = 0; vid.muted = true; vid.play().catch(() => {}) }
+    // Cancel any previous pending-visibility observer
+    if (pendingObsRef.current) { pendingObsRef.current.disconnect(); pendingObsRef.current = null }
 
-    // Last card — play and stop; no advance
-    if (activeIdx === ADF_VIDEOS.length - 1) return
+    const vid = getVid(activeIdx)
+    if (!vid) return
 
-    timerRef.current = setTimeout(() => {
-      const v = videoRefsDesk.current[activeIdx] || videoRefsMob.current[activeIdx]
-      if (v) { v.pause(); v.currentTime = 0 }
-      setActiveIdx(i => i + 1)
-    }, PREVIEW_MS)
+    const playAndSchedule = () => {
+      vid.currentTime = 0; vid.muted = true; vid.play().catch(() => {})
+      if (activeIdx === ADF_VIDEOS.length - 1) {
+        sessionStorage.setItem(ADF_PLAYED_KEY, '1')
+        return
+      }
+      timerRef.current = setTimeout(() => {
+        vid.pause(); vid.currentTime = 0
+        setActiveIdx(i => i + 1)
+      }, PREVIEW_MS)
+    }
+
+    // If the video card isn't in the viewport yet, wait until it is
+    const rect = vid.getBoundingClientRect()
+    const visible = rect.top < window.innerHeight && rect.bottom > 0
+    if (visible) {
+      playAndSchedule()
+    } else {
+      const obs = new IntersectionObserver(([e]) => {
+        if (e.isIntersecting) { obs.disconnect(); pendingObsRef.current = null; playAndSchedule() }
+      }, { threshold: 0.3 })
+      obs.observe(vid)
+      pendingObsRef.current = obs
+    }
 
     return () => {
       clearTimeout(timerRef.current)
-      const v = videoRefsDesk.current[activeIdx] || videoRefsMob.current[activeIdx]
-      if (v && !v.paused) { v.pause(); v.currentTime = 0 }
+      if (pendingObsRef.current) { pendingObsRef.current.disconnect(); pendingObsRef.current = null }
+      if (!vid.paused) { vid.pause(); vid.currentTime = 0 }
     }
   }, [activeIdx])
 
   return (
     <section
       ref={sectionRef}
-      className="pt-10 pb-section bg-cream"
+      className="pt-10 pb-section bg-cream relative overflow-hidden"
       aria-label="סרטוני הדגמה — Animal Diet Formulator"
     >
+      <img src="/gaia-paw.png" alt="" aria-hidden="true"
+        className="absolute -top-3 -right-4 w-20 h-20 md:-top-6 md:-right-8 md:w-64 md:h-64 opacity-[0.07] pointer-events-none select-none"
+        style={{ transform: 'rotate(15deg)' }}
+      />
       <div className="container-gaia max-w-5xl">
 
         {/* Heading */}
@@ -207,8 +251,8 @@ function ADFShowcase() {
                     style={{ opacity: isActive ? 0 : 1 }}
                   />
                 </div>
-                <div className="px-2.5 py-2">
-                  <p className="text-[11px] leading-snug line-clamp-2 transition-colors duration-300 font-semibold"
+                <div className="px-2.5 py-2.5">
+                  <p className="text-[11px] leading-snug transition-colors duration-300 font-semibold"
                     style={{ color: isActive ? '#5a4637' : '#b0a096' }}>
                     {v.caption}
                   </p>
@@ -241,6 +285,10 @@ const FAQS = [
   {
     q: 'האם אקבל מתכונים ספציפיים עם כמויות?',
     a: 'בחבילות 2, 3 ו-4 — כן. אני עובד עם תוכנת Animal Diet Formulator ומנסח מתכונים מלאים ומאוזנים בהתאם לנתוני הכלב שלכם, כולל כמויות מדויקות ורשימת תוספים. לא "המלצה כללית", אלא מתכון מחושב.',
+  },
+  {
+    q: 'האם אתם עוזרים גם עם אוכל נא?',
+    a: 'כן, בהחלט. מהניסיון שלנו מזון נא לא מתאים לכל הכלבים, כן בא עם סיכונים ועדיף כשיש חשיפה מגיל צעיר כמה שיותר, אך בהחלט יכול להתאים להרבה כלבים אם עושים את זה נכון.',
   },
   {
     q: 'האם כל אחד יכול להשתמש בתוכנה?',
@@ -340,7 +388,7 @@ const PLANS = [
 const WHO_FOR = [
   {
     icon: '🔄',
-    title: 'רוצים לעבור מתזונה יבשה',
+    title: 'רוצים לעבור מתזונה יבשה לטבעית',
     desc: 'ורוצים לעשות את זה נכון — בצורה הדרגתית, מחושבת ובטוחה.',
   },
   {
@@ -384,7 +432,7 @@ const STEPS = [
   {
     n: '03',
     title: 'שיחת ייעוץ',
-    desc: 'שיחת וידאו (או טלפון אם לא מתאפשר). עוברים יחד על הממצאים, עונים על שאלות, ומגדירים יחד את הכיוון הנכון.',
+    desc: 'שיחת וידאו (או טלפון אם לא מתאפשר) בה נעבור ביחד על הממצאים, נענה על שאלות ונגדיר ביחד תוכנית ואת הכיוון הנכון לכם.',
   },
   {
     n: '04',
@@ -530,7 +578,7 @@ export default function Consultations() {
         {/* Background paw */}
         <img
           src="/gaia-paw.png" alt="" aria-hidden="true"
-          className="absolute top-4 left-2 w-20 h-20 md:-top-8 md:-left-8 md:w-72 md:h-72 opacity-[0.07] pointer-events-none select-none"
+          className="absolute top-4 left-2 w-20 h-20 md:-top-8 md:-left-8 md:w-72 md:h-72 opacity-[0.18] pointer-events-none select-none"
           style={{ transform: 'rotate(-12deg)' }}
         />
 
@@ -704,8 +752,8 @@ export default function Consultations() {
       ══════════════════════════════════════════════════════ */}
       <section className="pt-10 pb-section bg-parchment relative overflow-hidden">
         <img src="/gaia-paw.png" alt="" aria-hidden="true"
-          className="absolute -top-3 -right-4 w-20 h-20 md:-top-6 md:-right-8 md:w-64 md:h-64 opacity-[0.07] pointer-events-none select-none"
-          style={{ transform: 'rotate(15deg)' }}
+          className="absolute -top-3 -left-4 w-20 h-20 md:-top-6 md:-left-8 md:w-64 md:h-64 opacity-[0.07] pointer-events-none select-none"
+          style={{ transform: 'rotate(-15deg)' }}
         />
         <div ref={refDiff} className={`container-gaia max-w-3xl ${rx(visDiff, doneDiff)}`}>
           <div className="text-center mb-10">
@@ -806,7 +854,11 @@ export default function Consultations() {
       {/* ══════════════════════════════════════════════════════
           §8.5 WHO AM I
       ══════════════════════════════════════════════════════ */}
-      <section className="section-padding bg-parchment">
+      <section className="section-padding bg-parchment relative overflow-hidden">
+        <img src="/gaia-paw.png" alt="" aria-hidden="true"
+          className="absolute -top-3 -left-4 w-20 h-20 md:-top-6 md:-left-8 md:w-64 md:h-64 opacity-[0.07] pointer-events-none select-none"
+          style={{ transform: 'rotate(-15deg)' }}
+        />
         <div ref={refBio} className={`container-gaia max-w-4xl ${rx(visBio, doneBio)}`}>
           {/* Two-column: bio text + photo/cert */}
           <div className="grid grid-cols-1 md:grid-cols-[1fr_1.2fr] gap-10 items-start mb-8">
@@ -980,8 +1032,8 @@ export default function Consultations() {
       ══════════════════════════════════════════════════════ */}
       <section className="section-padding bg-cream relative overflow-hidden">
         <img src="/gaia-paw.png" alt="" aria-hidden="true"
-          className="absolute -top-3 -left-4 w-20 h-20 md:-top-6 md:-left-8 md:w-64 md:h-64 opacity-[0.07] pointer-events-none select-none"
-          style={{ transform: 'rotate(-15deg)' }}
+          className="absolute -top-3 -right-4 w-20 h-20 md:-top-6 md:-right-8 md:w-64 md:h-64 opacity-[0.07] pointer-events-none select-none"
+          style={{ transform: 'rotate(15deg)' }}
         />
         <div ref={refFaq} className={`container-gaia max-w-2xl ${rx(visFaq, doneFaq)}`}>
           <div className="text-center mb-10">

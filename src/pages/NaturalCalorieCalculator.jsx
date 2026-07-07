@@ -338,7 +338,7 @@ export default function NaturalCalorieCalculator() {
             <div className="flex-1 min-w-0">
               <h1 className="text-display-lg font-serif text-white mb-3">מחשבון קלוריות לתזונה טבעית</h1>
               <p className="text-white/60 max-w-lg text-base leading-relaxed">
-                בנו מתכון מהמרכיבים שלכם וראו בדיוק כמה קלוריות הכלב שלכם מקבל בכל ארוחה — מבוסס על נתוני מזון אנושיים (USDA).
+                בנו מתכון מהמרכיבים שלכם וראו בדיוק כמה קלוריות הכלב שלכם מקבל בכל ארוחה. מבוסס על נתוני מזון אנושיים (USDA).
               </p>
             </div>
             {/* Image — left side, faded into background */}

@@ -14,12 +14,12 @@ export default function About() {
       <section className="pt-8 pb-section relative overflow-hidden">
         {/* Background paw — right side */}
         <img src="/gaia-paw.png" alt="" aria-hidden="true"
-          className="absolute top-1/2 -right-16 w-80 h-80 opacity-[0.06] pointer-events-none select-none"
+          className="hidden md:block absolute top-1/2 -right-16 w-80 h-80 opacity-[0.06] pointer-events-none select-none"
           style={{ transform: 'translateY(-62%) rotate(35deg)' }}
         />
         {/* Background paw — left side */}
         <img src="/gaia-paw.png" alt="" aria-hidden="true"
-          className="absolute top-1/2 -left-16 w-80 h-80 opacity-[0.06] pointer-events-none select-none"
+          className="hidden md:block absolute top-1/2 -left-16 w-80 h-80 opacity-[0.06] pointer-events-none select-none"
           style={{ transform: 'translateY(-50%) rotate(-20deg)' }}
         />
         <div className="container-gaia max-w-2xl relative">
@@ -51,7 +51,11 @@ export default function About() {
           </div>
 
           {/* CTA */}
-          <div className="mt-12 pt-8 border-t border-earth/10">
+          <div className="mt-12 pt-8 border-t border-earth/10 relative">
+            <img src="/gaia-paw.png" alt="" aria-hidden="true"
+              className="absolute -left-4 bottom-0 w-28 h-28 opacity-[0.18] pointer-events-none select-none"
+              style={{ transform: 'translateY(85%) rotate(-15deg)' }}
+            />
             <p className="text-earth font-semibold text-base mb-3">
               רוצה לדעת איפה התפריט של הכלב שלך עומד?
             </p>

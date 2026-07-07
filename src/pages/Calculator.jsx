@@ -197,8 +197,7 @@ function Results({ result, inputs, onReset, onBack }) {
       </div> */}
 
       {/* Disclaimer + CTA */}
-      <div className="bg-parchment rounded-2xl p-4 flex gap-3 text-xs text-mist">
-        <Info className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-sage" />
+      <div className="bg-parchment rounded-2xl p-4 text-xs text-mist">
         <ul className="space-y-1.5 list-disc list-inside">
           <li>החישוב מהווה הערכה מבוססת נוסחאות וטרינריות מקובלות ואינו מחליף ייעוץ מקצועי.</li>
           <li>התוצאה היא נקודת פתיחה בלבד — כל כלב שונה, ויש לעקוב אחר משקל, BCS, רמת פעילות ומצב בריאותי ולהתאים בהתאם.</li>
@@ -283,6 +282,7 @@ export default function Calculator() {
   const [showCalorieInfo,  setShowCalorieInfo]  = useState(false)
   const [showNeuteredInfo, setShowNeuteredInfo] = useState(false)
   const topRef = useRef(null)
+  const cardRef = useRef(null)
   const calorieInfoRef = useRef(null)
 
   useEffect(() => {
@@ -370,7 +370,7 @@ export default function Calculator() {
               onBack={() => { setResult(null); setStep(TOTAL_STEPS - 1) }}
             />
           ) : (
-            <div className="bg-white rounded-4xl border border-stone shadow-card overflow-hidden">
+            <div ref={cardRef} className="bg-white rounded-4xl border border-stone shadow-card overflow-hidden">
 
               {/* Step progress bar */}
               <div className="px-8 pt-8 pb-6 border-b border-stone">
@@ -772,7 +772,7 @@ export default function Calculator() {
                       variant="primary"
                       size="md"
                       disabled={!canNext}
-                      onClick={() => setStep(s => s + 1)}
+                      onClick={() => { setStep(s => s + 1); setTimeout(() => { const el = cardRef.current; if (el) { const headerH = document.querySelector('header')?.offsetHeight ?? 0; const y = el.getBoundingClientRect().top + window.scrollY - headerH - 8; window.scrollTo({ top: y, behavior: 'smooth' }) } }, 50) }}
                       icon={<ChevronLeft className="w-4 h-4" />}
                       iconPosition="left"
                     >

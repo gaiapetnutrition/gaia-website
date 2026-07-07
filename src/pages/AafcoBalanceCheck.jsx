@@ -584,7 +584,7 @@ export default function AafcoBalanceCheck() {
             <div className="flex-1 min-w-0">
               <h1 className="text-display-lg font-serif text-white mb-3">בדיקת מלא ומאוזן לפי AAFCO</h1>
               <p className="text-white/60 max-w-lg text-base leading-relaxed">
-                הזינו את מרכיבי המתכון וקבלו השוואה מלאה לתקני AAFCO לכלבים — מינימום ומקסימום למגוון רכיבים תזונתיים.
+                הזינו את מרכיבי המתכון וקבלו השוואה מלאה לתקני AAFCO לכלבים, עם מינימום ומקסימום למגוון רכיבים תזונתיים.
               </p>
             </div>
             {/* Image — left side, decorative */}

@@ -1,8 +1,6 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { ChevronLeft, ChevronRight, ChevronDown, Phone } from 'lucide-react'
+import { useState, useRef } from 'react'
+import { ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react'
 import clsx from 'clsx'
-import Button from '../components/ui/Button'
 
 /* ─── Data ──────────────────────────────────────────────────────────────── */
 
@@ -156,6 +154,7 @@ export default function ChocolateCalculator() {
   const [choc,    setChoc]    = useState(null)
   const [amount,  setAmount]  = useState(null)
   const [showHow, setShowHow] = useState(false)
+  const cardRef = useRef(null)
 
   const reset = () => {
     setStep(1); setSize(null); setChoc(null); setAmount(null); setShowHow(false)
@@ -167,7 +166,17 @@ export default function ChocolateCalculator() {
     step === 3 ? !!amount : true
 
   function next() {
-    if (canNext && step < TOTAL_STEPS) setStep(s => s + 1)
+    if (canNext && step < TOTAL_STEPS) {
+      setStep(s => s + 1)
+      setTimeout(() => {
+        const el = cardRef.current
+        if (el) {
+          const headerH = document.querySelector('header')?.offsetHeight ?? 0
+          const y = el.getBoundingClientRect().top + window.scrollY - headerH - 8
+          window.scrollTo({ top: y, behavior: 'smooth' })
+        }
+      }, 50)
+    }
   }
 
   // Calculate result when on step 4
@@ -196,7 +205,7 @@ export default function ChocolateCalculator() {
             <div className="flex-1 min-w-0">
               <h1 className="text-display-lg font-serif text-white mb-3">מחשבון רעילות שוקולד לכלב</h1>
               <p className="text-white/60 max-w-lg text-base leading-relaxed">
-                שוקולד מכיל תיאוברומין — חומר הרעיל לכלבים. המחשבון מעריך את רמת הסיכון לפי משקל הכלב, סוג השוקולד והכמות שנצרכה.
+                שוקולד מכיל תיאוברומין, חומר הרעיל לכלבים. המחשבון מעריך את רמת הסיכון לפי משקל הכלב, סוג השוקולד והכמות שנצרכה.
               </p>
             </div>
             {/* Image — left side, faded into background */}
@@ -216,7 +225,7 @@ export default function ChocolateCalculator() {
         <div className="max-w-2xl mx-auto space-y-6">
 
           {/* Calculator card */}
-          <div className="bg-white border border-stone rounded-4xl shadow-card overflow-hidden">
+          <div ref={cardRef} className="bg-white border border-stone rounded-4xl shadow-card overflow-hidden">
             <div className="p-6 sm:p-8">
 
               {/* ── Step 1: Dog size ── */}
@@ -226,9 +235,30 @@ export default function ChocolateCalculator() {
                     <h2 className="text-xl font-serif font-semibold text-earth mb-1">מה גודל הכלב שלכם?</h2>
                     <p className="text-sm text-mist">בחרו את קטגוריית הגודל המתאימה ביותר</p>
                   </div>
-                  <div className="flex gap-2 overflow-x-auto pb-1 sm:grid sm:grid-cols-5 sm:overflow-visible">
+                  {/* Mobile: 3-col row + 2-col centered row. Desktop: single 5-col row */}
+                  <div className="sm:hidden space-y-2">
+                    <div className="grid grid-cols-3 gap-2">
+                      {DOG_SIZES.slice(0, 3).map(s => (
+                        <SelectCard key={s.id} selected={size?.id === s.id} onClick={() => setSize(s)}>
+                          <span className="text-3xl">{s.emoji}</span>
+                          <span className="text-xs font-bold text-earth leading-tight">{s.label}</span>
+                          <span className="text-[10px] text-mist leading-tight">{s.desc}</span>
+                        </SelectCard>
+                      ))}
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 w-2/3 mx-auto">
+                      {DOG_SIZES.slice(3).map(s => (
+                        <SelectCard key={s.id} selected={size?.id === s.id} onClick={() => setSize(s)}>
+                          <span className="text-3xl">{s.emoji}</span>
+                          <span className="text-xs font-bold text-earth leading-tight">{s.label}</span>
+                          <span className="text-[10px] text-mist leading-tight">{s.desc}</span>
+                        </SelectCard>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="hidden sm:grid grid-cols-5 gap-2">
                     {DOG_SIZES.map(s => (
-                      <div key={s.id} className="flex-shrink-0 w-[18%] min-w-[70px] sm:w-auto sm:min-w-0">
+                      <div key={s.id}>
                         <SelectCard selected={size?.id === s.id} onClick={() => setSize(s)}>
                           <span className="text-3xl">{s.emoji}</span>
                           <span className="text-xs font-bold text-earth leading-tight">{s.label}</span>
@@ -247,9 +277,9 @@ export default function ChocolateCalculator() {
                     <h2 className="text-xl font-serif font-semibold text-earth mb-1">איזה סוג שוקולד נאכל?</h2>
                     <p className="text-sm text-mist">ככל שהשוקולד כהה יותר, כך הוא מסוכן יותר לכלבים</p>
                   </div>
-                  <div className="flex gap-2 overflow-x-auto pb-1 sm:grid sm:grid-cols-4 sm:overflow-visible">
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                     {CHOC_TYPES.map(c => (
-                      <div key={c.id} className="flex-shrink-0 w-[22%] min-w-[70px] sm:w-auto sm:min-w-0">
+                      <div key={c.id}>
                         <SelectCard selected={choc?.id === c.id} onClick={() => setChoc(c)}>
                           <div
                             className="w-10 h-10 rounded-xl border-2 flex-shrink-0"
@@ -381,20 +411,6 @@ export default function ChocolateCalculator() {
                     )}
                   </div>
 
-                  {/* CTA buttons */}
-                  <div className="flex flex-col gap-3 pt-1">
-                    <Link to="/consultations">
-                      <Button variant="primary" size="lg" className="w-full">
-                        צרו קשר
-                      </Button>
-                    </Link>
-                    <a href="tel:+972000000000" className="block">
-                      <Button variant="secondary" size="lg" className="w-full">
-                        <Phone className="w-4 h-4" />
-                        קשר חירום
-                      </Button>
-                    </a>
-                  </div>
                 </div>
               )}
 
