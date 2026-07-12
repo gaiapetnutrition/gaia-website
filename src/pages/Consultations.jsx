@@ -34,27 +34,28 @@ function useReveal(threshold = 0.1) {
 
 /* ─── ADF Video Showcase ─────────────────────────────────────── */
 const ADF_VIDEOS = [
-  { src: '/ADF_videos/ADF_1.mov', caption: 'ניסוח מתכון לפי פרופיל תזונתי מלא — כל רכיב מחושב ומתועד.' },
+  { src: '/ADF_videos/ADF_1.mov', caption: 'ניסוח מתכון לפי פרופיל תזונתי מלא - כל רכיב מחושב ומתועד.' },
   { src: '/ADF_videos/ADF_2.mov', caption: 'הגדרת יחסים בין חלבון, שומן ופחמימות לפי משקל ושלב החיים.' },
   { src: '/ADF_videos/ADF_3.mov', caption: 'בדיקת עמידה בדרישות AAFCO/NRC לפני אישור סופי של המתכון.' },
-  { src: '/ADF_videos/ADF_4.mov', caption: 'תוצר מוגמר — מתכון כתוב עם כמויות, תוספים ורשימת מרכיבים.' },
+  { src: '/ADF_videos/ADF_4.mov', caption: 'תוצר מוגמר - מתכון כתוב עם כמויות, תוספים ורשימת מרכיבים.' },
 ]
 const PREVIEW_MS = 4200
 
 /*
  * Tuning knobs:
- *   EXPAND_RATIO   — how much wider the active card becomes (inactive = 1, active = this)
- *   EXPAND_MS      — card expand/shrink animation duration in ms
- *   PREVIEW_MS     — how long each card plays before advancing
+ *   EXPAND_RATIO   - how much wider the active card becomes (inactive = 1, active = this)
+ *   EXPAND_MS      - card expand/shrink animation duration in ms
+ *   PREVIEW_MS     - how long each card plays before advancing
  */
 const EXPAND_RATIO = 1.75
 const EXPAND_MS    = 420
 const EXPAND_EASING = 'cubic-bezier(0.16, 1, 0.3, 1)'
 
-const ADF_PLAYED_KEY = 'adf_sequence_played'
+// Module-level: survives React remounts (tab switch) but resets on page reload
+let adfSequencePlayed = false
 
 function ADFShowcase() {
-  const alreadyPlayed = typeof sessionStorage !== 'undefined' && sessionStorage.getItem(ADF_PLAYED_KEY) === '1'
+  const alreadyPlayed = adfSequencePlayed
 
   // -1 = not yet started, 0–3 = active card index, null = sequence done
   // If already played this session, skip straight to final card (static state)
@@ -71,12 +72,19 @@ function ADFShowcase() {
   const autoEnabled   = !reducedMotion && !alreadyPlayed
 
   // Start the sequence once all cards are visible.
-  // On mobile the last card (index 3) is in the bottom row — observe it so the
+  // On mobile the last card (index 3) is in the bottom row - observe it so the
   // sequence only kicks off after the user has scrolled the full grid into view.
   useEffect(() => {
     if (alreadyPlayed) return  // sequence already ran this session
-    // Use the last mobile card if rendered, otherwise fall back to the section
-    const waitFor = () => videoRefsMob.current[ADF_VIDEOS.length - 1]?.closest('[aria-label]') || sectionRef.current
+    // On desktop: wait for first video card to be visible (not the whole section, which includes heading above the cards).
+    // On mobile: wait for the last card (bottom of 2×2 grid).
+    const waitFor = () => {
+      const firstDeskVid = videoRefsDesk.current[0]
+      if (firstDeskVid && firstDeskVid.offsetParent !== null) return firstDeskVid
+      const lastMobCard = videoRefsMob.current[ADF_VIDEOS.length - 1]?.closest('[aria-label]')
+      if (lastMobCard && lastMobCard.offsetParent !== null) return lastMobCard
+      return sectionRef.current
+    }
     // Defer slightly so refs are populated after first render
     const t = setTimeout(() => {
       const el = waitFor()
@@ -116,7 +124,7 @@ function ADFShowcase() {
     const playAndSchedule = () => {
       vid.currentTime = 0; vid.muted = true; vid.play().catch(() => {})
       if (activeIdx === ADF_VIDEOS.length - 1) {
-        sessionStorage.setItem(ADF_PLAYED_KEY, '1')
+        adfSequencePlayed = true
         return
       }
       timerRef.current = setTimeout(() => {
@@ -149,7 +157,7 @@ function ADFShowcase() {
     <section
       ref={sectionRef}
       className="pt-10 pb-section bg-cream relative overflow-hidden"
-      aria-label="סרטוני הדגמה — Animal Diet Formulator"
+      aria-label="סרטוני הדגמה - Animal Diet Formulator"
     >
       <img src="/gaia-paw.png" alt="" aria-hidden="true"
         className="absolute -top-3 -right-4 w-20 h-20 md:-top-6 md:-right-8 md:w-64 md:h-64 opacity-[0.07] pointer-events-none select-none"
@@ -161,10 +169,10 @@ function ADFShowcase() {
         <div className="text-center mb-8">
           <span className="eyebrow block mb-3">כלי מקצועי לכתיבת מתכונים</span>
           <h2 className="text-display-sm font-serif text-earth">
-            Animal Diet Formulator — כלי דיוק מתכונים לפני תקנים ברורים המשמש וטרינרים ותזונאים ברחבי העולם
+            Animal Diet Formulator - כלי דיוק מתכונים לפני תקנים ברורים המשמש וטרינרים ותזונאים ברחבי העולם
           </h2>
           <p className="text-mist text-sm max-w-xs mx-auto mt-2 leading-relaxed">
-            כך נראית עבודת הניסוח מאחורי הקלעים — מדידה, בדיקה ואיזון.
+            כך נראית עבודת הניסוח מאחורי הקלעים - מדידה, בדיקה ואיזון.
           </p>
         </div>
 
@@ -211,10 +219,10 @@ function ADFShowcase() {
                   />
                 </div>
 
-                {/* Caption — fixed height so layout stays stable */}
-                <div className="px-3 py-2.5 flex-shrink-0" style={{ height: '50px' }}>
+                {/* Caption - auto height so text is always fully visible */}
+                <div className="px-3 py-2.5 flex-shrink-0">
                   <p
-                    className="text-[11px] leading-[1.45] line-clamp-3 transition-colors duration-300 font-semibold"
+                    className="text-[11px] leading-[1.45] transition-colors duration-300 font-semibold"
                     style={{ color: isActive ? '#5a4637' : '#b0a096' }}
                   >
                     {v.caption}
@@ -272,7 +280,7 @@ function ADFShowcase() {
 const FAQS = [
   {
     q: 'האם אתה וטרינר?',
-    a: 'אני תזונאי כלבים מוסמך — אני לא וטרינר ולא מאבחן מחלות. הייעוץ שלי מתמקד בתזונה בלבד: בניית תפריטים, ניסוח מתכונים מלאים ומאוזנים והכוונה להאכלה נכונה. יחד עם זאת - התזונה מותאמת תמיד בהתאם למצב הרפואי של הכלב והמלצות הוטרינר. לכל שאלה רפואית, פנו לוטרינר המטפל שלכם.',
+    a: 'אני תזונאי כלבים מוסמך - אני לא וטרינר ולא מאבחן מחלות. הייעוץ שלי מתמקד בתזונה בלבד: בניית תפריטים, ניסוח מתכונים מלאים ומאוזנים והכוונה להאכלה נכונה. יחד עם זאת - התזונה מותאמת תמיד בהתאם למצב הרפואי של הכלב והמלצות הוטרינר. לכל שאלה רפואית, פנו לוטרינר המטפל שלכם.',
   },
   {
     q: 'האם הייעוץ מתאים אם הכלב שלי אוכל מזון יבש?',
@@ -280,11 +288,11 @@ const FAQS = [
   },
   {
     q: 'האם אני צריך בדיקות דם לפני הייעוץ?',
-    a: 'לא חובה, אבל אם יש בדיקות עדכניות — מאוד מומלץ להביא. הן עוזרות לי לתת המלצות מדויקות יותר. לכלבים עם בעיות רפואיות, בדיקות דם עשויות להיות חיוניות.',
+    a: 'לא חובה, אבל אם יש בדיקות עדכניות - מאוד מומלץ להביא. הן עוזרות לי לתת המלצות מדויקות יותר. לכלבים עם בעיות רפואיות, בדיקות דם עשויות להיות חיוניות.',
   },
   {
     q: 'האם אקבל מתכונים ספציפיים עם כמויות?',
-    a: 'בחבילות 2, 3 ו-4 — כן. אני עובד עם תוכנת Animal Diet Formulator ומנסח מתכונים מלאים ומאוזנים בהתאם לנתוני הכלב שלכם, כולל כמויות מדויקות ורשימת תוספים. לא "המלצה כללית", אלא מתכון מחושב.',
+    a: 'בחבילות 2, 3 ו-4 - כן. אני עובד עם תוכנת Animal Diet Formulator ומנסח מתכונים מלאים ומאוזנים בהתאם לנתוני הכלב שלכם, כולל כמויות מדויקות ורשימת תוספים. לא "המלצה כללית", אלא מתכון מחושב.',
   },
   {
     q: 'האם אתם עוזרים גם עם אוכל נא?',
@@ -296,7 +304,7 @@ const FAQS = [
   },
   {
     q: 'מה אם לכלב שלי יש מצב רפואי?',
-    a: 'אני יכול לעבוד עם תזונה תומכת לכלבים עם אלרגיות, בעיות עיכול, מחלת כליות ועוד — תמיד בתיאום עם הוטרינר המטפל. חבילה 4 מיועדת בדיוק למקרים כאלה. אני לא מאבחן ולא מחליף טיפול רפואי בשום פנים.',
+    a: 'אני יכול לעבוד עם תזונה תומכת לכלבים עם אלרגיות, בעיות עיכול, מחלת כליות ועוד - תמיד בתיאום עם הוטרינר המטפל. חבילה 4 מיועדת בדיוק למקרים כאלה. אני לא מאבחן ולא מחליף טיפול רפואי בשום פנים.',
   },
   {
     q: 'האם הייעוץ מתאים לגורים?',
@@ -389,7 +397,7 @@ const WHO_FOR = [
   {
     icon: '🔄',
     title: 'רוצים לעבור מתזונה יבשה לטבעית',
-    desc: 'ורוצים לעשות את זה נכון — בצורה הדרגתית, מחושבת ובטוחה.',
+    desc: 'ורוצים לעשות את זה נכון - בצורה הדרגתית, מחושבת ובטוחה.',
   },
   {
     icon: '🍳',
@@ -404,17 +412,17 @@ const WHO_FOR = [
   {
     icon: '🩺',
     title: 'כלב עם צרכים מיוחדים',
-    desc: 'אלרגיות, עיכול, כליות — ורוצים תמיכה תזונתית מקצועית לצד הוטרינר.',
+    desc: 'אלרגיות, עיכול, כליות - ורוצים תמיכה תזונתית מקצועית לצד הוטרינר.',
   },
   {
     icon: '❓',
     title: 'מבולבלים ממידע סותר',
-    desc: 'ורוצים מקור אחד, מהימן, מבוסס מחקר — לא מיתוסים ולא טרנדים.',
+    desc: 'ורוצים מקור אחד, מהימן, מבוסס מחקר - לא מיתוסים ולא טרנדים.',
   },
   {
     icon: '🔬',
     title: 'מחפשים גישה מדעית',
-    desc: 'ניסוח מחושב לפי AAFCO/NRC — לא "ארוחה טבעית" כללית.',
+    desc: 'ניסוח מחושב לפי AAFCO/NRC - לא "ארוחה טבעית" כללית.',
   },
 ]
 
@@ -437,7 +445,7 @@ const STEPS = [
   {
     n: '04',
     title: 'ניסוח ודיוק התפריט',
-    desc: 'ייעוץ כולל מתכון אחד — עבודה עם Animal Diet Formulator לניסוח מתכון מלא ומאוזן עם כמויות מדויקות.',
+    desc: 'ייעוץ כולל מתכון אחד - עבודה עם Animal Diet Formulator לניסוח מתכון מלא ומאוזן עם כמויות מדויקות.',
   },
   {
     n: '05',
@@ -449,7 +457,7 @@ const STEPS = [
 const ADDONS = [
   { name: 'שיחת מעקב חוזרת', price: '200 ₪' },
   { name: 'מתכון נוסף', price: '220 ₪' },
-  { name: 'מתכון נוסף — התאמה רפואית מורכבת', price: '280 ₪' },
+  { name: 'מתכון נוסף - התאמה רפואית מורכבת', price: '280 ₪' },
 ]
 
 /* ─── FAQ accordion item ─────────────────────────────────────── */
@@ -590,12 +598,12 @@ export default function Consultations() {
           </span>
 
           <h1 className="text-display-lg font-serif text-earth mb-5 leading-[1.1]">
-            תזונה טבעית לכלב שלכם —{' '}
+            תזונה טבעית לכלב שלכם -{' '}
             <em className="text-forest not-italic">מותאמת, מלאה ומאוזנת.</em>
           </h1>
 
           <p className="text-bark text-lg leading-[1.75] max-w-xl mb-9" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
-            אם אתם רוצים לעבור מגרגרים יבשים לתזונה ביתית, לשפר תפריט קיים, או לבנות מתכון מלא ומאוזן לכלב שלכם — אתם במקום הנכון.
+            אם אתם רוצים לעבור מגרגרים יבשים לתזונה ביתית, לשפר תפריט קיים, או לבנות מתכון מלא ומאוזן לכלב שלכם - אתם במקום הנכון.
           </p>
 
           <div className="flex flex-col items-start gap-4 mt-1">
@@ -632,7 +640,7 @@ export default function Consultations() {
         <div className="container-gaia">
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2.5">
             {[
-              'תזונאי כלבים מוסמך — Southern Illinois University',
+              'תזונאי כלבים מוסמך - Southern Illinois University',
               'הרכבת מתכונים עם תוכנה ייעודית',
               'מבוסס תקני AAFCO / NRC',
               'ליווי פרקטי ויסודי בכל צעד',
@@ -655,29 +663,29 @@ export default function Consultations() {
             האתגר
           </span>
           <h2 className="text-display-md font-serif text-white mb-5 leading-[1.2]">
-            מחקר של UC Davis ניתח מעל 200 דיאטות ביתיות לכלבים —{' '}
+            מחקר של UC Davis ניתח מעל 200 דיאטות ביתיות לכלבים -{' '}
             <em className="not-italic text-olive-light">95% מהן לא היו מלאות ומאוזנות.</em>
           </h2>
           <p className="text-white/65 leading-relaxed text-base mb-8 max-w-xl mx-auto">
-            זה לא בעיה של כוונות — זו בעיה של ידע. תזונה ביתית בלי ניסוח מחושב יוצרת חוסרים שמצטברים לאורך זמן, בלי שרואים את זה מיד.
+            זה לא בעיה של כוונות - זו בעיה של ידע. תזונה ביתית בלי ניסוח מחושב יוצרת חוסרים שמצטברים לאורך זמן, בלי שרואים את זה מיד.
           </p>
 
           <h2 className="text-display-md font-serif text-white mb-5 leading-[1.2]">
-            המצב בישראל —{' '}
+            המצב בישראל -{' '}
             <em className="not-italic text-olive-light">אין חובה לעמוד בתקנים של מלא ומאוזן.</em>
           </h2>
           <p className="text-white/65 leading-relaxed text-base mb-10 max-w-xl mx-auto">
-            כשזה נוגע למוצרי מזון טבעי, אין בישראל צורך בעמידה בתקנים של מלא ומאוזן לפי תקנים בינלאומיים כמו AAFCO או NRC, מה שמחסיר מהציבור ידע — ובעיקר מחסיר נוטריאנטים מהכלבים שלנו.
+            כשזה נוגע למוצרי מזון טבעי, אין בישראל צורך בעמידה בתקנים של מלא ומאוזן לפי תקנים בינלאומיים כמו AAFCO או NRC, מה שמחסיר מהציבור ידע - ובעיקר מחסיר נוטריאנטים מהכלבים שלנו.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-right">
             {[
               {
                 title: 'תפריטים אינטואיטיביים',
-                desc: 'ארוחות שנבנות לפי "הגיון" ולא לפי נתונים — יוצרות חוסרים בנוטריאנטים לאורך זמן.',
+                desc: 'ארוחות שנבנות לפי "הגיון" ולא לפי נתונים - יוצרות חוסרים בנוטריאנטים לאורך זמן.',
               },
               {
                 title: 'מידע סותר',
-                desc: 'קבוצות פייסבוק, אינסטגרם, יוטיוב — כולם אומרים משהו אחר. קשה לדעת מה נכון.',
+                desc: 'קבוצות פייסבוק, אינסטגרם, יוטיוב - כולם אומרים משהו אחר. קשה לדעת מה נכון.',
               },
               {
                 title: '"מגוון" ≠ מלא ומאוזן',
@@ -707,7 +715,7 @@ export default function Consultations() {
               עם מה אנחנו עוזרים
             </h2>
             <p className="text-mist text-base max-w-md mx-auto leading-relaxed">
-              ייעוץ מעשי שמסתיים בתוצר ברור — לא רק בשיחה.
+              ייעוץ מעשי שמסתיים בתוצר ברור - לא רק בשיחה.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -715,12 +723,12 @@ export default function Consultations() {
               {
                 Icon: ArrowLeft,
                 title: 'מעבר מגרגרים יבשים לתזונה טבעית',
-                desc: 'מעבר הדרגתי, מחושב, עם תוכנית ברורה — לא המלצות כלליות.',
+                desc: 'מעבר הדרגתי, מחושב, עם תוכנית ברורה - לא המלצות כלליות.',
               },
               {
                 Icon: FlaskConical,
                 title: 'בדיקת תפריט קיים',
-                desc: 'אם אתם כבר מאכילים ביתי — בדיקה שהתפריט מספק את כל מה שהכלב צריך.',
+                desc: 'אם אתם כבר מאכילים ביתי - בדיקה שהתפריט מספק את כל מה שהכלב צריך.',
               },
               {
                 Icon: FileText,
@@ -730,7 +738,7 @@ export default function Consultations() {
               {
                 Icon: Heart,
                 title: 'התאמה לצרכים מיוחדים',
-                desc: 'כלבים עם אלרגיות, בעיות עיכול, מחלת כליות — תזונה מותאמת בהתאם להנחיות הוטרינר.',
+                desc: 'כלבים עם אלרגיות, בעיות עיכול, מחלת כליות - תזונה מותאמת בהתאם להנחיות הוטרינר.',
               },
             ].map(({ Icon, title, desc }) => (
               <div key={title} className="card p-5 flex gap-4 items-start">
@@ -758,7 +766,7 @@ export default function Consultations() {
         <div ref={refDiff} className={`container-gaia max-w-3xl ${rx(visDiff, doneDiff)}`}>
           <div className="text-center mb-10">
             <h2 className="text-display-md font-serif text-forest mb-4">
-              לא רק עצות — תוצאות.
+              לא רק עצות - תוצאות.
             </h2>
             <p className="text-mist text-base max-w-md mx-auto leading-relaxed">
               הייעוץ שלנו מסתיים במתכונים מחושבים ובתוכנית פרקטית שאפשר לעבוד איתה.
@@ -768,11 +776,11 @@ export default function Consultations() {
             {[
               {
                 title: 'מחושב, לא אינטואיטיבי',
-                desc: 'כל מתכון מנוסח עם כמויות מדויקות, מבוסס על נתוני הכלב הספציפי — לא "לפי הגיון".',
+                desc: 'כל מתכון מנוסח עם כמויות מדויקות, מבוסס על נתוני הכלב הספציפי - לא "לפי הגיון".',
               },
               {
                 title: 'מבוסס תקנים מוכרים',
-                desc: 'אנחנו עובדים לפי תקנים בינלאומיים - AAFCO ו-NRC — לא לפי טרנדים, קבוצות פייסבוק, או אינסטגרם.',
+                desc: 'אנחנו עובדים לפי תקנים בינלאומיים - AAFCO ו-NRC - לא לפי טרנדים, קבוצות פייסבוק, או אינסטגרם.',
               },
               {
                 title: 'תוצר ברור',
@@ -862,27 +870,27 @@ export default function Consultations() {
         <div ref={refBio} className={`container-gaia max-w-4xl ${rx(visBio, doneBio)}`}>
           {/* Two-column: bio text + photo/cert */}
           <div className="grid grid-cols-1 md:grid-cols-[1fr_1.2fr] gap-10 items-start mb-8">
-            {/* Left column — bio */}
+            {/* Left column - bio */}
             <div>
               <span className="eyebrow block mb-3">על התזונאי שלנו</span>
               <h2 className="text-display-sm font-serif text-earth mb-5 leading-snug">
-                תומר חזאם — תזונאי כלבים מוסמך
+                תומר חזאם - תזונאי כלבים מוסמך
               </h2>
               <p className="text-mist text-sm leading-[1.85] mb-5">
                 מבשל לכלבים שלי כבר למעלה מעשור, ומתוך המטבח הביתי התגלגלתי אל הצד המדעי של הקערה. עם ההבנה ש‑1 מתוך 4 כלבים צפוי להתמודד עם סרטן במהלך חייו (ו-1 מתוך 2 מעל גיל 10!), היה לי ברור שתזונה היא לא רק ״מה טעים לכלב״, אלא כלי משמעותי בהפחתת סיכונים ותמיכה בגוף לאורך שנים.
               </p>
               <p className="text-mist text-sm leading-[1.85] mb-5">
-                לאורך חצי שנה של לימודים ברמה אוניברסיטאית בארה״ב בתחום תזונת כלבים וחתולים, יחד עם שנים של ניסוי, טעייה ויישום בפועל, פיתחתי גישה שמחברת בין מחקר עדכני לבין אוכל אמיתי — מלא, מאוזן, עשיר ומגוון, עם דגש על רכיבים נוגדי חמצון ותמיכה מערכתית.
+                לאורך חצי שנה של לימודים ברמה אוניברסיטאית בארה״ב בתחום תזונת כלבים וחתולים, יחד עם שנים של ניסוי, טעייה ויישום בפועל, פיתחתי גישה שמחברת בין מחקר עדכני לבין אוכל אמיתי - מלא, מאוזן, עשיר ומגוון, עם דגש על רכיבים נוגדי חמצון ותמיכה מערכתית.
               </p>
               <p className="text-mist text-sm leading-[1.85] mb-5">
                 ככל שהעמקתי בלימודים, בהשכלה העצמאית שלי ובהתנסות עם כלבים, הבנתי שישראל נמצאת מאחור ביחס למדינות מערביות כמו ארה״ב, אירופה ואוסטרליה, שבהן הדרישה למזון מלא ומאוזן היא דרישה בסיסית וברורה – בעוד שכאן אין כמעט פיקוח או חובה לעמוד בסטנדרטים כאלה. עם הזמן למדתי לפשט ולהפוך את התזונה הטבעית לכלבים – שלי ושל לקוחותיי – למשהו נגיש וברור, תוך שימוש בכלים מקצועיים והבנה רחבה של מרכיבים, נוטריאנטים, יחסים ורגישויות. המטרה שלי היא לבנות תזונה קלה ופרקטית ליישום, בלי ניחושים ובלי משחקים מסוכנים בבריאות של הכלב.
               </p>
               <p className="text-mist text-sm leading-[1.7]">
-                היום אני מלווה בעלי כלבים במעבר ממזון יבש לתזונה טבעית וביתית, בבישול מתכונים מלאים ומאוזנים, מזון נא, תיסוף נכון לתזונה קיימת, ובהתאמת תפריטים למצבים רפואיים שונים — בצורה מקצועית, שקופה ונעימה, שתיתן גם לכם וגם לכלב שלכם שקט נפשי.
+                היום אני מלווה בעלי כלבים במעבר ממזון יבש לתזונה טבעית וביתית, בבישול מתכונים מלאים ומאוזנים, מזון נא, תיסוף נכון לתזונה קיימת, ובהתאמת תפריטים למצבים רפואיים שונים - בצורה מקצועית, שקופה ונעימה, שתיתן גם לכם וגם לכלב שלכם שקט נפשי.
               </p>
             </div>
 
-            {/* Right column — profile image + certificate + credential cards */}
+            {/* Right column - profile image + certificate + credential cards */}
             <div className="space-y-3">
               <img
                 src="/profile_image.jpeg"
@@ -893,7 +901,7 @@ export default function Consultations() {
                 onClick={() => setCertOpen(true)}
                 className="block w-full rounded-2xl shadow-card overflow-hidden hover:shadow-card-hover transition-shadow duration-200 group relative cursor-pointer"
               >
-                <img src="/SIU_cert.png" alt="תעודת הסמכה — Canine & Feline Nutrition, SIU" className="w-full object-cover" />
+                <img src="/SIU_cert.png" alt="תעודת הסמכה - Canine & Feline Nutrition, SIU" className="w-full object-cover" />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200 rounded-2xl flex items-center justify-center">
                   <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-white/90 text-earth text-[12px] font-semibold px-3 py-1.5 rounded-lg shadow">
                     להגדלה
@@ -904,13 +912,13 @@ export default function Consultations() {
             </div>
           </div>
 
-          {/* Credential cards — full width */}
+          {/* Credential cards - full width */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {[
-              { label: 'גישה', value: 'הגשר בין מזרח למערב — הוליסטיות, גיוון, תמיכה מערכתית ודגש על נוגדי חמצון יחד עם בסיס מחקרי עדכני' },
-              { label: 'סטנדרט', value: 'AAFCO / NRC — התקנים המובילים בעולם לדרישות מינימליות למזון מלא ומאוזן כנקודת התחלה' },
-              { label: 'כלי עבודה', value: 'Animal Diet Formulator — תוכנה ייעודית למפרמלי מזון, תזונאים ווטרינרים תזונאים' },
-              { label: 'הסמכה', value: 'Canine & Feline Nutrition — Southern Illinois University' },
+              { label: 'גישה', value: 'הגשר בין מזרח למערב - הוליסטיות, גיוון, תמיכה מערכתית ודגש על נוגדי חמצון יחד עם בסיס מחקרי עדכני' },
+              { label: 'סטנדרט', value: 'AAFCO / NRC - התקנים המובילים בעולם לדרישות מינימליות למזון מלא ומאוזן כנקודת התחלה' },
+              { label: 'כלי עבודה', value: 'Animal Diet Formulator - תוכנה ייעודית למפרמלי מזון, תזונאים ווטרינרים תזונאים' },
+              { label: 'הסמכה', value: 'Canine & Feline Nutrition - Southern Illinois University' },
             ].map(({ label, value }) => (
               <div key={label} className="bg-white rounded-2xl px-4 py-3 shadow-card flex flex-col gap-1">
                 <span className="text-[10px] font-bold text-forest uppercase tracking-wider">
@@ -924,7 +932,7 @@ export default function Consultations() {
       </section>
 
       {/* ══════════════════════════════════════════════════════
-          §9 PACKAGES & PRICING — HIDDEN (restore by removing the {false && ...} wrapper)
+          §9 PACKAGES & PRICING - HIDDEN (restore by removing the {false && ...} wrapper)
       ══════════════════════════════════════════════════════ */}
       {false && <section id="packages" className="section-padding bg-parchment">
         <div ref={refPricing} className={`container-gaia ${rx(visPricing, donePricing)}`}>
@@ -936,7 +944,7 @@ export default function Consultations() {
             </p>
           </div>
 
-          {/* Main packages grid — 4 packages in 2×2 */}
+          {/* Main packages grid - 4 packages in 2×2 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto mb-6">
             {PLANS.map(plan => (
               <div
@@ -1051,20 +1059,20 @@ export default function Consultations() {
           §11 FINAL CTA
       ══════════════════════════════════════════════════════ */}
       <section id="contact" className="py-section-sm bg-forest relative overflow-hidden">
-        {/* Decorative paw — left */}
+        {/* Decorative paw - left */}
         <img
           src="/gaia-paw.png" alt="" aria-hidden="true"
-          className="absolute -bottom-6 left-4 w-16 md:w-44 opacity-[0.07] pointer-events-none select-none"
+          className="absolute bottom-0 md:-bottom-6 left-4 w-16 md:w-44 opacity-[0.07] pointer-events-none select-none"
           style={{ transform: 'rotate(-8deg)', filter: 'brightness(0) invert(1)' }}
         />
-        {/* Decorative paw — right (mirror) */}
+        {/* Decorative paw - right (mirror) */}
         <img
           src="/gaia-paw.png" alt="" aria-hidden="true"
-          className="absolute -bottom-4 right-8 w-16 md:w-44 opacity-[0.07] pointer-events-none select-none"
+          className="absolute bottom-1 md:-bottom-4 right-8 w-16 md:w-44 opacity-[0.07] pointer-events-none select-none"
           style={{ transform: 'rotate(45deg)', filter: 'brightness(0) invert(1)' }}
         />
 
-        <div ref={refCta} className={`container-gaia max-w-xl text-center relative mt-10 ${rx(visCta, doneCta)}`}>
+        <div ref={refCta} className={`container-gaia max-w-xl text-center relative mt-1${rx(visCta, doneCta)}`}>
           <h2 className="text-display-md font-serif text-white mb-4 leading-[1.2]">
             מוכנים לבנות תפריט שאפשר לסמוך עליו?
           </h2>
@@ -1092,7 +1100,7 @@ export default function Consultations() {
             </a>
           </div>
 
-          <p className="text-white/30 text-xs mt-8">
+          <p className="text-white/30 text-xs mt-4">
             * אינו מחליף ייעוץ וטרינרי. לשאלות רפואיות, פנו לוטרינר המטפל.
           </p>
         </div>
