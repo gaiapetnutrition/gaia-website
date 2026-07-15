@@ -145,29 +145,12 @@ function Hero() {
             </Link>
           </div>
 
-          {/* Social proof */}
+          {/* Paw divider */}
           <div
-            className="flex items-center gap-4 mt-9 pt-7 border-t border-earth/10 animate-fade-up"
+            className="flex items-center justify-center gap-4 mt-9 pt-7 border-t border-earth/10 animate-fade-up"
             style={{ animationDelay: '420ms', animationFillMode: 'both' }}
           >
-            <div className="hidden md:flex -space-x-2 space-x-reverse">
-              {['A','i','A','G'].map((letter, i) => (
-                <div
-                  key={i}
-                  className="w-8 h-8 rounded-full border-2 border-cream bg-gradient-to-br from-sage/70 to-forest flex items-center justify-center text-white text-[11px] font-bold"
-                >
-                  {letter}
-                </div>
-              ))}
-            </div>
-            <div className="hidden md:block">
-              <div className="flex items-center gap-0.5 mb-0.5">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-3 h-3 fill-[#B8882A] text-[#B8882A]" />
-                ))}
-              </div>
-              <p className="text-earth/45 text-[11px] leading-tight">+200 בעלי כלבים שכבר בדקו</p>
-            </div>
+            <img src="/gaia-paw.png" alt="" aria-hidden="true" className="hidden md:block w-10 h-10 opacity-60" />
           </div>
 
         </div>
