@@ -20,9 +20,9 @@ function AafcoExplainer() {
       </button>
 
       {open && (
-        <div className="px-5 pb-5 text-xs text-mist leading-relaxed space-y-2 border-t border-stone/60 pt-4">
+        <div className="px-5 pb-5 text-sm text-mist leading-relaxed space-y-2 border-t border-stone/60 pt-4">
           <p>
-            AAFCO הוא אחד מהארגונים המקצועיים שקובע את פרופילי התזונה המלאה והמזינה לכלבים וחתולים, על בסיס מחקרים ותצפיות ארוכות שנים. הפרופילים שלהם מבוססים על המחקרים של גוף המחקר NRC והם היום למעשה הקו המנחה העיקרי בעולם שמגדיר את המינימום לתזונה מלאה ומאוזנת — כלומר רמות מינימום של ויטמינים ומינרלים שמתחתיהן נצפו תסמיני חוסרים ומחלות.
+            AAFCO הוא אחד מהארגונים המקצועיים שקובע את פרופילי התזונה המלאה והמזינה לכלבים וחתולים, על בסיס מחקרים ותצפיות ארוכות שנים. הפרופילים שלהם מבוססים על המחקרים של גוף המחקר NRC והם היום למעשה הקו המנחה העיקרי בעולם שמגדיר את המינימום לתזונה מלאה ומאוזנת - כלומר רמות מינימום של ויטמינים ומינרלים שמתחתיהן נצפו תסמיני חוסרים ומחלות.
           </p>
           <p>
             חשוב להבין שגם המילים ״מלא ומאוזן״ מטעות מעט - AAFCO מגדיר רק את <strong>הסף התזונתי המינימלי</strong> (ולחלק מהנוטריינטים גם תקרה בטוחה), <strong>ולא ״תפריט אידיאלי או מושלם״.</strong> ולכן מטרתנו היא לוודא שהתפריט של הכלב שלנו עומד <strong>לפחות</strong> בדרישות המינימום האלה, ורק לאחר מכן לגוון, להתאים ולהרחיב את התפריט באופן אישי לכלב לפי מצב בריאות, גיל וצרכים מיוחדים.
@@ -363,7 +363,7 @@ function RecipeInputRow({ row, onGramsChange, onRemove }) {
 
 /* ─── Coverage bar ───────────────────────────────────────────────────────────── */
 function CoverageBar({ pct }) {
-  if (pct == null) return <span className="text-mist text-xs">—</span>
+  if (pct == null) return <span className="text-mist text-xs">-</span>
   const capped   = Math.min(pct, 200)
   const barColor = pct < 100 ? 'bg-red-400' : pct > 100 ? 'bg-emerald-500' : 'bg-emerald-500'
   return (
@@ -438,7 +438,7 @@ function ResultsTable({ rows, totalKcal }) {
                   </td>
                   <td className="py-2.5 px-2 text-center tabular-nums text-mist">{row.aafcoMin}</td>
                   <td className="py-2.5 px-2 text-center tabular-nums text-mist">
-                    {row.aafcoMax != null ? row.aafcoMax : '—'}
+                    {row.aafcoMax != null ? row.aafcoMax : '-'}
                   </td>
                   <td className="py-2.5 px-3">
                     <CoverageBar pct={row.coveragePct} />
@@ -649,7 +649,7 @@ export default function AafcoBalanceCheck() {
             <div className="bg-white border border-stone rounded-3xl shadow-card p-5 relative z-10">
               <label className="text-sm font-semibold text-bark block mb-1">הוספת מרכיב</label>
               <p className="text-xs text-mist mb-3">
-                שמות באנגלית (USDA) — חפשו לפי שם <strong className="text-bark">באנגלית</strong>
+                שמות באנגלית (USDA) - חפשו לפי שם <strong className="text-bark">באנגלית</strong>
               </p>
               <IngredientSearch ingredients={ingredients} onAdd={handleAdd} />
               <p className="text-[11px] text-mist text-right mt-2">מתוך מאגר עדכני של {ingredients.length.toLocaleString('he-IL')} רכיבים</p>
@@ -722,7 +722,7 @@ export default function AafcoBalanceCheck() {
                     <div className="bg-white border border-stone rounded-3xl shadow-card p-5 sm:p-6">
                       <div className="flex items-center justify-between mb-4">
                         <h2 className="text-base font-semibold text-earth">
-                          תוצאות — {lifeStage === 'adult' ? 'כלב בוגר' : 'גידול / גור'}
+                          תוצאות - {lifeStage === 'adult' ? 'כלב בוגר' : 'גידול / גור'}
                         </h2>
                         {recalculating && (
                           <span className="text-xs text-mist animate-pulse-soft">מחשב מחדש…</span>
@@ -747,10 +747,10 @@ export default function AafcoBalanceCheck() {
             <div className="bg-amber-50 border border-amber-200 rounded-3xl p-5 space-y-2">
               <p className="text-sm font-bold text-amber-800">⚠️ שימו לב</p>
               <p className="text-xs text-amber-900 leading-relaxed">
-                המחשבון בודק מגוון רכיבי תזונה מרכזיים על פי הנחיות AAFCO, אך אינו כולל את כל הגורמים התזונתיים המשמעותיים בתזונה מלאה ומאוזנת. בנוסף, הוא אינו מתחשב ביחסים בין רכיבי התזונה — והיחסים חשובים. גם כאשר רכיב מסוים נראה מספק בכמותו, יחסים לא נכונים בין הרכיבים עלולים לפגוע בספיגה וליצור חסרים תזונתיים לאורך זמן.
+                המחשבון בודק מגוון רכיבי תזונה מרכזיים על פי הנחיות AAFCO, אך אינו כולל את כל הגורמים התזונתיים המשמעותיים בתזונה מלאה ומאוזנת. בנוסף, הוא אינו מתחשב ביחסים בין רכיבי התזונה - והיחסים חשובים. גם כאשר רכיב מסוים נראה מספק בכמותו, יחסים לא נכונים בין הרכיבים עלולים לפגוע בספיגה וליצור חסרים תזונתיים לאורך זמן.
               </p>
               <p className="text-xs font-semibold text-amber-800">
-                השתמשו במחשבון כנקודת התחלה — לא כנקודת סיום.
+                השתמשו במחשבון כנקודת התחלה - לא כנקודת סיום.
               </p>
             </div>
 
@@ -758,10 +758,10 @@ export default function AafcoBalanceCheck() {
             <div className="bg-parchment border border-stone/60 rounded-3xl p-5 space-y-1.5">
               <p className="text-xs text-bark font-semibold">הערות נוספות</p>
               <ul className="text-xs text-mist leading-relaxed space-y-1 list-disc list-inside">
-                <li>הנתונים מבוססים על ערכי USDA לאוכל אנושי — הרכב ספציפי יכול להשתנות לפי מקור ואיכות המרכיב.</li>
+                <li>הנתונים מבוססים על ערכי USDA לאוכל אנושי - הרכב ספציפי יכול להשתנות לפי מקור ואיכות המרכיב.</li>
                 <li>ההשוואה מול תקני AAFCO היא הערכה בלבד ואינה מחליפה ייעוץ וטרינרי או תזונתי.</li>
                 <li>
-                  לבניית תפריט מאוזן ומותאם אישית —{' '}
+                  לבניית תפריט מאוזן ומותאם אישית -{' '}
                   <Link to="/consultations" className="text-forest font-semibold hover:underline">
                     צרו קשר לייעוץ תזונתי
                   </Link>.

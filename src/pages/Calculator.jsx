@@ -146,7 +146,7 @@ function Results({ result, inputs, onReset, onBack }) {
         <div className="flex items-center gap-2 mb-4">
           <Utensils className="w-4 h-4 text-forest" />
           <h3 className="font-semibold text-earth">כמות אוכל יומית{inputs.name ? ` ל${inputs.name}` : ''}</h3>
-          <span className="text-sm text-mist">— {foodType?.label} • {result.customKcalPer100g > 0 ? result.customKcalPer100g * 10 : foodType?.kcalPer100g * 10} קק״ל/ק״ג{result.customKcalPer100g > 0 ? ' (מותאם אישית)' : ''}</span>
+          <span className="text-sm text-mist">- {foodType?.label} • {result.customKcalPer100g > 0 ? result.customKcalPer100g * 10 : foodType?.kcalPer100g * 10} קק״ל/ק״ג{result.customKcalPer100g > 0 ? ' (מותאם אישית)' : ''}</span>
         </div>
         <div className="flex items-end gap-2 mb-1">
           <span className="text-4xl font-bold text-forest">{dailyGrams.toLocaleString()}</span>
@@ -200,7 +200,7 @@ function Results({ result, inputs, onReset, onBack }) {
       <div className="bg-parchment rounded-2xl p-4 text-xs text-mist">
         <ul className="space-y-1.5 list-disc list-inside">
           <li>החישוב מהווה הערכה מבוססת נוסחאות וטרינריות מקובלות ואינו מחליף ייעוץ מקצועי.</li>
-          <li>התוצאה היא נקודת פתיחה בלבד — כל כלב שונה, ויש לעקוב אחר משקל, BCS, רמת פעילות ומצב בריאותי ולהתאים בהתאם.</li>
+          <li>התוצאה היא נקודת פתיחה בלבד - כל כלב שונה, ויש לעקוב אחר משקל, BCS, רמת פעילות ומצב בריאותי ולהתאים בהתאם.</li>
           <li>לתוכנית מדויקת ומותאמת אישית מומלץ לקבוע ייעוץ עם וטרינר/ית או תזונאי/ת.</li>
         </ul>
       </div>
@@ -242,13 +242,13 @@ function Results({ result, inputs, onReset, onBack }) {
 // 7 positions — all sheet levels exposed (Inactive → Working).
 // Scale renders RTL: low (right) → work (left), matching Hebrew reading direction.
 const ACTIVITY_STEPS = [
-  { id: 'low',           anchor: 'לא פעיל',   desc: 'לא פעיל — כלב ביתי לגמרי, מסתפק בטיולים קצרצרים לצרכים ושגרה ביתית שקטה עם מעט מאמץ פיזי.'                        },
-  { id: 'low_plus',      anchor: null,          desc: 'לא פעיל+ — כלב עם שגרה ביתית רגועה מאוד, רגיש לעומס, טיולים קצרצרים ושקטים וגירוי מנטלי עדין.'                },
-  { id: 'moderate',      anchor: 'רגיל',       desc: 'רגיל — כלב בית טיפוסי, נהנה מטיול יומי ומשחקים פשוטים, רמת פעילות מתונה לבית עירוני.'                        },
-  { id: 'moderate_plus', anchor: null,          desc: 'רגיל+ — כלב עם יותר אנרגיה וגירוי, טיולים ומשחקים יומיים מגוונים, מסתגל לשגרה משפחתית פעילה.'              },
-  { id: 'active',        anchor: 'פעיל',       desc: 'פעיל — כלב הזקוק לטיולים ארוכים יותר, ריצות קצרות או משחק אנרגטי כמה פעמים בשבוע ואילוף בסיסי.'            },
-  { id: 'active_plus',   anchor: null,          desc: 'פעיל+ — כלב אנרגטי מאוד, נהנה מפעילות פיזית משמעותית ורב‑שבועית וגירוי קוגניטיבי עקבי.'                    },
-  { id: 'work',          anchor: 'כלב עבודה',  desc: 'כלב עבודה — כלב עם פעילות גבוהה ומובנית למשימות כמו ספורט, שמירה, ציד או רעייה, כולל אימון פיזי ומנטלי.'   },
+  { id: 'low',           anchor: 'לא פעיל',   desc: 'לא פעיל - כלב ביתי לגמרי, מסתפק בטיולים קצרצרים לצרכים ושגרה ביתית שקטה עם מעט מאמץ פיזי.'                        },
+  { id: 'low_plus',      anchor: null,          desc: 'לא פעיל+ - כלב עם שגרה ביתית רגועה מאוד, רגיש לעומס, טיולים קצרצרים ושקטים וגירוי מנטלי עדין.'                },
+  { id: 'moderate',      anchor: 'רגיל',       desc: 'רגיל - כלב בית טיפוסי, נהנה מטיול יומי ומשחקים פשוטים, רמת פעילות מתונה לבית עירוני.'                        },
+  { id: 'moderate_plus', anchor: null,          desc: 'רגיל+ - כלב עם יותר אנרגיה וגירוי, טיולים ומשחקים יומיים מגוונים, מסתגל לשגרה משפחתית פעילה.'              },
+  { id: 'active',        anchor: 'פעיל',       desc: 'פעיל - כלב הזקוק לטיולים ארוכים יותר, ריצות קצרות או משחק אנרגטי כמה פעמים בשבוע ואילוף בסיסי.'            },
+  { id: 'active_plus',   anchor: null,          desc: 'פעיל+ - כלב אנרגטי מאוד, נהנה מפעילות פיזית משמעותית ורב‑שבועית וגירוי קוגניטיבי עקבי.'                    },
+  { id: 'work',          anchor: 'כלב עבודה',  desc: 'כלב עבודה - כלב עם פעילות גבוהה ומובנית למשימות כמו ספורט, שמירה, ציד או רעייה, כולל אימון פיזי ומנטלי.'   },
 ]
 
 /* ─── Main Calculator ─────────────────────────────────────── */
@@ -523,7 +523,7 @@ export default function Calculator() {
                         </div>
                         {!showBcsInfo && (
                           <span className="text-sm font-bold text-forest tabular-nums">
-                            9 / {hoveredBcs ?? inputs.bcsScore}&nbsp;—&nbsp;
+                            9 / {hoveredBcs ?? inputs.bcsScore}&nbsp;-&nbsp;
                             {['רזה מאוד','רזה','מתחת לאידאל','אידאלי רזה','אידאלי','מעט מעל אידאלי','עודף משקל','עודף משמעותי','השמנה חמורה'][(hoveredBcs ?? inputs.bcsScore) - 1]}
                           </span>
                         )}
@@ -714,7 +714,7 @@ export default function Calculator() {
                         קלוריות המזון שלכם (אופציונלי - מומלץ!)
                       </label>
                       <div className="mb-2" ref={calorieInfoRef}>
-                        <p className="text-xs text-mist">אם ידועה לכם הצפיפות הקלורית המדויקת מתווית המוצר — הזינו אותה כאן{'  '}
+                        <p className="text-xs text-mist">אם ידועה לכם הצפיפות הקלורית המדויקת מתווית המוצר - הזינו אותה כאן{'  '}
                           <button
                             type="button"
                             onClick={() => setShowCalorieInfo(v => !v)}
@@ -734,7 +734,7 @@ export default function Calculator() {
                         showCalorieInfo ? 'max-h-96 opacity-100 mb-3' : 'max-h-0 opacity-0',
                       )}>
                         <div className="bg-parchment rounded-2xl p-4 text-xs text-bark leading-relaxed">
-                          מומלץ להזין את הצפיפות הקלורית המדויקת של המזון כדי לקבל חישוב מדויק יותר. במוצרים קנויים לרוב ניתן למצוא את כמות הקלוריות על גבי האריזה. אם אין לכם את הנתון, המחשבון ישתמש בערך ברירת מחדל המבוסס על הערכה ממוצעת של מוצרים דומים בשוק ומתכונים נפוצים — כנקודת התחלה הגיונית.{' '}
+                          מומלץ להזין את הצפיפות הקלורית המדויקת של המזון כדי לקבל חישוב מדויק יותר. במוצרים קנויים לרוב ניתן למצוא את כמות הקלוריות על גבי האריזה. אם אין לכם את הנתון, המחשבון ישתמש בערך ברירת מחדל המבוסס על הערכה ממוצעת של מוצרים דומים בשוק ומתכונים נפוצים - כנקודת התחלה הגיונית.{' '}
                           רוצים לחשב כמה קלוריות בתזונה של הכלב שלכם? השתמשו ב<Link to="/natural-calorie-calculator" className="font-semibold text-forest underline underline-offset-2 hover:text-forest-dark">מחשבון</Link>!
                         </div>
                       </div>

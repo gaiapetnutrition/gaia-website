@@ -38,7 +38,7 @@ export default function Footer() {
               </Link>
             </div>
             <p className="text-sm leading-relaxed max-w-xs text-white/60">
-              ידע על תזונה טבעית לכלבים מבוססת מדע — שילוב ייחודי של ידע מדעי עם פילוסופיית מזון מלא ובריאות הוליסטית.
+              ידע על תזונה טבעית לכלבים מבוססת מדע - שילוב ייחודי של ידע מדעי עם פילוסופיית מזון מלא ובריאות הוליסטית.
             </p>
             <div className="flex items-center gap-2 pt-1">
               <a

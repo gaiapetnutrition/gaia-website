@@ -104,7 +104,7 @@ function Hero() {
               className="block animate-fade-up"
               style={{ animationDelay: '80ms', animationFillMode: 'both' }}
             >
-              הבית לתזונה טבעית לכלבים —{' '}
+              הבית לתזונה טבעית לכלבים -{' '}
               <span className="text-forest italic">מלאה ומאוזנת</span>
             </span>
           </h1>
@@ -322,13 +322,13 @@ function ScrollSplitBowl() {
     <div>
       {/* Section heading — scrolls in before bowl pins */}
       <div className="bg-cream text-center px-4 pt-14 pb-4">
-        <span className="eyebrow block mb-3 text-[1.15em]" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>החלטתם לעבור לתזונה טבעית — מצוין!<br /><br />אבל...</span>
+        <span className="eyebrow block mb-3 text-[1.15em]" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>החלטתם לעבור לתזונה טבעית - מצוין!<br /><br />אבל...</span>
         <h2 className="text-display-md font-serif text-earth" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
-          טבעי זה לא מספיק ויכול גם לפגוע — צריך גם{' '}
+          טבעי זה לא מספיק ויכול גם לפגוע - צריך גם{' '}
           <span className="text-forest font-bold underline decoration-2 underline-offset-4 pb-0.5">נכון</span>
         </h2>
         <p className="text-mist mt-3 max-w-xl mx-auto text-[1.218rem] leading-relaxed" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
-          אנחנו בוחרים מה להאכיל את הכלבים שלנו <strong className="font-semibold text-earth/80">לשארית ימי חייהם</strong>.<br />בלי <strong className="font-semibold text-earth/80">האיזון</strong> הנכון — אנחנו עלולים להזיק יותר מאשר להועיל.
+          אנחנו בוחרים מה להאכיל את הכלבים שלנו <strong className="font-semibold text-earth/80">כל יום לשארית ימי חייהם</strong>.<br />בלי <strong className="font-semibold text-earth/80">האיזון</strong> הנכון - אנחנו עלולים להזיק יותר מאשר להועיל.
         </p>
       </div>
 
@@ -367,21 +367,21 @@ function Philosophy() {
     {
       icon: <FlaskConical className="w-6 h-6" />,
       title: 'מבוסס על מחקר',
-      desc: <>כל תוכן והמלצה מבוססים על תקני AAFCO ו-NRC — <strong className="font-semibold text-earth/80">הסטנדרטים המובילים בעולם</strong> לתזונת כלבים מלאה. בלי טרנדים, בלי תחושות בטן, בלי ניחושים.</>,
+      desc: <>כל תוכן והמלצה מבוססים על תקני AAFCO ו-NRC - <strong className="font-semibold text-earth/80">הסטנדרטים המובילים בעולם</strong> לתזונת כלבים מלאה. בלי טרנדים, בלי תחושות בטן, בלי ניחושים.</>,
       accent: 'border-t-[3px] border-t-honey',
       iconBg: 'bg-honey/10 text-honey',
     },
     {
       icon: <Leaf className="w-6 h-6" />,
       title: 'טבעי הוליסטי',
-      desc: <>דגש מרכזי על אוכל <strong className="font-semibold text-earth/80">אמיתי, שלם ומגוון</strong> מאוד כמקור ראשון, עם כמה שפחות תוספים סינטטיים — כבסיס יומיומי מזין לבריאות ואריכות ימים.</>,
+      desc: <>דגש מרכזי על אוכל <strong className="font-semibold text-earth/80">אמיתי, שלם ומגוון</strong> מאוד כמקור ראשון, עם כמה שפחות תוספים סינטטיים - כבסיס יומיומי מזין לבריאות ואריכות ימים.</>,
       accent: 'border-t-[3px] border-t-olive',
       iconBg: 'bg-olive/10 text-olive',
     },
     {
       icon: <Heart className="w-6 h-6" />,
       title: 'מותאם לכלב שלך',
-      desc: <>כל כלב שונה — גיל, משקל, רמת פעילות, מצב בריאותי. המידע, הכלים והייעוצים משרתים את <strong className="font-semibold text-earth/80">הכלב הספציפי שלך</strong>.</>,
+      desc: <>כל כלב שונה - גיל, משקל, רמת פעילות, מצב בריאותי. המידע, הכלים והייעוצים משרתים את <strong className="font-semibold text-earth/80">הכלב הספציפי שלך</strong>.</>,
       accent: 'border-t-[3px] border-t-[#502814]',
       iconBg: 'bg-[#502814]/10 text-[#502814]',
     },
@@ -411,14 +411,14 @@ function Philosophy() {
           <div className="w-10 border-t border-earth/20 mx-auto my-3" />
           <div className="flex justify-center my-3">
             <h2 className="text-display-md font-serif text-earth md:whitespace-nowrap text-balance text-center">
-              נקודת התחלה של מלא ומאוזן — לפי תקנים בינלאומיים
+              נקודת התחלה של מלא ומאוזן - לפי תקנים בינלאומיים
             </h2>
           </div>
           <p className="font-serif text-earth font-bold text-[calc(1rem*1.2*1.1)] mb-4 tracking-wide">
             בלי ניחושים.
           </p>
           <p className="text-mist leading-relaxed max-w-lg mx-auto">
-            תזונה מבוססת מדע ותזונה טבעית הוליסטית לא סותרות —
+            תזונה מבוססת מדע ותזונה טבעית הוליסטית לא סותרות -
             <span className="block font-semibold text-earth/75 mt-1 text-[1.15em]">הן משלימות.</span>
 
           </p>
@@ -462,14 +462,14 @@ function WhatYouFind() {
       icon: <BookOpen className="w-5 h-5" />,
       color: 'bg-honey/10 text-honey',
       title: 'מאמרים',
-      desc: 'תוכן מקצועי על תזונה טבעית — מבוסס מחקר, נגיש ומעשי.',
+      desc: 'תוכן מקצועי על תזונה טבעית - מבוסס מחקר, נגיש ומעשי.',
       cta: { label: 'לקריאת המאמרים', path: '/articles' },
     },
     {
       icon: <Users className="w-5 h-5" />,
       color: 'bg-olive/10 text-olive',
       title: 'ייעוץ אישי',
-      desc: 'ליווי מותאם לצרכי הכלב שלכם — תפריט מדויק, מחושב ומאוזן.',
+      desc: 'ליווי מותאם לצרכי הכלב שלכם - תפריט מדויק, מחושב ומאוזן.',
       cta: { label: 'לתיאום ייעוץ', path: '/consultations' },
     },
   ]
@@ -489,7 +489,7 @@ function WhatYouFind() {
         >
           <h2 className="text-display-sm text-forest mt-1">מה תמצאו פה?</h2>
           <p className="text-mist text-sm mt-3 leading-relaxed">
-            כלים פרקטיים, ידע מקצועי וליווי אישי — לתזונה טבעית, מדויקת ומאוזנת.
+            כלים פרקטיים, ידע מקצועי וליווי אישי - לתזונה טבעית, מדויקת ומאוזנת.
           </p>
         </div>
 
@@ -539,14 +539,14 @@ function HowItWorks() {
       num: '02',
       icon: <BookOpen className="w-5 h-5" />,
       title: 'הבינו מה חסר',
-      desc: <>קבלו <strong className="font-semibold text-earth/80">תמונה ברורה</strong> של מה התפריט נותן — ומה הוא מפספס.</>,
+      desc: <>קבלו <strong className="font-semibold text-earth/80">תמונה ברורה</strong> של מה התפריט נותן - ומה הוא מפספס.</>,
       cta: null,
     },
     {
       num: '03',
       icon: <Calendar className="w-5 h-5" />,
       title: 'בנו תפריט שעובד',
-      desc: <>לבד עם הכלים, או איתנו בייעוץ אישי — תצאו עם תפריט שאתם יכולים <strong className="font-semibold text-earth/80">לסמוך עליו</strong>.</>,
+      desc: <>לבד עם הכלים, או איתנו בייעוץ אישי - תצאו עם תפריט שאתם יכולים <strong className="font-semibold text-earth/80">לסמוך עליו</strong>.</>,
       cta: { label: 'צריכים עזרה? אנחנו פה', path: '/consultations' },
     },
   ]
@@ -713,7 +713,7 @@ function CTABanner() {
           <div className="relative z-10 max-w-lg mx-auto">
             <span className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-[0.08em] uppercase text-white/55 border border-white/20 px-3 py-1 rounded-full mb-6">
               <img src="/gaia-paw.png" alt="" className="w-3 h-3 opacity-80" style={{ filter: 'brightness(0) invert(1)' }} />
-              מתחילים היום — בחינם
+              מתחילים היום - בחינם
             </span>
             <h2 className="text-display-sm md:text-display-md font-serif text-white mb-3 text-balance leading-tight">
               לא בטוחים שהתפריט של הכלב שלכם מלא ומאוזן?

@@ -209,7 +209,7 @@ function RecipeRow({ row, onUpdateGrams, onRemove }) {
           'text-sm font-semibold tabular-nums',
           kcal > 0 ? 'text-forest' : 'text-stone-dark',
         )}>
-          {kcal > 0 ? Math.round(kcal) : '—'}
+          {kcal > 0 ? Math.round(kcal) : '-'}
         </span>
       </td>
 
@@ -242,7 +242,7 @@ function ResultsBox({ totalKcal, kcalPerServing, servings, totalGrams }) {
         <div>
           <div className="text-xs opacity-60 mb-1">סך קלוריות במתכון</div>
           <div className="text-3xl font-bold tabular-nums leading-none">
-            {hasData ? Math.round(totalKcal).toLocaleString('he-IL') : '—'}
+            {hasData ? Math.round(totalKcal).toLocaleString('he-IL') : '-'}
           </div>
           {hasData && <div className="text-xs opacity-50 mt-1">קק"ל</div>}
         </div>
@@ -250,7 +250,7 @@ function ResultsBox({ totalKcal, kcalPerServing, servings, totalGrams }) {
         <div className="border-r border-white/20 pr-4">
           <div className="text-xs opacity-60 mb-1">לכלב אחד</div>
           <div className="text-3xl font-bold tabular-nums leading-none">
-            {hasData ? Math.round(kcalPerServing).toLocaleString('he-IL') : '—'}
+            {hasData ? Math.round(kcalPerServing).toLocaleString('he-IL') : '-'}
           </div>
           {hasData && <div className="text-xs opacity-50 mt-1">קק"ל</div>}
         </div>
@@ -445,13 +445,13 @@ export default function NaturalCalorieCalculator() {
                               <td className="py-2.5 px-3 sm:px-4 text-xs font-bold text-bark text-right">סך הכל</td>
                               <td className="py-2.5 px-2 sm:px-4 text-center">
                                 <span className="text-sm font-bold text-bark tabular-nums">
-                                  {totalGrams > 0 ? totalGrams.toLocaleString('he-IL') : '—'}
+                                  {totalGrams > 0 ? totalGrams.toLocaleString('he-IL') : '-'}
                                   {totalGrams > 0 && <span className="text-xs font-normal text-mist mr-0.5"> ג׳</span>}
                                 </span>
                               </td>
                               <td className="py-2.5 px-2 sm:px-4 text-center">
                                 <span className="text-sm font-bold text-forest tabular-nums">
-                                  {totalKcal > 0 ? Math.round(totalKcal).toLocaleString('he-IL') : '—'}
+                                  {totalKcal > 0 ? Math.round(totalKcal).toLocaleString('he-IL') : '-'}
                                 </span>
                               </td>
                               <td className="py-2.5 px-2 sm:px-4 w-10" />
@@ -508,10 +508,10 @@ export default function NaturalCalorieCalculator() {
           <div className="bg-parchment border border-stone/60 rounded-3xl p-5 space-y-2">
             <p className="text-xs text-bark font-semibold">הערות חשובות</p>
             <ul className="text-xs text-mist leading-relaxed space-y-1 list-disc list-inside">
-              <li>החישוב מבוסס על נתוני מזון אנושיים (USDA) ומהווה הערכה בלבד — הערכים עשויים להשתנות לפי מקור, זמן בישול ואיכות המרכיב.</li>
-              <li>המחשבון לא בודק איזון תזונתי מלא לכלבים — חלבון, ויטמינים, מינרלים ועוד.</li>
+              <li>החישוב מבוסס על נתוני מזון אנושיים (USDA) ומהווה הערכה בלבד - הערכים עשויים להשתנות לפי מקור, זמן בישול ואיכות המרכיב.</li>
+              <li>המחשבון לא בודק איזון תזונתי מלא לכלבים - חלבון, ויטמינים, מינרלים ועוד.</li>
               <li>
-                לתפריט מאוזן ומותאם אישית לכלבכם —{' '}
+                לתפריט מאוזן ומותאם אישית לכלבכם -{' '}
                 <Link to="/consultations" className="text-forest font-semibold hover:underline">
                   צרו קשר לייעוץ תזונתי
                 </Link>

@@ -69,7 +69,7 @@ function getRisk(dosePerKg) {
   }
   return {
     level: 'critical',
-    label: 'מצב חירום — טיפול וטרינרי דחוף',
+    label: 'מצב חירום - טיפול וטרינרי דחוף',
     bg: 'bg-red-900', text: 'text-white',
     summary: 'הכלב שלכם צרך כמות קריטית של שוקולד וחייו עשויים להיות בסכנה. פנו מיידית לטיפול וטרינרי דחוף!',
   }
@@ -350,7 +350,7 @@ export default function ChocolateCalculator() {
                       ))}
                     </div>
                     <p className="mt-4 text-xs text-mist leading-relaxed border-t border-stone/60 pt-3">
-                      ללא קשר לכמות שנצרכה — אם הכלב שלכם מציג תסמינים כלשהם מרגע החשיפה ועד 48 שעות לאחר מכן, פנו לוטרינר בהקדם האפשרי.
+                      ללא קשר לכמות שנצרכה - אם הכלב שלכם מציג תסמינים כלשהם מרגע החשיפה ועד 48 שעות לאחר מכן, פנו לוטרינר בהקדם האפשרי.
                     </p>
                   </div>
 
