@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 import {
-  FlaskConical, Leaf, Heart, ShieldCheck, ArrowLeft,
-  Calculator, Calendar, BookOpen, Star, ChevronDown,
-  Microscope, Award, Users
+  FlaskConical, Leaf, Heart, ArrowLeft,
+  Calculator, Calendar, BookOpen, Star,
+  Users
 } from 'lucide-react'
 import Button from '../components/ui/Button'
 import Badge from '../components/ui/Badge'

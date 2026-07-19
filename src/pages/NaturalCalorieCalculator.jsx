@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { Search, X, ChevronLeft } from 'lucide-react'
+import { Search, X } from 'lucide-react'
 import clsx from 'clsx'
 import Button from '../components/ui/Button'
 

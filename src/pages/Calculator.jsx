@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Calculator as CalcIcon, ChevronLeft, ChevronRight,
-  RotateCcw, Calendar, PawPrint, Utensils, Zap,
+  RotateCcw, Utensils, Zap,
   ArrowLeft, Info, CheckCircle2
 } from 'lucide-react'
 import clsx from 'clsx'
@@ -11,8 +11,8 @@ import Badge from '../components/ui/Badge'
 import Slider from '../components/ui/Slider'
 import { calculate, FOOD_TYPES } from '../utils/calculatorLogic'
 import {
-  RadialBarChart, RadialBar, PieChart, Pie, Cell,
-  Tooltip, ResponsiveContainer
+  PieChart, Pie, Cell,
+  ResponsiveContainer
 } from 'recharts'
 
 /* ─── Option card button ─────────────────────────────────── */

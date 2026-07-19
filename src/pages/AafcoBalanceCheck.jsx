@@ -493,10 +493,6 @@ export default function AafcoBalanceCheck() {
       fetch('/aafco_dog_per_1000kcal.json',   { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error('aafco_dog_per_1000kcal.json');  return r.json() }),
     ])
       .then(([ingData, aafco]) => {
-        // DEBUG: confirm kelp iodine loaded from JSON
-        const kelp = ingData.find(r => r.id === 168457)
-        console.log('[AAFCO] kelp loaded from JSON:', kelp ? { id: kelp.id, name: kelp.name, Iodine: kelp.n?.Iodine } : 'NOT FOUND')
-
         setIngredients(ingData.map(r => ({ id: r.id, name: r.name, kcal: r.kcal })))
         setIngredientsById(new Map(ingData.map(r => [r.id, r])))
         setAafcoData(aafco)
@@ -525,11 +521,6 @@ export default function AafcoBalanceCheck() {
     debounceRef.current = setTimeout(() => {
       const recipeRows = recipe.map(r => ({ id: r.id, grams: Number(r.grams) || 0 }))
       const res = compareToAafco(recipeRows, aafcoData, ingredientsById, lifeStage)
-
-      // DEBUG: log Iodine row so we can confirm per1000 changes when kelp is added
-      const iodineRow = res.rows.find(r => r.nutrient === 'Iodine')
-      console.log('[AAFCO] Iodine row:', iodineRow)
-      console.log('[AAFCO] recipe ingredients:', recipe.map(r => `${r.name} (${r.grams}g)`))
 
       setResult(res)
       setRecalculating(false)

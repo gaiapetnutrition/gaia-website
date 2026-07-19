@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import {
   CheckCircle, ChevronDown, ChevronUp, Clock, ArrowLeft,
-  FlaskConical, FileText, Heart, Users, AlertCircle,
+  FlaskConical, FileText, Heart, AlertCircle,
 } from 'lucide-react'
 
 /* ─── Scroll reveal hook ─────────────────────────────────────── */
