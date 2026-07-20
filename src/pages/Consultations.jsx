@@ -503,12 +503,9 @@ export default function Consultations() {
       if (e.key === 'Escape') window.Calendly?.closePopupWidget()
     }
     const onOverlay = e => {
-      const overlay = document.querySelector('.calendly-overlay')
-      const popup   = document.querySelector('.calendly-popup')
-      if (!overlay || !popup || !overlay.contains(e.target)) return
-      const { left, right, top, bottom } = popup.getBoundingClientRect()
-      const outside = e.clientX < left || e.clientX > right || e.clientY < top || e.clientY > bottom
-      if (outside) window.Calendly?.closePopupWidget()
+      const popup = document.querySelector('.calendly-popup')
+      if (!popup || popup.contains(e.target)) return
+      window.Calendly?.closePopupWidget()
     }
     document.addEventListener('keydown', onKey)
     document.addEventListener('click', onOverlay)
@@ -612,6 +609,7 @@ export default function Consultations() {
               className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-forest text-cream font-bold rounded-xl hover:bg-forest/90 transition-colors duration-200 text-sm"
               onClick={e => {
                 e.preventDefault()
+                e.stopPropagation()
                 window.Calendly?.initPopupWidget({ url: 'https://calendly.com/gaiapetnutrition/meet-with-me?background_color=faf7f0&text_color=1e1e1b&primary_color=3b5e41' })
               }}
             >
@@ -623,6 +621,7 @@ export default function Consultations() {
               className="inline-flex items-center gap-2 text-forest font-semibold text-sm hover:text-forest-dark transition-colors duration-200"
               onClick={e => {
                 e.preventDefault()
+                e.stopPropagation()
                 window.Calendly?.initPopupWidget({ url: 'https://calendly.com/gaiapetnutrition/30min?background_color=faf7f0&text_color=1e1e1b&primary_color=3b5e41' })
               }}
             >
@@ -1086,6 +1085,7 @@ export default function Consultations() {
               className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-white text-forest font-bold rounded-xl hover:bg-cream transition-colors duration-200 text-sm"
               onClick={e => {
                 e.preventDefault()
+                e.stopPropagation()
                 window.Calendly?.initPopupWidget({ url: 'https://calendly.com/gaiapetnutrition/meet-with-me?background_color=faf7f0&text_color=1e1e1b&primary_color=3b5e41' })
               }}
             >
@@ -1093,7 +1093,7 @@ export default function Consultations() {
             </a>
             <a
               href="#"
-              onClick={e => { e.preventDefault(); window.Calendly?.initPopupWidget({ url: 'https://calendly.com/gaiapetnutrition/30min?background_color=faf7f0&text_color=1e1e1b&primary_color=3b5e41' }) }}
+              onClick={e => { e.preventDefault(); e.stopPropagation(); window.Calendly?.initPopupWidget({ url: 'https://calendly.com/gaiapetnutrition/30min?background_color=faf7f0&text_color=1e1e1b&primary_color=3b5e41' }) }}
               className="inline-flex items-center justify-center gap-2 px-7 py-3.5 border border-white/30 text-white font-semibold rounded-xl hover:bg-white/[0.08] transition-colors duration-200 text-sm cursor-pointer"
             >
               לשיחת היכרות

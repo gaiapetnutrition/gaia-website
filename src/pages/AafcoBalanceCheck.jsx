@@ -457,8 +457,8 @@ function ResultsTable({ rows, totalKcal }) {
 
       {/* Footnote for "בטווח התקין*" */}
       {ok > 0 && (
-        <p className="text-[11px] text-mist leading-relaxed pt-1 pr-0.5">
-          <sup className="text-[9px] mr-0.5">*</sup>
+        <p className="text-xs text-mist leading-relaxed pt-1 pr-0.5">
+          <sup className="text-[10px] mr-0.5">*</sup>
           עמידה בטווח התקין לפי הנחיות AAFCO פירושה רק שמזון זה עומד ברמות המינימום (ואם מוגדר – גם המקסימום) של רכיבי התזונה עבור שלב החיים המצוין. היא אינה מבטיחה שהרכיב התזונתי נמצא ברמה האופטימלית עבור חיית המחמד האישית שלך או עבור צרכים בריאותיים ספציפיים, ולכן יש להשתמש בתוצאות אלו כהנחיה כללית בלבד ולהתייעץ עם וטרינר/ית או תזונאי/ת לקבלת ייעוץ מותאם אישית.
         </p>
       )}
