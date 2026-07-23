@@ -14,6 +14,8 @@ export default defineConfig({
     entries: ['index.html'],
   },
   server: {
+    port: 5174,
+    host: true,
     watch: {
       ignored: ['**/גאיה*/**'],
     },

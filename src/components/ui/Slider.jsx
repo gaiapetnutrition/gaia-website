@@ -5,7 +5,10 @@ export default function Slider({ label, value, min = 0, max = 100, step = 1, uni
     <div className="flex flex-col gap-2">
       {label && (
         <div className="flex justify-between items-baseline">
-          <label className="text-sm font-medium text-bark">{label}</label>
+          <div className="flex items-baseline gap-1.5">
+            <label className="text-sm font-medium text-bark">{label}</label>
+            {hint && <span className="text-xs text-mist">{hint}</span>}
+          </div>
           <span className="text-sm font-bold text-forest tabular-nums">
             {value}{unit}
           </span>
@@ -36,7 +39,6 @@ export default function Slider({ label, value, min = 0, max = 100, step = 1, uni
         <span>{min}{unit}</span>
         <span>{max}{unit}</span>
       </div>
-      {hint && <p className="text-xs text-mist -mt-1">{hint}</p>}
     </div>
   )
 }
