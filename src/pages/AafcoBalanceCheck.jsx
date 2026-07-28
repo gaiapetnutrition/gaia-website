@@ -489,8 +489,8 @@ export default function AafcoBalanceCheck() {
   /* Load both JSON files in parallel — no-store prevents stale iodine data from browser cache */
   useEffect(() => {
     Promise.all([
-      fetch('/ingredient_nutrients_all.json', { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error('ingredient_nutrients_all.json'); return r.json() }),
-      fetch('/aafco_dog_per_1000kcal.json',   { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error('aafco_dog_per_1000kcal.json');  return r.json() }),
+      fetch('/.netlify/functions/ingredient-nutrients-all', { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error('ingredient_nutrients_all.json'); return r.json() }),
+      fetch('/.netlify/functions/aafco-dog-per-1000kcal',   { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error('aafco_dog_per_1000kcal.json');  return r.json() }),
     ])
       .then(([ingData, aafco]) => {
         setIngredients(ingData.map(r => ({ id: r.id, name: r.name, kcal: r.kcal })))

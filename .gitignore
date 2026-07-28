@@ -48,3 +48,6 @@ GAiA*.png
 # Non-app docs / scratch folders
 ONBOARDING.md
 Calculator/
+
+# Local Netlify folder
+.netlify

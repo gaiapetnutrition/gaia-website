@@ -295,7 +295,7 @@ export default function NaturalCalorieCalculator() {
 
   /* Fetch ingredient list once on mount */
   useEffect(() => {
-    fetch('/ingredient_calorie_list.json')
+    fetch('/.netlify/functions/ingredient-calorie-list')
       .then(res => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.json() })
       .then(data => { setIngredients(data); setLoading(false) })
       .catch(err => { setError(err.message); setLoading(false) })
