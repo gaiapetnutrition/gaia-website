@@ -1,11 +1,9 @@
-import fs from 'fs'
-import path from 'path'
-import { fileURLToPath } from 'url'
+const fs = require('fs')
+const path = require('path')
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const filePath = path.join(__dirname, 'data', 'ingredient_calorie_list.json')
 
-export const handler = async function () {
+exports.handler = async function () {
   const body = fs.readFileSync(filePath, 'utf8')
   return {
     statusCode: 200,
