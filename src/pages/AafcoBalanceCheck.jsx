@@ -486,6 +486,10 @@ function ResultsTable({ rows, totalKcal }) {
   )
 }
 
+// Temporarily disabled ingredients — excluded from the search/picker below.
+// Remove an id from this list to re-enable it; the underlying data is untouched.
+const DISABLED_INGREDIENT_IDS = [999001, 999002] // NOW Kelp Powder, Bone Meal Powder NOW
+
 /* ─── Main page ──────────────────────────────────────────────────────────────── */
 export default function AafcoBalanceCheck() {
   /* Data loading */
@@ -513,8 +517,9 @@ export default function AafcoBalanceCheck() {
       fetch('/.netlify/functions/aafco-dog-per-1000kcal',   { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error('aafco_dog_per_1000kcal.json');  return r.json() }),
     ])
       .then(([ingData, aafco]) => {
-        setIngredients(ingData.map(r => ({ id: r.id, name: r.name, kcal: r.kcal })))
-        setIngredientsById(new Map(ingData.map(r => [r.id, r])))
+        const enabledIngData = ingData.filter(r => !DISABLED_INGREDIENT_IDS.includes(r.id))
+        setIngredients(enabledIngData.map(r => ({ id: r.id, name: r.name, kcal: r.kcal })))
+        setIngredientsById(new Map(enabledIngData.map(r => [r.id, r])))
         setAafcoData(aafco)
         setLoading(false)
       })
