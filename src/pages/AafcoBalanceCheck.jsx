@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import { Search, X, RotateCcw, ChevronDown } from 'lucide-react'
+import { Search, X, RotateCcw, ChevronDown, MoveHorizontal } from 'lucide-react'
 import clsx from 'clsx'
 import Button from '../components/ui/Button'
 import { compareToAafco, NUTRIENT_LABELS, CHLORIDE_NOTE } from '../utils/aafcoLogic'
@@ -423,9 +423,16 @@ function ResultsTable({ rows, totalKcal }) {
         </div>
       </div>
 
+      {/* Mobile-only hint: table scrolls sideways */}
+      <div className="sm:hidden flex items-center justify-center gap-1.5 text-xs text-mist">
+        <MoveHorizontal size={14} className="flex-shrink-0" />
+        ניתן לגלול הטבלה לצדדים לצפייה בכל הנתונים
+      </div>
+
       {/* Table */}
-      <div className="overflow-x-auto rounded-2xl border border-stone/60">
-        <table className="w-full min-w-[560px] text-sm">
+      <div className="relative">
+        <div className="overflow-x-auto rounded-2xl border border-stone/60">
+          <table className="w-full min-w-[560px] text-sm">
           <thead>
             <tr className="bg-parchment border-b border-stone/60">
               <th className="py-2.5 px-3 text-right text-xs font-semibold text-mist">רכיב תזונתי</th>
@@ -472,7 +479,10 @@ function ResultsTable({ rows, totalKcal }) {
               )
             })}
           </tbody>
-        </table>
+          </table>
+        </div>
+        {/* Mobile-only fade hinting more content to scroll to (RTL: content continues leftward) */}
+        <div className="sm:hidden pointer-events-none absolute inset-y-0 left-0 w-8 rounded-l-2xl bg-gradient-to-l from-transparent to-white" />
       </div>
 
       {/* Footnote for "בטווח התקין*" */}
