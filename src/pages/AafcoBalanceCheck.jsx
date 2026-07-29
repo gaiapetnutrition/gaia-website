@@ -36,6 +36,7 @@ function AafcoExplainer() {
 /* ─── Growth life-stage info tooltip ────────────────────────────────────────── */
 function GrowthInfoTooltip() {
   const [open, setOpen] = useState(false)
+  const [direction, setDirection] = useState('up') // 'up' | 'down'
   const ref = useRef(null)
 
   useEffect(() => {
@@ -46,19 +47,35 @@ function GrowthInfoTooltip() {
     function handleKey(e) {
       if (e.key === 'Escape') setOpen(false)
     }
+    function handleScroll() {
+      setOpen(false)
+    }
     document.addEventListener('mousedown', handleClick)
     document.addEventListener('keydown', handleKey)
+    window.addEventListener('scroll', handleScroll, { capture: true, passive: true })
     return () => {
       document.removeEventListener('mousedown', handleClick)
       document.removeEventListener('keydown', handleKey)
+      window.removeEventListener('scroll', handleScroll, { capture: true })
     }
   }, [open])
+
+  function toggleOpen(e) {
+    e.stopPropagation()
+    if (!open) {
+      // Not enough room above the button for the tooltip → open downward instead
+      const rect = ref.current?.getBoundingClientRect()
+      const TOOLTIP_HEIGHT_ESTIMATE = 150
+      setDirection(rect && rect.top < TOOLTIP_HEIGHT_ESTIMATE ? 'down' : 'up')
+    }
+    setOpen(o => !o)
+  }
 
   return (
     <span ref={ref} className="relative inline-flex flex-shrink-0">
       <button
         type="button"
-        onClick={e => { e.stopPropagation(); setOpen(o => !o) }}
+        onClick={toggleOpen}
         className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full
                    bg-sage/20 text-sage text-[9px] font-bold cursor-pointer
                    hover:bg-sage/40 transition-colors"
@@ -69,10 +86,13 @@ function GrowthInfoTooltip() {
 
       {open && (
         <span
-          className="absolute bottom-full right-0 mb-2 z-50 w-64 rounded-2xl
-                     bg-parchment text-bark text-xs leading-relaxed p-3 shadow-warm-sm border border-stone
-                     before:absolute before:bottom-[-6px] before:right-3
-                     before:border-4 before:border-transparent before:border-t-parchment"
+          className={clsx(
+            'absolute right-0 z-50 w-64 rounded-2xl',
+            'bg-parchment text-bark text-xs leading-relaxed p-3 shadow-warm-sm border border-stone',
+            direction === 'up'
+              ? 'bottom-full mb-2 before:absolute before:bottom-[-6px] before:right-3 before:border-4 before:border-transparent before:border-t-parchment'
+              : 'top-full mt-2 before:absolute before:top-[-6px] before:right-3 before:border-4 before:border-transparent before:border-b-parchment'
+          )}
           dir="rtl"
         >
           <span className="font-semibold block mb-1 text-earth">הידעתם?</span>
