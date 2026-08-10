@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
+import { useState, useEffect, useRef, useMemo, useCallback, Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import { Search, X, RotateCcw, ChevronDown, MoveHorizontal } from 'lucide-react'
 import clsx from 'clsx'
@@ -145,6 +145,15 @@ function ChlorideTooltip() {
       )}
     </span>
   )
+}
+
+/* ─── Nutrient education content ─────────────────────────────────────────────── */
+// Keyed by the English nutrient key (row.nutrient). Add one entry at a time —
+// only nutrients present here get an "i" info button in the results table.
+const NUTRIENT_INFO = {
+  Calcium: `סידן הוא הרבה יותר מ"חשוב לעצמות". כן, הוא חיוני לבניית השלד והשיניים, אבל גם להעברת אותות עצביים, כיווץ שרירים וקרישת דם. כאשר התזונה אינה מספקת סידן זמין או שהיחס בינו לבין זרחן אינו מאוזן, הגוף עלול לשחרר סידן מהעצמות כדי לשמור על רמתו בדם. לאורך זמן זה עלול להחליש את השלד, ובמיוחד בגורים לגרום לעיוותי עצם, צליעה או שברים גם במאמץ רגיל.
+
+חשוב לזכור: סידן עובד יחד עם זרחן וויטמין D; לכן, לא רק הכמות אלא גם האיזון ביניהם קובע. גם עודף סידן אינו "ביטוח" לעצמות ועלול לפגוע בהתפתחות השלד, בעיקר בכלבים גדולים בתקופת גדילה.`,
 }
 
 /* ─── Status helpers ────────────────────────────────────────────────────────── */
@@ -402,6 +411,8 @@ function ResultsTable({ rows, totalKcal }) {
   const above = rows.filter(r => r.status === 'Above maximum').length
   const ok    = rows.filter(r => r.status === 'OK').length
 
+  const [expandedNutrient, setExpandedNutrient] = useState(null)
+
   return (
     <div className="space-y-4">
       {/* Summary chips */}
@@ -447,35 +458,62 @@ function ResultsTable({ rows, totalKcal }) {
           <tbody>
             {rows.map(row => {
               const meta = STATUS_META[row.status]
+              const info = NUTRIENT_INFO[row.nutrient]
+              const isExpanded = expandedNutrient === row.nutrient
               return (
-                <tr key={row.nutrient} className={clsx('border-b border-stone/40 last:border-0', meta.bg)}>
-                  <td className="py-2.5 px-3 font-medium text-earth">
-                    <span className="inline-flex items-center gap-1">
-                      {NUTRIENT_LABELS[row.nutrient] ?? row.nutrient}
-                      {/* Chloride-only tooltip: value is estimated from Sodium via NaCl ratio */}
-                      {row.nutrient === 'Chloride' && (
-                        <ChlorideTooltip />
-                      )}
-                    </span>
-                    <span className="block text-[10px] text-mist font-normal">{row.nutrient}</span>
-                  </td>
-                  <td className="py-2.5 px-2 text-center text-mist text-xs">{row.unit}</td>
-                  <td className="py-2.5 px-2 text-center tabular-nums font-medium text-earth">
-                    {row.per1000.toLocaleString('he-IL', { maximumFractionDigits: 2 })}
-                  </td>
-                  <td className="py-2.5 px-2 text-center tabular-nums text-mist">{row.aafcoMin}</td>
-                  <td className="py-2.5 px-2 text-center tabular-nums text-mist">
-                    {row.aafcoMax != null ? row.aafcoMax : '-'}
-                  </td>
-                  <td className="py-2.5 px-3">
-                    <CoverageBar pct={row.coveragePct} />
-                  </td>
-                  <td className="py-2.5 px-3">
-                    <span className={clsx('pill text-[11px]', meta.badge)}>
-                      {meta.label}{row.status === 'OK' && <sup className="text-[9px] ml-0.5 opacity-70">*</sup>}
-                    </span>
-                  </td>
-                </tr>
+                <Fragment key={row.nutrient}>
+                  <tr className={clsx('border-b border-stone/40 last:border-0', meta.bg)}>
+                    <td className="py-2.5 px-3 font-medium text-earth">
+                      <span className="inline-flex items-center gap-1">
+                        {NUTRIENT_LABELS[row.nutrient] ?? row.nutrient}
+                        {/* Chloride-only tooltip: value is estimated from Sodium via NaCl ratio */}
+                        {row.nutrient === 'Chloride' && (
+                          <ChlorideTooltip />
+                        )}
+                        {info && (
+                          <button
+                            type="button"
+                            onClick={() => setExpandedNutrient(isExpanded ? null : row.nutrient)}
+                            className={clsx(
+                              'inline-flex items-center justify-center w-3.5 h-3.5 rounded-full text-[9px] font-bold cursor-pointer transition-colors',
+                              isExpanded ? 'bg-sage text-white' : 'bg-sage/20 text-sage hover:bg-sage/40'
+                            )}
+                            aria-label={`מידע על ${NUTRIENT_LABELS[row.nutrient] ?? row.nutrient}`}
+                            aria-expanded={isExpanded}
+                          >
+                            i
+                          </button>
+                        )}
+                      </span>
+                      <span className="block text-[10px] text-mist font-normal">{row.nutrient}</span>
+                    </td>
+                    <td className="py-2.5 px-2 text-center text-mist text-xs">{row.unit}</td>
+                    <td className="py-2.5 px-2 text-center tabular-nums font-medium text-earth">
+                      {row.per1000.toLocaleString('he-IL', { maximumFractionDigits: 2 })}
+                    </td>
+                    <td className="py-2.5 px-2 text-center tabular-nums text-mist">{row.aafcoMin}</td>
+                    <td className="py-2.5 px-2 text-center tabular-nums text-mist">
+                      {row.aafcoMax != null ? row.aafcoMax : '-'}
+                    </td>
+                    <td className="py-2.5 px-3">
+                      <CoverageBar pct={row.coveragePct} />
+                    </td>
+                    <td className="py-2.5 px-3">
+                      <span className={clsx('pill text-[11px]', meta.badge)}>
+                        {meta.label}{row.status === 'OK' && <sup className="text-[9px] ml-0.5 opacity-70">*</sup>}
+                      </span>
+                    </td>
+                  </tr>
+                  {info && isExpanded && (
+                    <tr className={clsx('border-b border-stone/40 last:border-0', meta.bg)}>
+                      <td colSpan={7} className="px-3 pb-4 pt-0">
+                        <div className="animate-fade-in rounded-xl bg-white/70 border border-stone/50 p-3.5 text-sm leading-relaxed text-bark whitespace-pre-line" dir="rtl">
+                          {info}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
               )
             })}
           </tbody>
