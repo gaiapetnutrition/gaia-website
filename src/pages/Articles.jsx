@@ -81,7 +81,7 @@ export default function Articles() {
 
       {/* Header */}
       <div className="bg-parchment border-b border-stone">
-        <div className="container-gaia py-14 md:py-20 flex items-center justify-between gap-8">
+        <div className="container-gaia py-14 md:py-20 flex items-center justify-start gap-6">
           <div className="max-w-lg">
             <Badge variant="green" className="mb-4">
               <img src="/gaia-paw.png" alt="" className="w-3 h-3 opacity-80" />
@@ -110,7 +110,7 @@ export default function Articles() {
             src="/scholar_dog.png"
             alt=""
             aria-hidden="true"
-            className="hidden md:block w-56 lg:w-72 h-auto object-contain flex-shrink-0 select-none"
+            className="hidden md:block w-96 lg:w-[36rem] h-auto object-contain flex-shrink-0 select-none"
           />
         </div>
       </div>
