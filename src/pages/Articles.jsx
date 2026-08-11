@@ -81,28 +81,37 @@ export default function Articles() {
 
       {/* Header */}
       <div className="bg-parchment border-b border-stone">
-        <div className="container-gaia py-14 md:py-20">
-          <Badge variant="green" className="mb-4">
-            <img src="/gaia-paw.png" alt="" className="w-3 h-3 opacity-80" />
-            מרכז הידע
-          </Badge>
-          <h1 className="text-display-lg font-serif text-earth mb-3">מאמרים ומדריכים</h1>
-          <p className="text-mist max-w-lg text-base leading-relaxed">
-            תוכן מקצועי, מבוסס מחקר, ומעשי - כי להבין את התזונה של הכלב שלכם
-            זה הצעד הראשון לשיפורה.
-          </p>
+        <div className="container-gaia py-14 md:py-20 flex items-center justify-between gap-8">
+          <div className="max-w-lg">
+            <Badge variant="green" className="mb-4">
+              <img src="/gaia-paw.png" alt="" className="w-3 h-3 opacity-80" />
+              מרכז הידע
+            </Badge>
+            <h1 className="text-display-lg font-serif text-earth mb-3">מאמרים ומדריכים</h1>
+            <p className="text-mist text-base leading-relaxed">
+              תוכן מקצועי, מבוסס מחקר, ומעשי - כי להבין את התזונה של הכלב שלכם
+              זה הצעד הראשון לשיפורה.
+            </p>
 
-          {/* Search */}
-          <div className="relative max-w-sm mt-8">
-            <Search className="absolute end-3 top-1/2 -translate-y-1/2 w-4 h-4 text-mist pointer-events-none" />
-            <input
-              type="text"
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-              placeholder="חיפוש מאמרים..."
-              className="input-base pe-10"
-            />
+            {/* Search */}
+            <div className="relative max-w-sm mt-8">
+              <Search className="absolute end-3 top-1/2 -translate-y-1/2 w-4 h-4 text-mist pointer-events-none" />
+              <input
+                type="text"
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                placeholder="חיפוש מאמרים..."
+                className="input-base pe-10"
+              />
+            </div>
           </div>
+
+          <img
+            src="/scholar_dog.png"
+            alt=""
+            aria-hidden="true"
+            className="hidden md:block w-56 lg:w-72 h-auto object-contain flex-shrink-0 select-none"
+          />
         </div>
       </div>
 
