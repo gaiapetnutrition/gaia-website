@@ -110,7 +110,7 @@ export default function Articles() {
             src="/scholar_dog.png"
             alt=""
             aria-hidden="true"
-            className="hidden md:block w-[26rem] lg:w-[40rem] h-auto object-contain flex-shrink-0 select-none mt-8"
+            className="hidden md:block w-[26rem] lg:w-[40rem] h-auto object-contain flex-shrink-0 select-none mt-8 -mr-10"
           />
         </div>
       </div>
