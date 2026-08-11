@@ -1,10 +1,8 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { Clock, ArrowLeft, Search, Tag } from 'lucide-react'
 import Badge from '../components/ui/Badge'
 import Card from '../components/ui/Card'
-
-const CATEGORIES = ['הכל', 'יסודות', 'מזון נא', 'תזונה מיוחדת', 'גורים', 'מבוגרים']
 
 const ARTICLES = [
   {
@@ -14,67 +12,25 @@ const ARTICLES = [
     category: 'יסודות',
     read:     '5 דקות',
     date:     'ינואר 2026',
-    featured: true,
-  },
-  {
-    id: 2,
-    title:    'איזון תזונתי: מה באמת חשוב?',
-    excerpt:  'הבנת הצרכים התזונתיים הבסיסיים של הכלב - חלבון, שומן, פחמימות, ויטמינים ומינרלים.',
-    category: 'יסודות',
-    read:     '7 דקות',
-    date:     'פברואר 2026',
-    featured: true,
-  },
-  {
-    id: 3,
-    title:    'מעבר להאכלה ביתית - מדריך מעשי',
-    excerpt:  'צעדים ראשונים למעבר בטוח ומחושב מקיבל מסחרי לתזונה ביתית, בלי טעויות נפוצות.',
-    category: 'יסודות',
-    read:     '10 דקות',
-    date:     'פברואר 2026',
-    featured: false,
-  },
-  {
-    id: 4,
-    title:    'BARF: מה זה, למה ואיך',
-    excerpt:  'כל מה שצריך לדעת על האכלה בשר נא ועצמות - יתרונות, סיכונים ואיך לעשות את זה נכון.',
-    category: 'מזון נא',
-    read:     '8 דקות',
-    date:     'מרץ 2026',
-    featured: false,
-  },
-  {
-    id: 5,
-    title:    'תזונה לגורים: שלב הגדילה',
-    excerpt:  'גורים צריכים יותר מבוגרים. הבינו מה שונה בצרכים התזונתיים של כלבים צעירים.',
-    category: 'גורים',
-    read:     '6 דקות',
-    date:     'מרץ 2026',
-    featured: false,
-  },
-  {
-    id: 6,
-    title:    'כלבים מבוגרים: איך משנים את התפריט?',
-    excerpt:  'מגיל 7 ומעלה, צרכי הכלב משתנים. מה להוסיף, מה להפחית, ועל מה לשים דגש.',
-    category: 'מבוגרים',
-    read:     '7 דקות',
-    date:     'אפריל 2026',
-    featured: false,
   },
 ]
 
 export default function Articles() {
-  const [activeCategory, setActiveCategory] = useState('הכל')
+  const { id } = useParams()
+
+  if (id) {
+    return <ArticleDetail article={ARTICLES.find(a => String(a.id) === id)} />
+  }
+
+  return <ArticlesList />
+}
+
+function ArticlesList() {
   const [query, setQuery] = useState('')
 
-  const filtered = ARTICLES.filter(a => {
-    const matchCat = activeCategory === 'הכל' || a.category === activeCategory
-    const matchQ   = !query || a.title.includes(query) || a.excerpt.includes(query)
-    return matchCat && matchQ
-  })
-
-  const featured  = filtered.filter(a => a.featured)
-  const rest      = filtered.filter(a => !a.featured)
+  const filtered = ARTICLES.filter(a => (
+    !query || a.title.includes(query) || a.excerpt.includes(query)
+  ))
 
   return (
     <div className="min-h-screen bg-cream">
@@ -117,41 +73,12 @@ export default function Articles() {
 
       <div className="container-gaia py-10 md:py-14">
 
-        {/* Category pills */}
-        <div className="flex flex-wrap gap-2 mb-10">
-          {CATEGORIES.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`pill text-sm transition-all duration-150 ${
-                activeCategory === cat
-                  ? 'bg-forest text-white border-transparent'
-                  : 'bg-white text-bark border border-stone hover:border-sage'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        {/* Featured articles */}
-        {featured.length > 0 && (
-          <div className="mb-10">
-            <h2 className="text-sm font-semibold text-mist uppercase tracking-wider mb-4">קריאה מומלצת</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {featured.map(article => (
-                <ArticleCard key={article.id} article={article} large />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Rest */}
-        {rest.length > 0 && (
+        {/* Articles */}
+        {filtered.length > 0 && (
           <div>
             <h2 className="text-sm font-semibold text-mist uppercase tracking-wider mb-4">כל המאמרים</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              {rest.map(article => (
+              {filtered.map(article => (
                 <ArticleCard key={article.id} article={article} />
               ))}
             </div>
@@ -161,7 +88,7 @@ export default function Articles() {
         {filtered.length === 0 && (
           <div className="text-center py-20 text-mist">
             <p className="text-lg mb-2">לא נמצאו מאמרים</p>
-            <button onClick={() => { setQuery(''); setActiveCategory('הכל') }} className="text-sm text-forest hover:underline">
+            <button onClick={() => setQuery('')} className="text-sm text-forest hover:underline">
               הצג הכל
             </button>
           </div>
@@ -188,9 +115,9 @@ export default function Articles() {
   )
 }
 
-function ArticleCard({ article, large = false }) {
+function ArticleCard({ article }) {
   return (
-    <Card hover className={large ? 'flex flex-col' : ''} padding={false}>
+    <Card hover padding={false}>
       <div className="p-6">
         <div className="flex items-center gap-2 mb-3">
           <Badge variant="cream" className="text-xs">
@@ -202,7 +129,7 @@ function ArticleCard({ article, large = false }) {
             {article.read}
           </span>
         </div>
-        <h3 className={`font-semibold text-earth mb-2 leading-snug ${large ? 'text-lg' : 'text-base'}`}>
+        <h3 className="font-semibold text-earth mb-2 leading-snug text-base">
           {article.title}
         </h3>
         <p className="text-sm text-mist leading-relaxed mb-4">{article.excerpt}</p>
@@ -218,5 +145,51 @@ function ArticleCard({ article, large = false }) {
         </div>
       </div>
     </Card>
+  )
+}
+
+/* ─── Single article page — content to be filled in later ───────────────────── */
+function ArticleDetail({ article }) {
+  if (!article) {
+    return (
+      <div className="min-h-screen bg-cream flex items-center justify-center">
+        <div className="text-center py-20 text-mist">
+          <p className="text-lg mb-2">המאמר לא נמצא</p>
+          <Link to="/articles" className="text-sm text-forest hover:underline">חזרה למאמרים</Link>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-cream">
+      <div className="bg-parchment border-b border-stone">
+        <div className="container-gaia py-14 md:py-20 max-w-3xl">
+          <Link
+            to="/articles"
+            className="inline-flex items-center gap-1 text-sm font-semibold text-forest hover:text-olive-dark transition-colors mb-6"
+          >
+            <ArrowLeft className="w-3.5 h-3.5 rotate-180" />
+            חזרה למאמרים
+          </Link>
+          <div className="flex items-center gap-2 mb-4">
+            <Badge variant="cream" className="text-xs">
+              <Tag className="w-2.5 h-2.5" />
+              {article.category}
+            </Badge>
+            <span className="text-xs text-mist flex items-center gap-1">
+              <Clock className="w-3 h-3" />
+              {article.read}
+            </span>
+            <span className="text-xs text-mist/60">{article.date}</span>
+          </div>
+          <h1 className="text-display-lg font-serif text-earth">{article.title}</h1>
+        </div>
+      </div>
+
+      <div className="container-gaia py-10 md:py-14 max-w-3xl">
+        {/* Article body — empty for now, content to follow */}
+      </div>
+    </div>
   )
 }
