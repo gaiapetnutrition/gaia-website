@@ -82,7 +82,10 @@ export default function Articles() {
       {/* Header */}
       <div className="bg-parchment border-b border-stone">
         <div className="container-gaia py-14 md:py-20">
-          <Badge variant="green" dot className="mb-4">מרכז הידע</Badge>
+          <Badge variant="green" className="mb-4">
+            <img src="/gaia-paw.png" alt="" className="w-3 h-3 opacity-80" />
+            מרכז הידע
+          </Badge>
           <h1 className="text-display-lg font-serif text-earth mb-3">מאמרים ומדריכים</h1>
           <p className="text-mist max-w-lg text-base leading-relaxed">
             תוכן מקצועי, מבוסס מחקר, ומעשי - כי להבין את התזונה של הכלב שלכם
