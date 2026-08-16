@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Clock, ArrowLeft, Search, Tag, Quote, Stethoscope } from 'lucide-react'
+import { Clock, ArrowLeft, Search, Tag, Quote } from 'lucide-react'
 import Badge from '../components/ui/Badge'
 import Card from '../components/ui/Card'
 
@@ -19,23 +19,23 @@ const ARTICLES = [
 
       { type: 'h2', text: 'קודם כל - מה זה בכלל "מלא ומאוזן"?' },
       { type: 'p', text: 'בפשטות, מזון מלא ומאוזן הוא מזון שמספק את כלל הנוטריינטים החיוניים שהכלב צריך, בכמויות וביחסים המתאימים לשלב החיים שלו.' },
-      { type: 'p', text: 'אחד הגופים המרכזיים שקובעים את הסטנדרטים האלה הוא AAFCO בארה"ב. באירופה קיים גוף מקביל בשם FEDIAF, וההמלצות שלהם מבוססות על גוף ידע מדעי רחב, ובין היתר על עבודתו של ה-NRC - המועצה למחקר בתחום הדרישות התזונתיות של כלבים וחתולים.' },
+      { type: 'p', text: 'הגוף המרכזי שטבע את המונח הוא AAFCO בארה״ב. באירופה קיים גוף מקביל בשם FEDIAF, וההמלצות שלהם מבוססות על גוף ידע מדעי רחב, ובין היתר על עבודתו של ה-NRC - המועצה למחקר בתחום הדרישות התזונתיות של כלבים וחתולים.' },
       { type: 'p', text: 'אבל חשוב להבין מה התקנים האלה אומרים - ומה הם לא אומרים.' },
       { type: 'p', text: 'בהגדרה - הם נועדו קודם כל לוודא שהתזונה מספקת רמות מספקות של נוטריינטים חיוניים (שהכלבים חייבים לקבל מהמזון ולא יכולים לייצר בעצם) באופן שמונע תסמינים של מחלה, ובחלק מהנוטריינטים גם מגדירים גבולות עליונים כדי למנוע צריכת יתר שעלולה להזיק.' },
       { type: 'p', text: 'כלומר, קל להתבלבל ולחשוב שמלא ומאוזן הוא מזון אידיאלי או מושלם, אבל לא - "מלא ומאוזן" הוא רק נקודת ההתחלה - לא נקודת הסיום ולא מטרה אידיאלית.' },
 
-      { type: 'quote', text: '"אבל בטבע אף אחד לא חישב לכלב כמות סידן..."' },
+      { type: 'quote', text: 'אבל בטבע אף אחד לא חישב לכלב כמות סידן...' },
       { type: 'p', text: 'נכון. אבל הכלב שחי איתנו היום גם לא אוכל טרף שלם שהוא צד בעצמו, ולמעשה, לא צד בכלל ותלוי במה שמקבל.' },
       { type: 'p', text: 'במהלך הביות כלבים עברו שינויים גנטיים ופיזיולוגיים, בין היתר כאלה שהשפיעו על יכולתם לעכל מזונות עמילניים. ובמקביל, גם צורת ההזנה השתנתה לחלוטין.' },
       { type: 'p', text: 'כשאנחנו מאכילים תזונה טבעית בבית, אנחנו בוחרים את המרכיבים, והם לרוב כאלה שנוחים לנו: קצת בשר שריר, קצת איברים, אולי לפעמים קצת עצמות או מקור סידן, ירקות, דגים, ביצים וכן הלאה.' },
       { type: 'p', text: 'וזה בדיוק העניין: ברגע שאנחנו בונים את ה"טרף" בעצמנו, האחריות לוודא שלא שכחנו חלקים חשובים עוברת אלינו.' },
       { type: 'p', text: 'קערה יכולה להיראות מדהים - בשר איכותי, ירקות צבעוניים, ביצה ודג - ועדיין להיות חסרה במגוון נוטריאנטים כמו יוד, אבץ, נחושת, ויטמין D, ויטמין E או אחרים.' },
 
-      { type: 'quote', text: '"אבל AAFCO זה בכלל תקן למזון יבש"' },
+      { type: 'quote', text: 'אבל התקן של AAFCO זה בכלל תקן למזון יבש...' },
       { type: 'p', text: 'זו טעות נפוצה.' },
       { type: 'p', text: 'העיקרון של מזון מלא ומאוזן אינו אומר "מזון יבש". הדרישות התזונתיות מתייחסות לנוטריינטים שהכלב מקבל, ולא לשאלה אם הם הגיעו מכופתית, שימורים או מזון טרי.' },
       { type: 'p', text: 'גם באירופה, הנחיות FEDIAF מתייחסות למזונות מלאים בצורות שונות, כולל מזונות יבשים, רטובים ו-Raw.' },
-      { type: 'p', text: 'כלומר, אפשר לבחור חומרי גלם טריים ואיכותיים - ובמקביל לוודא שהם מספקים את הצרכים התזונתיים של הכלב.' },
+      { type: 'p', text: 'כלומר, גם במזון טבעי אפשר לבחור חומרי גלם טריים ואיכותיים - ובמקביל לוודא שהם מספקים את הצרכים התזונתיים של הכלב. זאת למעשה הפרקטיקה שמיושמת בארה״ב ואירופה.' },
 
       { type: 'h2', text: 'ומה לגבי נוטריינטים סינתטיים?' },
       { type: 'p', text: 'טענה נוספת שעולה לפעמים היא שחלק מהמחקרים שעליהם מבוסס הידע התזונתי השתמשו בצורות מבודדות או סינתטיות של ויטמינים ומינרלים, ולכן אי אפשר להשליך מהם ישירות על מזון טבעי.' },
@@ -65,7 +65,7 @@ const ARTICLES = [
         ],
       },
       { type: 'p', text: 'לכן אנחנו לא רואים בתקני AAFCO או FEDIAF אויב של התזונה הטבעית - להפך.' },
-      { type: 'p', text: 'הם נותנים לנו רשת ביטחון מדעית.' },
+      { type: 'p', text: 'הם נותנים לנו רשת ביטחון מדעית ומבוססת מחקר.' },
       { type: 'p', text: 'ומשם אפשר להתחיל לעבוד עם חומרי גלם איכותיים, גיוון, התאמה אישית וחשיבה הוליסטית כדי לבנות תפריט שלא רק "עומד בתקן", אלא באמת מתאים לכלב שלנו.' },
 
       { type: 'note', text: 'כשבונים תזונה ביתית לאורך זמן, במיוחד לגורים, לכלבות בהריון או לכלבים עם מצבים רפואיים, כדאי שהתפריט ינוסח או לפחות ייבדק על ידי וטרינר/ית או איש/אשת מקצוע בעלי הכשרה מתאימה בתזונת כלבים.' },
@@ -229,7 +229,7 @@ function ArticleBody({ blocks = [] }) {
             return (
               <div key={i} className="my-8 flex items-start gap-3 border-s-4 border-olive ps-5 py-1">
                 <Quote className="w-6 h-6 text-olive shrink-0 mt-1 scale-x-[-1]" />
-                <p className="text-lg md:text-xl font-serif italic text-bark leading-snug">
+                <p className="text-lg md:text-xl font-serif font-bold italic text-bark leading-snug">
                   {block.text}
                 </p>
               </div>
@@ -250,7 +250,7 @@ function ArticleBody({ blocks = [] }) {
           case 'note':
             return (
               <div key={i} className="my-8 flex items-start gap-3 bg-parchment border border-stone rounded-2xl p-5">
-                <Stethoscope className="w-5 h-5 text-forest shrink-0 mt-0.5" />
+                <img src="/gaia-paw.png" alt="" className="w-5 h-5 opacity-80 shrink-0 mt-0.5" />
                 <p className="text-sm text-bark leading-relaxed">{block.text}</p>
               </div>
             )
@@ -303,14 +303,21 @@ function ArticleDetail({ article }) {
             </span>
             <span className="text-xs text-mist/60">{article.date}</span>
           </div>
-          <h1 className="text-display-lg font-serif text-earth">{article.title}</h1>
+          <h1 className="text-display-lg font-serif text-earth">
+            {article.title}
+            <img src="/gaia-paw.png" alt="" className="inline-block w-[0.9em] h-[0.9em] align-middle opacity-80 ms-2" />
+          </h1>
         </div>
       </div>
 
       <div className="container-gaia py-10 md:py-14 max-w-3xl">
+        <img src="/gaia-paw.png" alt="" aria-hidden="true" className="w-7 h-7 mx-auto mb-8 opacity-25" />
+
         <ArticleBody blocks={article.body} />
 
-        <div className="mt-14 pt-8 border-t border-stone flex items-center justify-between">
+        <img src="/gaia-paw.png" alt="" aria-hidden="true" className="w-7 h-7 mx-auto mt-10 opacity-25" />
+
+        <div className="mt-8 pt-8 border-t border-stone flex items-center justify-between">
           <Link
             to="/articles"
             className="inline-flex items-center gap-1 text-sm font-semibold text-forest hover:text-olive-dark transition-colors"

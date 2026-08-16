@@ -671,10 +671,10 @@ export default function Consultations() {
 
           <h2 className="text-display-md font-serif text-white mb-5 leading-[1.2]">
             המצב בישראל -{' '}
-            <em className="not-italic text-olive-light">אין חובה לעמוד בתקנים של מלא ומאוזן.</em>
+            <em className="not-italic text-olive-light">על יצרנים אין חובה לעמוד בתקנים של מלא ומאוזן.</em>
           </h2>
           <p className="text-white/65 leading-relaxed text-base mb-10 max-w-xl mx-auto">
-            כשזה נוגע למוצרי מזון טבעי, אין בישראל צורך בעמידה בתקנים של מלא ומאוזן לפי תקנים בינלאומיים כמו AAFCO או NRC, מה שמחסיר מהציבור ידע - ובעיקר מחסיר נוטריאנטים מהכלבים שלנו.
+            כשזה נוגע למוצרי מזון טבעי המיוצרים בארץ, אין בישראל צורך בעמידה בתקנים של מלא ומאוזן לפי תקנים בינלאומיים כמו AAFCO או NRC, מה שמחסיר מהציבור ידע - ובעיקר מחסיר נוטריאנטים מהכלבים שלנו.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-right">
             {[

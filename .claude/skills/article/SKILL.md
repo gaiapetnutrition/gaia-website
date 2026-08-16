@@ -48,7 +48,7 @@ paragraph/line — don't reformat prose, just tag it:
 |---|---|---|
 | `p` | Regular paragraph — the default | `{ type: 'p', text }` |
 | `h2` | A line that functions as a section header (often phrased as a question, e.g. `קודם כל - מה זה בכלל...`) | `{ type: 'h2', text }` |
-| `quote` | A short rhetorical objection/question the author poses and then answers — usually wrapped in quotes in the source text (e.g. `"אבל בטבע אף אחד לא חישב..."`) | `{ type: 'quote', text }` |
+| `quote` | A short rhetorical objection/question the author poses and then answers — usually wrapped in quotes in the source text (e.g. `"אבל בטבע אף אחד לא חישב..."`). Strip the literal `"..."` from `text` — the block already renders a quote icon + italic styling, so keeping literal quotation marks too is a redundant double-signal. | `{ type: 'quote', text }` (no surrounding quote marks) |
 | `compare` | Exactly two (rarely more) short parallel statements the author is explicitly contrasting (e.g. "X שואל: ... / Y שואל: ...") | `{ type: 'compare', items: [{ label, text }, ...] }` |
 | `note` | An aside that's practically important but tonally distinct — disclaimers, "consult a professional" notes, safety caveats | `{ type: 'note', text }` |
 
@@ -63,6 +63,23 @@ Guidelines for classifying:
 - `compare` expects short, punchy `label` + `text` pairs pulled directly from
   the source sentences (e.g. split "A שואל: ...ques..." into
   `label: "A שואל:"`, `text: "...ques..."`).
+
+## Step 2b — brand marks (already wired up, always present)
+
+Two GAiA-paw touches are already built into `ArticleDetail`/`ArticleBody` and
+apply automatically to every article — don't skip or re-derive them, just
+know they're there so you don't accidentally remove them while editing:
+
+- **Headline paw** — a small `/gaia-paw.png` sits inline right after the
+  article `<h1>` title text (`w-[0.9em] h-[0.9em]`, `opacity-80`, `ms-2` so it
+  sits on the correct RTL side).
+- **Body borders** — one faint `/gaia-paw.png` (`w-7 h-7`, `opacity-25`,
+  `mx-auto`) centered above the body content and another centered below it,
+  marking the start/end of the article like bookends.
+
+These live in the shared `ArticleDetail` markup, not per-article data — so a
+new article gets them for free. Only touch this section if the user
+explicitly asks to change the paw styling/position globally.
 
 ## Step 3 — rendering
 
