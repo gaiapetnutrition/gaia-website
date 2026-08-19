@@ -7,6 +7,7 @@ import Calculator            from './pages/Calculator'
 import ChocolateCalculator       from './pages/ChocolateCalculator'
 import NaturalCalorieCalculator  from './pages/NaturalCalorieCalculator'
 import AafcoBalanceCheck         from './pages/AafcoBalanceCheck'
+import Calculators           from './pages/Calculators'
 import Consultations from './pages/Consultations'
 import About         from './pages/About'
 import Articles      from './pages/Articles'
@@ -30,6 +31,7 @@ function Layout() {
           <Route path="/chocolate-calculator"       element={<ChocolateCalculator      key={location.key} />} />
           <Route path="/natural-calorie-calculator" element={<NaturalCalorieCalculator key={location.key} />} />
           <Route path="/aafco-balance-check"        element={<AafcoBalanceCheck        key={location.key} />} />
+          <Route path="/calculators"   element={<Calculators />} />
           <Route path="/consultations" element={<Consultations />} />
           <Route path="/about"         element={<About />} />
           <Route path="/articles"      element={<Articles />} />

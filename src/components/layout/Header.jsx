@@ -156,7 +156,7 @@ export default function Header() {
             <nav className="hidden md:flex items-center gap-0.5" aria-label="ניווט ראשי">
               {NAV.map(item => {
                 if (item.dropdown) {
-                  const active = item.dropdown.some(d => pathname === d.path)
+                  const active = pathname === '/calculators' || item.dropdown.some(d => pathname === d.path)
                   const isOpen = openDropdown === item.label
                   return (
                     <div
@@ -165,7 +165,9 @@ export default function Header() {
                       onMouseEnter={() => openMenu(item.label)}
                       onMouseLeave={scheduleClose}
                     >
-                      <button
+                      <Link
+                        to="/calculators"
+                        onClick={() => setOpenDropdown(null)}
                         className={clsx(
                           'relative flex items-center gap-1.5 px-3.5 py-2 text-[13.5px] font-medium tracking-wide rounded-xl cursor-pointer',
                           'transition-[color,background-color] duration-150',
@@ -181,7 +183,7 @@ export default function Header() {
                             isOpen && 'rotate-180',
                           )}
                         />
-                      </button>
+                      </Link>
                       <div
                         className={clsx(
                           'absolute top-full right-0 mt-1.5 border border-stone rounded-2xl shadow-warm-sm py-1.5 min-w-[260px] origin-top-right',
@@ -284,9 +286,12 @@ export default function Header() {
             {/* Calculators group */}
             {NAV.filter(item => item.dropdown).map(group => (
               <div key={group.label}>
-                <p className="px-5 pt-4 pb-1.5 text-[11px] font-semibold tracking-[0.12em] uppercase text-mist">
+                <Link
+                  to="/calculators"
+                  className="block px-5 pt-4 pb-1.5 text-[11px] font-semibold tracking-[0.12em] uppercase text-mist hover:text-forest transition-colors"
+                >
                   {group.label}
-                </p>
+                </Link>
                 {group.dropdown.map(sub => {
                   const active = pathname === sub.path
                   return (

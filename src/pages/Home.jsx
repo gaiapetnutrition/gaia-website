@@ -305,10 +305,15 @@ function ScrollSplitBowl() {
     <div>
       {/* Section heading — scrolls in before bowl pins */}
       <div className="bg-cream text-center px-4 pt-14 pb-4">
-        <span className="eyebrow block mb-3 text-[1.15em]" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>החלטתם לעבור לתזונה טבעית - מצוין!<br /><br />אבל...</span>
+        <span className="eyebrow block mb-3 text-display-md normal-case tracking-normal font-semibold" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
+          החלטתם לעבור לתזונה טבעית - מצוין!
+        </span>
+        <span className="eyebrow block mb-3 text-[1.006rem]" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
+          אבל...
+        </span>
         <h2 className="text-display-md font-serif text-earth" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
-          טבעי זה לא מספיק ויכול גם לפגוע - צריך גם{' '}
-          <span className="text-forest font-bold underline decoration-2 underline-offset-4 pb-0.5">נכון</span>
+          טבעי זה לא מספיק ויכול גם לפגוע - צריך גם<br />
+          <span className="text-forest font-bold not-italic inline-block mt-1">נכון.</span>
         </h2>
         <p className="text-mist mt-3 max-w-xl mx-auto text-[1.218rem] leading-relaxed" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
           אנחנו בוחרים מה להאכיל את הכלבים שלנו <strong className="font-semibold text-earth/80">כל יום לשארית ימי חייהם</strong>.<br />בלי <strong className="font-semibold text-earth/80">האיזון</strong> הנכון - אנחנו עלולים להזיק יותר מאשר להועיל.
