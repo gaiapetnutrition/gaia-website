@@ -54,7 +54,7 @@ function Hero() {
       <div
         className="absolute inset-0 z-0 hero-bg"
         style={{
-          backgroundImage: 'url(/long_image_chat_new.png)',
+          backgroundImage: 'url(/long_image_chat_new.webp)',
           backgroundSize: 'cover',
           backgroundPosition: 'left center',
           backgroundRepeat: 'no-repeat',
