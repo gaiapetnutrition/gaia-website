@@ -732,8 +732,10 @@ export default function AafcoBalanceCheck() {
             {/* Image — left side, decorative */}
             <div className="hidden md:flex flex-shrink-0 items-center self-stretch justify-center" style={{ minWidth: '380px', marginLeft: '0px' }}>
               <img
-                src="/scale_image_final_copy.png"
+                src="/scale_image_final_copy.webp"
                 alt=""
+                width="1677"
+                height="938"
                 className="h-[27rem] w-auto object-contain drop-shadow-lg"
               />
             </div>

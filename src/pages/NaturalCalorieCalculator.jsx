@@ -351,7 +351,7 @@ export default function NaturalCalorieCalculator() {
             {/* Image — left side, faded into background */}
             <div className="hidden md:block flex-shrink-0 relative self-end" style={{ width: '500px', height: '260px', marginLeft: '60px', marginBottom: '-90px' }}>
               <img
-                src="/calorie_image3.png"
+                src="/calorie_image3.webp"
                 alt=""
                 className="absolute inset-0 w-full h-full object-contain object-bottom"
                 style={{
