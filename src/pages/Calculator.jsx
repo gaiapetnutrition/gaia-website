@@ -8,6 +8,7 @@ import {
 import clsx from 'clsx'
 import Button from '../components/ui/Button'
 import Badge from '../components/ui/Badge'
+import { useSelectAllOnFocus } from '../hooks/useSelectAllOnFocus'
 import Slider from '../components/ui/Slider'
 import { calculate, FOOD_TYPES } from '../utils/calculatorLogic'
 import {
@@ -284,6 +285,7 @@ export default function Calculator() {
   const topRef = useRef(null)
   const cardRef = useRef(null)
   const calorieInfoRef = useRef(null)
+  const kcalPerKgSelectAll = useSelectAllOnFocus()
 
   useEffect(() => {
     if (!showCalorieInfo) return
@@ -301,7 +303,7 @@ export default function Calculator() {
   useEffect(() => {
     const onKey = (e) => {
       if (e.key !== 'Escape') return
-      if (showBcsLightbox)  { setShowBcsLightbox(false);  return }
+      if (showBcsLightbox)  { closeBcsLightbox();          return }
       if (showBcsInfo)      { setShowBcsInfo(false);      return }
       if (showBreedInfo)    { setShowBreedInfo(false);    return }
       if (showCalorieInfo)  { setShowCalorieInfo(false);  return }
@@ -310,6 +312,29 @@ export default function Calculator() {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [showBcsLightbox, showBcsInfo, showBreedInfo, showCalorieInfo])
+
+  // Opening the BCS lightbox pushes a throwaway history entry so the
+  // device/browser back button closes the lightbox instead of navigating
+  // away from the calculator (and losing the in-progress inputs).
+  useEffect(() => {
+    if (!showBcsLightbox) return
+    window.history.pushState({ bcsLightbox: true }, '')
+    const onPopState = () => setShowBcsLightbox(false)
+    window.addEventListener('popstate', onPopState)
+    return () => window.removeEventListener('popstate', onPopState)
+  }, [showBcsLightbox])
+
+  function openBcsLightbox() {
+    setShowBcsLightbox(true)
+  }
+
+  function closeBcsLightbox() {
+    if (window.history.state?.bcsLightbox) {
+      window.history.back()
+    } else {
+      setShowBcsLightbox(false)
+    }
+  }
 
   const set = (key, val) => setInputs(prev => ({ ...prev, [key]: val }))
 
@@ -542,7 +567,7 @@ export default function Calculator() {
                         <img
                           src="/bcs3.png"
                           alt="סולם מצב גוף BCS 1-9"
-                          onClick={() => setShowBcsLightbox(true)}
+                          onClick={openBcsLightbox}
                           className="w-full rounded-2xl border border-stone cursor-zoom-in hover:opacity-90 transition-opacity duration-150"
                         />
                         <p className="text-center text-xs text-mist mt-1.5">לחצו על התמונה להגדלה</p>
@@ -748,10 +773,12 @@ export default function Calculator() {
                           type="number"
                           min="1"
                           max="9999"
+                          dir="ltr"
                           placeholder={`ברירת מחדל: ${(FOOD_TYPES.find(f => f.id === inputs.foodType)?.kcalPer100g ?? 350) * 10}`}
                           value={inputs.customKcalPerKg}
                           onChange={e => set('customKcalPerKg', e.target.value)}
                           className="input-base w-40"
+                          {...kcalPerKgSelectAll}
                         />
                         <span className="text-sm text-mist">קק״ל/ק״ג</span>
                       </div>
@@ -804,7 +831,7 @@ export default function Calculator() {
       {showBcsLightbox && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8"
-          onClick={() => setShowBcsLightbox(false)}
+          onClick={closeBcsLightbox}
         >
           {/* Blurred backdrop */}
           <div className="absolute inset-0 bg-[#1a0d06]/70 backdrop-blur-md" />
@@ -825,7 +852,7 @@ export default function Calculator() {
             {/* Close hint */}
             <button
               type="button"
-              onClick={() => setShowBcsLightbox(false)}
+              onClick={closeBcsLightbox}
               className="absolute top-3 left-3 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-colors duration-150"
               aria-label="סגור"
             >
