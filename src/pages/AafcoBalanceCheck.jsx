@@ -4,6 +4,7 @@ import { Search, X, RotateCcw, ChevronDown, MoveHorizontal } from 'lucide-react'
 import clsx from 'clsx'
 import Button from '../components/ui/Button'
 import { compareToAafco, NUTRIENT_LABELS, CHLORIDE_NOTE } from '../utils/aafcoLogic'
+import { useSelectAllOnFocus } from '../hooks/useSelectAllOnFocus'
 
 /* ─── AAFCO explainer — collapsible ─────────────────────────────────────────── */
 function AafcoExplainer() {
@@ -239,6 +240,7 @@ const STATUS_META = {
 function GramsPopup({ item, onConfirm, onCancel }) {
   const [grams, setGrams] = useState('100')
   const inputRef = useRef(null)
+  const gramsSelectAll = useSelectAllOnFocus()
 
   useEffect(() => {
     const t = setTimeout(() => {
@@ -277,7 +279,8 @@ function GramsPopup({ item, onConfirm, onCancel }) {
             onChange={e => setGrams(e.target.value)}
             onKeyDown={handleKeyDown}
             className="input-base pr-10 text-right tabular-nums"
-            dir="rtl"
+            dir="ltr"
+            {...gramsSelectAll}
           />
           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-mist pointer-events-none">ג׳</span>
         </div>
@@ -408,6 +411,7 @@ function IngredientSearch({ ingredients, onAdd }) {
 /* ─── Recipe row in the input table ─────────────────────────────────────────── */
 function RecipeInputRow({ row, onGramsChange, onRemove }) {
   const val = parseFloat(row.grams) || 0
+  const gramsSelectAll = useSelectAllOnFocus()
 
   function handleMinus() {
     let next
@@ -441,11 +445,13 @@ function RecipeInputRow({ row, onGramsChange, onRemove }) {
           <input
             type="number"
             min="0.1"
+            dir="ltr"
             value={row.grams}
             onChange={e => onGramsChange(row.id, e.target.value)}
             className="w-14 rounded-xl border border-stone bg-white py-1.5 text-sm text-earth text-center
                        tabular-nums [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none
                        transition duration-200 focus:outline-none focus:border-sage focus:shadow-input"
+            {...gramsSelectAll}
           />
           <button onClick={handleMinus} className={stepperBtn} title="פחות" type="button">−</button>
         </div>

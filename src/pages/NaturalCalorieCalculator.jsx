@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Search, X } from 'lucide-react'
 import clsx from 'clsx'
 import Button from '../components/ui/Button'
+import { useSelectAllOnFocus } from '../hooks/useSelectAllOnFocus'
 
 /* ─── Helpers ──────────────────────────────────────────────────────────────── */
 
@@ -19,6 +20,7 @@ function filterIngredients(list, query) {
 function GramsPopup({ item, onConfirm, onCancel }) {
   const [grams, setGrams] = useState('100')
   const inputRef = useRef(null)
+  const gramsSelectAll = useSelectAllOnFocus()
 
   useEffect(() => {
     const t = setTimeout(() => {
@@ -54,7 +56,8 @@ function GramsPopup({ item, onConfirm, onCancel }) {
             onChange={e => setGrams(e.target.value)}
             onKeyDown={handleKeyDown}
             className="input-base pr-10 text-right tabular-nums"
-            dir="rtl"
+            dir="ltr"
+            {...gramsSelectAll}
           />
           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-mist pointer-events-none">ג׳</span>
         </div>
@@ -182,6 +185,7 @@ function IngredientSearch({ ingredients, onAdd }) {
 /* ─── Single recipe row ────────────────────────────────────────────────────── */
 function RecipeRow({ row, onUpdateGrams, onRemove }) {
   const kcal = (Number(row.grams) || 0) * (row.kcal_per_100g / 100)
+  const gramsSelectAll = useSelectAllOnFocus()
   return (
     <tr className="border-b border-stone/60 last:border-0">
       {/* Name */}
@@ -196,10 +200,12 @@ function RecipeRow({ row, onUpdateGrams, onRemove }) {
         <input
           type="number"
           min="0"
+          dir="ltr"
           value={row.grams}
           onChange={e => onUpdateGrams(row.id, e.target.value)}
           className="w-20 rounded-xl border border-stone bg-white px-3 py-2 text-sm text-earth text-center
                      transition duration-200 focus:outline-none focus:border-sage focus:shadow-input"
+          {...gramsSelectAll}
         />
       </td>
 
@@ -287,6 +293,7 @@ export default function NaturalCalorieCalculator() {
   const [error,       setError]       = useState(null)
   const [recipe,      setRecipe]      = useState([])
   const [servings,    setServings]    = useState(1)
+  const servingsSelectAll = useSelectAllOnFocus()
 
   /* Calorie math — derived, no extra state */
   const totalKcal      = recipe.reduce((sum, r) => sum + (Number(r.grams) || 0) * (r.kcal_per_100g / 100), 0)
@@ -410,10 +417,12 @@ export default function NaturalCalorieCalculator() {
                           <input
                             type="number"
                             min="1"
+                            dir="ltr"
                             value={servings}
                             onChange={e => setServings(Math.max(1, Number(e.target.value) || 1))}
                             className="w-16 rounded-xl border border-stone bg-white px-3 py-1.5 text-sm text-center
                                        text-earth transition duration-200 focus:outline-none focus:border-sage focus:shadow-input"
+                            {...servingsSelectAll}
                           />
                           כלבים
                         </label>
