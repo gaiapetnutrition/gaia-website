@@ -379,9 +379,11 @@ export default function Calculator() {
               </p>
             </div>
             <img
-              src="/mascot_feeding_calculator2.png"
+              src="/mascot_feeding_calculator2.webp"
               alt=""
               aria-hidden="true"
+              width="1164"
+              height="659"
               className="hidden md:block w-[27rem] lg:w-[30rem] flex-shrink-0 object-contain self-end"
             />
           </div>
