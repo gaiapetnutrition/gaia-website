@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { Instagram, Mail, Phone, Facebook } from 'lucide-react'
+import { Instagram, Mail, Phone } from 'lucide-react'
 
 const NAV_LINKS = [
   { label: 'בית',            path: '/' },
@@ -79,24 +79,13 @@ export default function Footer() {
             <ul className="space-y-2.5">
               <li>
                 <a
-                  href="https://instagram.com"
+                  href="https://www.instagram.com/gaia.petnutrition/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2.5 text-sm text-white/60 hover:text-white transition-colors"
                 >
                   <Instagram className="w-4 h-4 flex-shrink-0" />
                   Instagram
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://facebook.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2.5 text-sm text-white/60 hover:text-white transition-colors"
-                >
-                  <Facebook className="w-4 h-4 flex-shrink-0" />
-                  Facebook
                 </a>
               </li>
               <li>
