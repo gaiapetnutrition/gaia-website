@@ -253,7 +253,17 @@ function ScrollSplitBowl() {
     }
 
     // Desktop: scroll-jacking wheel reveal
-    const LOCK_Y = 747
+    // Trigger point is wherever the bowl first fully fits on screen — i.e.
+    // when the pinned section's bottom edge reaches the viewport bottom —
+    // not a hardcoded guess (goes stale whenever content above it changes)
+    // and not a full top-pin (requires scrolling further than needed).
+    // Measured against the inner section, not the outer container — the
+    // container is deliberately taller to give the wheel-jack scroll room,
+    // but that extra height isn't part of what's visually on screen.
+    const sectionRect = containerRef.current?.querySelector('.bowl-scroll-section')?.getBoundingClientRect()
+    const sectionTop  = sectionRect?.top ?? 0
+    const sectionH    = sectionRect?.height ?? 0
+    const LOCK_Y = Math.round(sectionTop + window.scrollY - Math.max(0, window.innerHeight - sectionH))
     let locked   = false
     let lockedAt = 0
 
@@ -304,7 +314,7 @@ function ScrollSplitBowl() {
   return (
     <div>
       {/* Section heading — scrolls in before bowl pins */}
-      <div className="bg-cream text-center px-4 pt-14 pb-4">
+      <div className="bg-cream text-center px-4 pt-10 pb-4">
         <span className="eyebrow block mb-3 text-display-md normal-case tracking-normal font-semibold" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
           החלטתם לעבור לתזונה טבעית - מצוין!
         </span>
@@ -748,7 +758,28 @@ export default function Home() {
         <img
           src="/arrow.png"
           alt="גללו למטה"
-          onClick={() => window.scrollTo({ top: 747, behavior: 'smooth' })}
+          onClick={() => {
+            const el = document.querySelector('.bowl-scroll-section')
+            let targetY = 747
+            if (el) {
+              const rect = el.getBoundingClientRect()
+              const isTouch = navigator.maxTouchPoints > 0
+              targetY = isTouch
+                // Touch has no lock — the reveal is driven continuously by
+                // scroll position, starting once the section's top passes
+                // 60% down the viewport (same threshold as the touch
+                // reveal logic below). Biased very slightly past that exact
+                // point (rather than landing exactly on it) so a real
+                // device's dynamic address bar — which can shift the
+                // effective viewport height by the time the scroll settles —
+                // can't leave it landing just short, feeling stuck.
+                ? Math.round(rect.top + window.scrollY - window.innerHeight * 0.58)
+                // Desktop: wherever the bowl first fully fits on screen —
+                // same target the scroll-lock uses (see ScrollSplitBowl).
+                : Math.round(rect.top + window.scrollY - Math.max(0, window.innerHeight - rect.height))
+            }
+            window.scrollTo({ top: targetY, behavior: 'smooth' })
+          }}
           style={{
             width: 28,
             height: 28,
