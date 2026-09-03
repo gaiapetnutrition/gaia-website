@@ -759,13 +759,24 @@ export default function Home() {
           src="/arrow.png"
           alt="גללו למטה"
           onClick={() => {
-            // Same target the bowl's scroll-lock uses — wherever the bowl
-            // first fully fits on screen (see ScrollSplitBowl).
             const el = document.querySelector('.bowl-scroll-section')
             let targetY = 747
             if (el) {
               const rect = el.getBoundingClientRect()
-              targetY = Math.round(rect.top + window.scrollY - Math.max(0, window.innerHeight - rect.height))
+              const isTouch = navigator.maxTouchPoints > 0
+              targetY = isTouch
+                // Touch has no lock — the reveal is driven continuously by
+                // scroll position, starting once the section's top passes
+                // 60% down the viewport (same threshold as the touch
+                // reveal logic below). Biased very slightly past that exact
+                // point (rather than landing exactly on it) so a real
+                // device's dynamic address bar — which can shift the
+                // effective viewport height by the time the scroll settles —
+                // can't leave it landing just short, feeling stuck.
+                ? Math.round(rect.top + window.scrollY - window.innerHeight * 0.58)
+                // Desktop: wherever the bowl first fully fits on screen —
+                // same target the scroll-lock uses (see ScrollSplitBowl).
+                : Math.round(rect.top + window.scrollY - Math.max(0, window.innerHeight - rect.height))
             }
             window.scrollTo({ top: targetY, behavior: 'smooth' })
           }}
