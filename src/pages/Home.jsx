@@ -253,7 +253,17 @@ function ScrollSplitBowl() {
     }
 
     // Desktop: scroll-jacking wheel reveal
-    const LOCK_Y = 747
+    // Trigger point is wherever the bowl first fully fits on screen — i.e.
+    // when the pinned section's bottom edge reaches the viewport bottom —
+    // not a hardcoded guess (goes stale whenever content above it changes)
+    // and not a full top-pin (requires scrolling further than needed).
+    // Measured against the inner section, not the outer container — the
+    // container is deliberately taller to give the wheel-jack scroll room,
+    // but that extra height isn't part of what's visually on screen.
+    const sectionRect = containerRef.current?.querySelector('.bowl-scroll-section')?.getBoundingClientRect()
+    const sectionTop  = sectionRect?.top ?? 0
+    const sectionH    = sectionRect?.height ?? 0
+    const LOCK_Y = Math.round(sectionTop + window.scrollY - Math.max(0, window.innerHeight - sectionH))
     let locked   = false
     let lockedAt = 0
 
@@ -748,7 +758,17 @@ export default function Home() {
         <img
           src="/arrow.png"
           alt="גללו למטה"
-          onClick={() => window.scrollTo({ top: 747, behavior: 'smooth' })}
+          onClick={() => {
+            // Same target the bowl's scroll-lock uses — wherever the bowl
+            // first fully fits on screen (see ScrollSplitBowl).
+            const el = document.querySelector('.bowl-scroll-section')
+            let targetY = 747
+            if (el) {
+              const rect = el.getBoundingClientRect()
+              targetY = Math.round(rect.top + window.scrollY - Math.max(0, window.innerHeight - rect.height))
+            }
+            window.scrollTo({ top: targetY, behavior: 'smooth' })
+          }}
           style={{
             width: 28,
             height: 28,
