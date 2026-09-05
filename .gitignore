@@ -51,3 +51,14 @@ Calculator/
 
 # Local Netlify folder
 .netlify
+
+# Raw source data for calculator nutrient database (see ONBOARDING.md)
+/Food Data/
+/aafco_dog_per_1000kcal.csv
+/aafco_req.csv
+/aafco_usda_nutrient_map.csv
+/ingredient_base_all.csv
+/ingredient_base_foundation.csv
+/ingredient_base_sr.csv
+/ingredient_calorie_list.csv
+/ingredient_nutrients_all.csv
