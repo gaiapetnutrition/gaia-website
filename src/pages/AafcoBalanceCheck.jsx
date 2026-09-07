@@ -5,6 +5,7 @@ import clsx from 'clsx'
 import Button from '../components/ui/Button'
 import { compareToAafco, NUTRIENT_LABELS, CHLORIDE_NOTE } from '../utils/aafcoLogic'
 import { useSelectAllOnFocus } from '../hooks/useSelectAllOnFocus'
+import DownloadAafcoPdfButton from '../components/pdf/DownloadAafcoPdfButton'
 
 /* ─── AAFCO explainer — collapsible ─────────────────────────────────────────── */
 function AafcoExplainer() {
@@ -864,13 +865,21 @@ export default function AafcoBalanceCheck() {
                 <div>
                   {result && (
                     <div className="bg-white border border-stone rounded-3xl shadow-card p-5 sm:p-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-base font-semibold text-earth">
-                          תוצאות - {lifeStage === 'adult' ? 'כלב בוגר' : 'גידול / גור'}
-                        </h2>
-                        {recalculating && (
-                          <span className="text-xs text-mist animate-pulse-soft">מחשב מחדש…</span>
-                        )}
+                      <div className="flex items-start justify-between gap-3 mb-4">
+                        <div>
+                          <h2 className="text-base font-semibold text-earth">
+                            תוצאות - {lifeStage === 'adult' ? 'כלב בוגר' : 'גידול / גור'}
+                          </h2>
+                          {recalculating && (
+                            <span className="text-xs text-mist animate-pulse-soft">מחשב מחדש…</span>
+                          )}
+                        </div>
+                        <DownloadAafcoPdfButton
+                          recipe={recipe}
+                          lifeStage={lifeStage}
+                          result={result}
+                          statusMeta={STATUS_META}
+                        />
                       </div>
                       <ResultsTable rows={result.rows} totalKcal={result.totalKcal} />
                     </div>
