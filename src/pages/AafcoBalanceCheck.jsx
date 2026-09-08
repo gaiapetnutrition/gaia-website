@@ -4,8 +4,10 @@ import { Search, X, RotateCcw, ChevronDown, MoveHorizontal } from 'lucide-react'
 import clsx from 'clsx'
 import Button from '../components/ui/Button'
 import { compareToAafco, NUTRIENT_LABELS, CHLORIDE_NOTE } from '../utils/aafcoLogic'
+import { computeScaledRecipe } from '../utils/recipeScaling'
 import { useSelectAllOnFocus } from '../hooks/useSelectAllOnFocus'
 import DownloadAafcoPdfButton from '../components/pdf/DownloadAafcoPdfButton'
+import DownloadScaledRecipePdfButton from '../components/pdf/DownloadScaledRecipePdfButton'
 
 /* ─── AAFCO explainer — collapsible ─────────────────────────────────────────── */
 function AafcoExplainer() {
@@ -617,6 +619,222 @@ function ResultsTable({ rows, totalKcal }) {
 // Remove an id from this list to re-enable it; the underlying data is untouched.
 const DISABLED_INGREDIENT_IDS = [999001, 999002] // NOW Kelp Powder, Bone Meal Powder NOW
 
+/* ─── Recipe scaling by daily calorie target ────────────────────────────────── */
+const STORAGE_NOTE =
+  'בהכנה ליותר מ־3 ימים, מומלץ לחלק למנות. את המנות לשימוש בימים הקרובים שמרו בקירור, ואת היתר הקפיאו בהתאם לכללי אחסון מזון.'
+
+function ScalingSection({ recipe, totalKcal }) {
+  const [scalingEnabled, setScalingEnabled] = useState(false)
+  const [targetCaloriesInput, setTargetCaloriesInput] = useState('')
+  const [daysToPrepareInput, setDaysToPrepareInput] = useState('7')
+  const [mealsPerDay, setMealsPerDay] = useState(2)
+
+  const hasValidRecipeCalories = Number.isFinite(totalKcal) && totalKcal > 0
+
+  const parsedTarget = targetCaloriesInput.trim() === '' ? NaN : Number(targetCaloriesInput)
+  const targetIsValid = Number.isFinite(parsedTarget) && parsedTarget > 0
+
+  const parsedDays = daysToPrepareInput.trim() === '' ? NaN : Number(daysToPrepareInput)
+  const daysIsValid = Number.isInteger(parsedDays) && parsedDays >= 1 && parsedDays <= 90
+
+  const scaled = useMemo(() => {
+    if (!scalingEnabled || !hasValidRecipeCalories || !targetIsValid || !daysIsValid) return null
+    return computeScaledRecipe({
+      recipe,
+      totalKcal,
+      targetDailyCalories: parsedTarget,
+      mealsPerDay,
+      daysToPrepare: parsedDays,
+    })
+  }, [scalingEnabled, hasValidRecipeCalories, targetIsValid, daysIsValid, recipe, totalKcal, parsedTarget, mealsPerDay, parsedDays])
+
+  const showValidationError = scalingEnabled && hasValidRecipeCalories && targetCaloriesInput.trim() !== '' && !targetIsValid
+  const showEmptyPrompt = scalingEnabled && hasValidRecipeCalories && targetCaloriesInput.trim() === ''
+  const showDaysError = scalingEnabled && hasValidRecipeCalories && !daysIsValid
+  const showStorageNote = scaled && scaled.daysToPrepare > 3
+
+  return (
+    <div className="bg-white border border-stone rounded-3xl shadow-card p-5 sm:p-6">
+      <h2 className="text-base font-semibold text-earth mb-1">התאמת כמויות לכלב שלכם!</h2>
+      <p className="text-sm text-mist leading-relaxed mb-3">
+        הזינו את צריכת הקלוריות היומית המשוערת של הכלב, ונחשב את הכמויות ליום ולהכנה מראש.
+      </p>
+      <p className="text-xs text-mist leading-relaxed mb-4">
+        לא יודעים כמה קלוריות הכלב צריך ביום? השתמשו ב
+        <Link to="/calculator" className="text-forest font-semibold hover:underline">מחשבון ההאכלה שלנו</Link>
+        , ובסיום החישוב העתיקו את המספר שמופיע תחת "צרכים קלוריים יומיים" והזינו אותו כאן.
+      </p>
+
+      <label className="flex items-center gap-2 mb-4 cursor-pointer select-none">
+        <input
+          type="checkbox"
+          checked={scalingEnabled}
+          onChange={e => setScalingEnabled(e.target.checked)}
+          disabled={!hasValidRecipeCalories}
+          className="w-4 h-4 rounded border-stone text-forest focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage disabled:opacity-50"
+        />
+        <span className="text-sm font-semibold text-bark">הפעלת התאמת כמויות</span>
+      </label>
+
+      {!hasValidRecipeCalories && (
+        <p className="text-xs text-red-600">
+          לא ניתן להתאים את גודל המנה עד שיש במתכון רכיבים עם נתוני קלוריות תקינים.
+        </p>
+      )}
+
+      {scalingEnabled && hasValidRecipeCalories && (
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label htmlFor="scaling-target-kcal" className="text-sm font-semibold text-bark block mb-1.5">
+                צרכים קלוריים יומיים
+              </label>
+              <input
+                id="scaling-target-kcal"
+                type="number"
+                min="1"
+                dir="ltr"
+                inputMode="decimal"
+                value={targetCaloriesInput}
+                onChange={e => setTargetCaloriesInput(e.target.value)}
+                aria-describedby={showValidationError ? 'scaling-target-kcal-error' : undefined}
+                aria-invalid={showValidationError}
+                className="input-base text-right tabular-nums"
+                placeholder="לדוגמה: 850"
+              />
+              {showValidationError && (
+                <p id="scaling-target-kcal-error" className="text-xs text-red-600 mt-1.5">
+                  יש להזין יעד קלוריות יומי תקין (מספר חיובי גדול מ-0)
+                </p>
+              )}
+              {showEmptyPrompt && (
+                <p className="text-xs text-mist mt-1.5">
+                  הזינו יעד קלוריות יומי כדי לראות את הכמויות המותאמות.
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="scaling-days-to-prepare" className="text-sm font-semibold text-bark block mb-1.5">
+                לכמה ימים מכינים מראש?
+              </label>
+              <input
+                id="scaling-days-to-prepare"
+                type="number"
+                min="1"
+                max="90"
+                step="1"
+                dir="ltr"
+                inputMode="numeric"
+                value={daysToPrepareInput}
+                onChange={e => setDaysToPrepareInput(e.target.value)}
+                aria-describedby={showDaysError ? 'scaling-days-error' : undefined}
+                aria-invalid={showDaysError}
+                className="input-base text-right tabular-nums"
+              />
+              {showDaysError && (
+                <p id="scaling-days-error" className="text-xs text-red-600 mt-1.5">
+                  יש להזין מספר ימים שלם בין 1 ל־90.
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="scaling-meals-per-day" className="text-sm font-semibold text-bark block mb-1.5">
+                כמות ארוחות ביום
+              </label>
+              <select
+                id="scaling-meals-per-day"
+                value={mealsPerDay}
+                onChange={e => setMealsPerDay(Number(e.target.value))}
+                className="input-base"
+              >
+                {[1, 2, 3, 4, 5, 6].map(n => (
+                  <option key={n} value={n}>{n}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {scaled && (
+            <div aria-live="polite" className="space-y-4">
+              <div className="flex justify-end">
+                <DownloadScaledRecipePdfButton scaled={scaled} showStorageNote={showStorageNote} />
+              </div>
+
+              <div className="bg-parchment rounded-2xl p-4 grid grid-cols-2 gap-x-4 gap-y-2 sm:flex sm:flex-wrap sm:items-center sm:gap-x-6 sm:gap-y-1.5 text-sm">
+                <span>
+                  <span className="text-mist">יעד יומי: </span>
+                  <span className="font-semibold text-bark tabular-nums">
+                    {Math.round(scaled.targetDailyCalories).toLocaleString('he-IL')} קק"ל
+                  </span>
+                </span>
+                <span>
+                  <span className="text-mist">ארוחות ביום: </span>
+                  <span className="font-semibold text-bark tabular-nums">{scaled.mealsPerDay}</span>
+                </span>
+                <span>
+                  <span className="text-mist">ימים להכנה: </span>
+                  <span className="font-semibold text-bark tabular-nums">{scaled.daysToPrepare}</span>
+                </span>
+              </div>
+
+              {showStorageNote && (
+                <p className="text-xs text-mist leading-relaxed">{STORAGE_NOTE}</p>
+              )}
+
+              <div className="sm:hidden flex items-center justify-center gap-1.5 text-xs text-mist">
+                <MoveHorizontal size={14} className="flex-shrink-0" />
+                ניתן לגלול הטבלה לצדדים לצפייה בכל הנתונים
+              </div>
+
+              <div className="relative">
+                <div className="overflow-x-auto rounded-2xl border border-stone/60">
+                  <table className="w-full min-w-[560px] text-sm">
+                    <thead>
+                      <tr className="bg-parchment border-b border-stone/60">
+                        <th className="py-2.5 px-3 text-right text-xs font-semibold text-mist">רכיב</th>
+                        <th className="py-2.5 px-2 text-center text-xs font-semibold text-mist">כמות במתכון המקורי</th>
+                        <th className="py-2.5 px-2 text-center text-xs font-semibold text-mist">כמות יומית מותאמת</th>
+                        <th className="py-2.5 px-2 text-center text-xs font-semibold text-mist">כמות לכל ארוחה</th>
+                        <th className="py-2.5 px-2 text-center text-xs font-semibold text-mist">{`כמות להכנה ל־${scaled.daysToPrepare} ${scaled.daysToPrepare === 1 ? 'יום' : 'ימים'}`}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {scaled.items.map(item => (
+                        <tr key={item.id} className="border-b border-stone/40 last:border-0">
+                          <td className="py-2.5 px-3 font-medium text-earth" dir="ltr">{item.name}</td>
+                          <td className="py-2.5 px-2 text-center tabular-nums text-mist">
+                            {item.originalGrams.toLocaleString('he-IL')} ג׳
+                          </td>
+                          <td className="py-2.5 px-2 text-center tabular-nums font-medium text-earth">
+                            {Math.round(item.scaledDailyGrams).toLocaleString('he-IL')} ג׳
+                          </td>
+                          <td className="py-2.5 px-2 text-center tabular-nums text-earth">
+                            {Math.round(item.gramsPerMeal).toLocaleString('he-IL')} ג׳
+                          </td>
+                          <td className="py-2.5 px-2 text-center tabular-nums font-medium text-earth">
+                            {Math.round(item.gramsToPrepare).toLocaleString('he-IL')} ג׳
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="sm:hidden pointer-events-none absolute inset-y-0 left-0 w-8 rounded-l-2xl bg-gradient-to-l from-transparent to-white" />
+              </div>
+
+              <p className="text-xs text-mist leading-relaxed">
+                הכמויות מוצגות כהמלצת התחלה על בסיס צרכים קלוריים משוערים. מומלץ לעקוב אחר משקל ומצב הגוף של הכלב ולהתאים את הכמות בעת הצורך.
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
 /* ─── Main page ──────────────────────────────────────────────────────────────── */
 export default function AafcoBalanceCheck() {
   /* Data loading */
@@ -887,6 +1105,11 @@ export default function AafcoBalanceCheck() {
                 </div>
 
               </div>
+            )}
+
+            {/* ── Recipe scaling by daily calorie target — full width, below the grid ── */}
+            {recipe.length > 0 && (
+              <ScalingSection recipe={recipe} totalKcal={result?.totalKcal ?? null} />
             )}
 
           </div>
