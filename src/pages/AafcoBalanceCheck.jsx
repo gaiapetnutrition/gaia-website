@@ -471,6 +471,34 @@ function RecipeInputRow({ row, onGramsChange, onRemove }) {
   )
 }
 
+/* ─── Mobile scroll-fade visibility ──────────────────────────────────────────── *
+ * Hides the "more content to scroll" fade once a sentinel placed at the far
+ * (RTL: left) edge of the scrollable content becomes visible — i.e. once the
+ * user has scrolled all the way. Uses IntersectionObserver rather than
+ * scrollLeft comparisons because RTL scrollLeft sign conventions differ
+ * across browsers (Chrome/Firefox vs. Safari), making a manual scroll-math
+ * check unreliable.
+ */
+function useScrollEndObserver(scrollRef, sentinelRef, deps = []) {
+  const [atEnd, setAtEnd] = useState(false)
+
+  useEffect(() => {
+    const container = scrollRef.current
+    const sentinel = sentinelRef.current
+    if (!container || !sentinel) { setAtEnd(false); return }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setAtEnd(entry.isIntersecting),
+      { root: container, threshold: 0 }
+    )
+    observer.observe(sentinel)
+    return () => observer.disconnect()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps)
+
+  return atEnd
+}
+
 /* ─── Coverage bar ───────────────────────────────────────────────────────────── */
 function CoverageBar({ pct }) {
   if (pct == null) return <span className="text-mist text-xs">-</span>
@@ -494,6 +522,10 @@ function ResultsTable({ rows, totalKcal }) {
 
   const [expandedNutrient, setExpandedNutrient] = useState(null)
 
+  const scrollRef = useRef(null)
+  const sentinelRef = useRef(null)
+  const scrolledToEnd = useScrollEndObserver(scrollRef, sentinelRef, [])
+
   return (
     <div className="space-y-4">
       {/* Summary chips */}
@@ -516,14 +548,18 @@ function ResultsTable({ rows, totalKcal }) {
       </div>
 
       {/* Mobile-only hint: table scrolls sideways */}
-      <div className="sm:hidden flex items-center justify-center gap-1.5 text-xs text-mist">
-        <MoveHorizontal size={14} className="flex-shrink-0" />
-        ניתן לגלול הטבלה לצדדים לצפייה בכל הנתונים
+      <div className="sm:hidden flex flex-col items-center gap-1 text-xs text-mist">
+        <span className="flex items-center gap-1.5">
+          <MoveHorizontal size={14} className="flex-shrink-0" />
+          ניתן לגלול הטבלה לצדדים לצפייה בכל הנתונים
+        </span>
+        <span>או לסובב את הטלפון לרוחב</span>
       </div>
 
       {/* Table */}
       <div className="relative">
-        <div className="overflow-x-auto rounded-2xl border border-stone/60">
+        <div ref={scrollRef} className="overflow-x-auto rounded-2xl border border-stone/60">
+          <div className="relative w-max">
           <table className="w-full min-w-[560px] text-sm">
           <thead>
             <tr className="bg-parchment border-b border-stone/60">
@@ -599,9 +635,13 @@ function ResultsTable({ rows, totalKcal }) {
             })}
           </tbody>
           </table>
+          <span ref={sentinelRef} aria-hidden="true" className="absolute inset-y-0 left-0 w-px" />
+          </div>
         </div>
-        {/* Mobile-only fade hinting more content to scroll to (RTL: content continues leftward) */}
-        <div className="sm:hidden pointer-events-none absolute inset-y-0 left-0 w-8 rounded-l-2xl bg-gradient-to-l from-transparent to-white" />
+        {/* Mobile-only fade hinting more content to scroll to (RTL: content continues leftward) — hidden once fully scrolled */}
+        {!scrolledToEnd && (
+          <div className="sm:hidden pointer-events-none absolute inset-y-0 left-0 w-8 rounded-l-2xl bg-gradient-to-l from-transparent to-white" />
+        )}
       </div>
 
       {/* Footnote for "בטווח התקין*" */}
@@ -652,6 +692,10 @@ function ScalingSection({ recipe, totalKcal }) {
   const showEmptyPrompt = scalingEnabled && hasValidRecipeCalories && targetCaloriesInput.trim() === ''
   const showDaysError = scalingEnabled && hasValidRecipeCalories && !daysIsValid
   const showStorageNote = scaled && scaled.daysToPrepare > 3
+
+  const scrollRef = useRef(null)
+  const sentinelRef = useRef(null)
+  const scrolledToEnd = useScrollEndObserver(scrollRef, sentinelRef, [!!scaled])
 
   return (
     <div className="bg-white border border-stone rounded-3xl shadow-card p-5 sm:p-6">
@@ -783,13 +827,17 @@ function ScalingSection({ recipe, totalKcal }) {
                 <p className="text-xs text-mist leading-relaxed">{STORAGE_NOTE}</p>
               )}
 
-              <div className="sm:hidden flex items-center justify-center gap-1.5 text-xs text-mist">
-                <MoveHorizontal size={14} className="flex-shrink-0" />
-                ניתן לגלול הטבלה לצדדים לצפייה בכל הנתונים
+              <div className="sm:hidden flex flex-col items-center gap-1 text-xs text-mist">
+                <span className="flex items-center gap-1.5">
+                  <MoveHorizontal size={14} className="flex-shrink-0" />
+                  ניתן לגלול הטבלה לצדדים לצפייה בכל הנתונים
+                </span>
+                <span>או לסובב את הטלפון לרוחב</span>
               </div>
 
               <div className="relative">
-                <div className="overflow-x-auto rounded-2xl border border-stone/60">
+                <div ref={scrollRef} className="overflow-x-auto rounded-2xl border border-stone/60">
+                  <div className="relative w-max">
                   <table className="w-full min-w-[560px] text-sm">
                     <thead>
                       <tr className="bg-parchment border-b border-stone/60">
@@ -820,8 +868,12 @@ function ScalingSection({ recipe, totalKcal }) {
                       ))}
                     </tbody>
                   </table>
+                  <span ref={sentinelRef} aria-hidden="true" className="absolute inset-y-0 left-0 w-px" />
+                  </div>
                 </div>
-                <div className="sm:hidden pointer-events-none absolute inset-y-0 left-0 w-8 rounded-l-2xl bg-gradient-to-l from-transparent to-white" />
+                {!scrolledToEnd && (
+                  <div className="sm:hidden pointer-events-none absolute inset-y-0 left-0 w-8 rounded-l-2xl bg-gradient-to-l from-transparent to-white" />
+                )}
               </div>
 
               <p className="text-xs text-mist leading-relaxed">
