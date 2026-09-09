@@ -7,7 +7,7 @@ export default function About() {
 
       {/* Header */}
       <div className="flex justify-center items-center py-12 md:py-16 border-b border-earth/8">
-        <img src="/gaia-logo.png" alt="GAiA" className="h-[calc(6rem*1.4)] md:h-[calc(8rem*1.4)] w-auto rounded-[2rem]" />
+        <img src="/gaia-logo.webp" alt="GAiA" className="h-[calc(6rem*1.4)] md:h-[calc(8rem*1.4)] w-auto rounded-[2rem]" />
       </div>
 
       {/* Content */}

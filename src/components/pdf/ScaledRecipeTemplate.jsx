@@ -31,7 +31,7 @@ export function ScaledRecipeHeader({ generatedDate }) {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <img src="/gaia-logo.png" alt="" style={{ width: 44, height: 44, borderRadius: 10, objectFit: 'cover' }} />
+        <img src="/gaia-logo.webp" alt="" style={{ width: 44, height: 44, borderRadius: 10, objectFit: 'cover' }} />
         <div style={{ fontSize: '18px', fontWeight: 700 }}>כמויות הכנה והגשה לכלב</div>
       </div>
       <div style={{ fontSize: '11px', color: '#6b6255', textAlign: 'left' }} dir="ltr">

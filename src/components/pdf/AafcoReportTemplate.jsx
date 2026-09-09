@@ -31,7 +31,7 @@ export function AafcoReportHeader({ lifeStage, generatedDate }) {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <img src="/gaia-logo.png" alt="" style={{ width: 44, height: 44, borderRadius: 10, objectFit: 'cover' }} />
+        <img src="/gaia-logo.webp" alt="" style={{ width: 44, height: 44, borderRadius: 10, objectFit: 'cover' }} />
         <div>
           <div style={{ fontSize: '18px', fontWeight: 700 }}>דוח איזון תזונתי למתכון</div>
           <div style={{ fontSize: '12px', color: '#6b6255', marginTop: '2px' }}>
