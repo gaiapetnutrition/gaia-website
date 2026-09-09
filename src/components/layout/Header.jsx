@@ -149,7 +149,7 @@ export default function Header() {
               className="flex-shrink-0 ml-4"
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
-              <img src="/gaia-logo.png" alt="GAiA" className="h-11 w-auto rounded-xl" />
+              <img src="/gaia-logo.webp" alt="GAiA" className="h-11 w-auto rounded-xl" />
             </Link>
 
             {/* Desktop nav */}

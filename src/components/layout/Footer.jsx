@@ -31,7 +31,7 @@ export default function Footer() {
             <div className="flex items-center">
               <Link to="/" onClick={handleLogoClick}>
                 <img
-                  src="/gaia-logo.png"
+                  src="/gaia-logo.webp"
                   alt="GAiA"
                   className="h-14 w-auto rounded-xl"
                 />
