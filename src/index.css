@@ -30,14 +30,14 @@
   font-display: swap;
 }
 
-/* ─── Display headlines → Fraunces ─────────────────────────────────── */
-/* Heebo first so Hebrew glyphs always render with a real Hebrew font.
-   Fraunces stays in the stack for any Latin characters (e.g. "AAFCO"). */
+/* ─── Display headlines → Secular One ──────────────────────────────── */
+/* Secular One ships a single weight (400), so don't request bold. Heebo
+   stays in the stack as a Hebrew/Latin fallback. */
 .text-display-xl,
 .text-display-lg,
 .text-display-md {
-  font-family: 'Heebo', 'Fraunces', Georgia, serif;
-  font-weight: 700;
+  font-family: 'Secular One', 'Heebo', system-ui, sans-serif;
+  font-weight: 400;
 }
 
 /* ─── Base ─────────────────────────────────────────────────────────── */
