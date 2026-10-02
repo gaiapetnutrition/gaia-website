@@ -994,20 +994,23 @@ export default function AafcoBalanceCheck() {
         <div className="container-gaia py-14 md:py-20">
           <div className="flex items-center justify-between gap-8">
             {/* Text — right side (RTL) */}
-            <div className="flex-1 min-w-0">
-              <h1 className="text-display-lg font-serif text-white mb-3">בדיקת מלא ומאוזן לפי AAFCO</h1>
-              <p className="text-white/60 max-w-lg text-base leading-relaxed">
+            <div className="flex-1 min-w-0 md:min-w-[340px]">
+              <h1 className="text-display-lg !text-[clamp(2.25rem,3.6vw,2.7rem)] font-serif text-white mb-3">
+                <span className="block whitespace-nowrap">בדיקת מלא ומאוזן</span>
+                <span className="block whitespace-nowrap">לפי AAFCO</span>
+              </h1>
+              <p className="text-white/60 max-w-lg text-lg leading-relaxed">
                 הזינו את מרכיבי המתכון וקבלו השוואה מלאה לתקני AAFCO לכלבים, עם מינימום ומקסימום למגוון רכיבים תזונתיים.
               </p>
             </div>
             {/* Image — left side, decorative */}
-            <div className="hidden md:flex flex-shrink-0 items-center self-stretch justify-center" style={{ minWidth: '380px', marginLeft: '0px' }}>
+            <div className="hidden md:flex shrink min-w-0 items-center self-stretch justify-center">
               <img
                 src="/scale_image_final_copy.webp"
                 alt=""
                 width="1677"
                 height="938"
-                className="h-[27rem] w-auto object-contain drop-shadow-lg"
+                className="max-h-[27rem] h-auto w-auto max-w-full object-contain drop-shadow-lg"
               />
             </div>
           </div>

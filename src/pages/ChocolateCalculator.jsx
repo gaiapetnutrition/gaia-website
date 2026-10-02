@@ -202,14 +202,14 @@ export default function ChocolateCalculator() {
         <div className="container-gaia py-14 md:py-20">
           <div className="flex items-center justify-between gap-8">
             {/* Text — right side (RTL) */}
-            <div className="flex-1 min-w-0">
-              <h1 className="text-display-lg font-serif text-white mb-3">מחשבון רעילות שוקולד לכלב</h1>
-              <p className="text-white/60 max-w-lg text-base leading-relaxed">
+            <div className="flex-1 min-w-0 md:min-w-[300px]">
+              <h1 className="text-display-lg !text-[clamp(2.25rem,4.4vw,3.4rem)] font-serif text-white mb-3">מחשבון רעילות שוקולד לכלב</h1>
+              <p className="text-white/60 max-w-lg text-lg leading-relaxed">
                 שוקולד מכיל תיאוברומין, חומר הרעיל לכלבים. המחשבון מעריך את רמת הסיכון לפי משקל הכלב, סוג השוקולד והכמות שנצרכה.
               </p>
             </div>
             {/* Image — left side, faded into background */}
-            <div className="hidden md:block flex-shrink-0 relative" style={{ width: '491px', height: '351px', marginLeft: '24px' }}>
+            <div className="hidden md:block shrink min-w-0 relative" style={{ width: '491px', height: '351px', marginLeft: '24px' }}>
               <img
                 src={`/chocolate_new2.png?v=${Date.now()}`}
                 alt=""

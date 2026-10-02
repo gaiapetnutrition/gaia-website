@@ -342,14 +342,14 @@ export default function NaturalCalorieCalculator() {
         <div className="container-gaia py-14 md:py-20">
           <div className="flex items-center justify-between gap-8">
             {/* Text — right side (RTL) */}
-            <div className="flex-1 min-w-0">
-              <h1 className="text-display-lg font-serif text-white mb-3">מחשבון קלוריות לתזונה טבעית</h1>
-              <p className="text-white/60 max-w-lg text-base leading-relaxed">
+            <div className="flex-1 min-w-0 md:min-w-[300px]">
+              <h1 className="text-display-lg !text-[clamp(2.25rem,4.4vw,3.4rem)] font-serif text-white mb-3">מחשבון קלוריות לתזונה טבעית</h1>
+              <p className="text-white/60 max-w-lg text-lg leading-relaxed">
                 בנו מתכון מהמרכיבים שלכם וראו בדיוק כמה קלוריות הכלב שלכם מקבל בכל ארוחה. מבוסס על נתוני מזון אנושיים (USDA).
               </p>
             </div>
             {/* Image — left side, faded into background */}
-            <div className="hidden md:block flex-shrink-0 relative self-end" style={{ width: '500px', height: '260px', marginLeft: '60px', marginBottom: '-90px' }}>
+            <div className="hidden md:block shrink min-w-0 relative self-end" style={{ width: '500px', height: '260px', marginLeft: '60px', marginBottom: '-90px' }}>
               <img
                 src="/calorie_image3.webp"
                 alt=""
