@@ -995,7 +995,10 @@ export default function AafcoBalanceCheck() {
           <div className="flex items-center justify-between gap-8">
             {/* Text — right side (RTL) */}
             <div className="flex-1 min-w-0">
-              <h1 className="text-display-lg font-serif text-white mb-3">בדיקת מלא ומאוזן לפי AAFCO</h1>
+              <h1 className="text-display-lg !text-[clamp(2rem,3.2vw,2.4rem)] font-serif text-white mb-3">
+                <span className="block whitespace-nowrap">בדיקת מלא ומאוזן</span>
+                <span className="block whitespace-nowrap">לפי AAFCO</span>
+              </h1>
               <p className="text-white/60 max-w-lg text-base leading-relaxed">
                 הזינו את מרכיבי המתכון וקבלו השוואה מלאה לתקני AAFCO לכלבים, עם מינימום ומקסימום למגוון רכיבים תזונתיים.
               </p>
