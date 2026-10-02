@@ -203,7 +203,7 @@ export default function ChocolateCalculator() {
           <div className="flex items-center justify-between gap-8">
             {/* Text — right side (RTL) */}
             <div className="flex-1 min-w-0 md:min-w-[300px]">
-              <h1 className="text-display-lg font-serif text-white mb-3">מחשבון רעילות שוקולד לכלב</h1>
+              <h1 className="text-display-lg !text-[clamp(2.25rem,4.4vw,3.4rem)] font-serif text-white mb-3">מחשבון רעילות שוקולד לכלב</h1>
               <p className="text-white/60 max-w-lg text-lg leading-relaxed">
                 שוקולד מכיל תיאוברומין, חומר הרעיל לכלבים. המחשבון מעריך את רמת הסיכון לפי משקל הכלב, סוג השוקולד והכמות שנצרכה.
               </p>

@@ -366,7 +366,7 @@ export default function Calculator() {
           <div ref={topRef} />
           <div className="flex items-end justify-between gap-8">
             <div className="flex-1 min-w-0 md:min-w-[300px]">
-              <h1 className="text-display-lg font-serif text-white mb-3">
+              <h1 className="text-display-lg !text-[clamp(2.25rem,4.4vw,3.4rem)] font-serif text-white mb-3">
                 מחשבון האכלה לכלב
               </h1>
               <p className="text-white/60 max-w-lg text-lg leading-relaxed whitespace-pre-line">

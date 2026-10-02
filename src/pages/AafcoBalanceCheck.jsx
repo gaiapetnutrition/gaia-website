@@ -994,8 +994,8 @@ export default function AafcoBalanceCheck() {
         <div className="container-gaia py-14 md:py-20">
           <div className="flex items-center justify-between gap-8">
             {/* Text — right side (RTL) */}
-            <div className="flex-1 min-w-0 md:min-w-[300px]">
-              <h1 className="text-display-lg !text-[clamp(2rem,3.2vw,2.4rem)] font-serif text-white mb-3">
+            <div className="flex-1 min-w-0 md:min-w-[340px]">
+              <h1 className="text-display-lg !text-[clamp(2.25rem,3.6vw,2.7rem)] font-serif text-white mb-3">
                 <span className="block whitespace-nowrap">בדיקת מלא ומאוזן</span>
                 <span className="block whitespace-nowrap">לפי AAFCO</span>
               </h1>
