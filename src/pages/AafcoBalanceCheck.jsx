@@ -994,7 +994,7 @@ export default function AafcoBalanceCheck() {
         <div className="container-gaia py-14 md:py-20">
           <div className="flex items-center justify-between gap-8">
             {/* Text — right side (RTL) */}
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 md:min-w-[300px]">
               <h1 className="text-display-lg !text-[clamp(2rem,3.2vw,2.4rem)] font-serif text-white mb-3">
                 <span className="block whitespace-nowrap">בדיקת מלא ומאוזן</span>
                 <span className="block whitespace-nowrap">לפי AAFCO</span>
@@ -1004,13 +1004,13 @@ export default function AafcoBalanceCheck() {
               </p>
             </div>
             {/* Image — left side, decorative */}
-            <div className="hidden md:flex flex-shrink-0 items-center self-stretch justify-center" style={{ minWidth: '380px', marginLeft: '0px' }}>
+            <div className="hidden md:flex shrink min-w-0 items-center self-stretch justify-center">
               <img
                 src="/scale_image_final_copy.webp"
                 alt=""
                 width="1677"
                 height="938"
-                className="h-[27rem] w-auto object-contain drop-shadow-lg"
+                className="max-h-[27rem] h-auto w-auto max-w-full object-contain drop-shadow-lg"
               />
             </div>
           </div>
