@@ -365,11 +365,11 @@ export default function Calculator() {
         <div className="container-gaia py-14 md:py-20">
           <div ref={topRef} />
           <div className="flex items-end justify-between gap-8">
-            <div className="flex-1">
+            <div className="flex-1 min-w-0 md:min-w-[300px]">
               <h1 className="text-display-lg font-serif text-white mb-3">
                 מחשבון האכלה לכלב
               </h1>
-              <p className="text-white/60 max-w-lg text-base leading-relaxed whitespace-pre-line">
+              <p className="text-white/60 max-w-lg text-lg leading-relaxed whitespace-pre-line">
                 {`החישוב מבוסס על נוסחאות אנרגיה וטרינריות מקובלות (RER ו‑MER), יחד עם התחשבות במגוון גורמים כמו שלב חיים, מצב גוף, פעילות ומצב סירוס/עיקור.
 
 עם זאת!
@@ -384,7 +384,7 @@ export default function Calculator() {
               aria-hidden="true"
               width="1164"
               height="659"
-              className="hidden md:block w-[27rem] lg:w-[30rem] flex-shrink-0 object-contain self-end"
+              className="hidden md:block w-[27rem] lg:w-[30rem] shrink min-w-0 h-auto object-contain self-end"
             />
           </div>
         </div>

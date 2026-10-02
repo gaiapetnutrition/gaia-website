@@ -999,7 +999,7 @@ export default function AafcoBalanceCheck() {
                 <span className="block whitespace-nowrap">בדיקת מלא ומאוזן</span>
                 <span className="block whitespace-nowrap">לפי AAFCO</span>
               </h1>
-              <p className="text-white/60 max-w-lg text-base leading-relaxed">
+              <p className="text-white/60 max-w-lg text-lg leading-relaxed">
                 הזינו את מרכיבי המתכון וקבלו השוואה מלאה לתקני AAFCO לכלבים, עם מינימום ומקסימום למגוון רכיבים תזונתיים.
               </p>
             </div>
