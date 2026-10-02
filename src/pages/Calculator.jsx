@@ -364,7 +364,7 @@ export default function Calculator() {
       <div className="bg-green-gradient text-white overflow-hidden">
         <div className="container-gaia py-14 md:py-20">
           <div ref={topRef} />
-          <div className="flex items-end justify-between gap-8">
+          <div className="flex items-center justify-between gap-8">
             <div className="flex-1 min-w-0 md:min-w-[300px]">
               <h1 className="text-display-lg !text-[clamp(2.25rem,4.4vw,3.4rem)] font-serif text-white mb-3">
                 מחשבון האכלה לכלב
@@ -384,7 +384,7 @@ export default function Calculator() {
               aria-hidden="true"
               width="1164"
               height="659"
-              className="hidden md:block w-[27rem] lg:w-[30rem] shrink min-w-0 h-auto object-contain self-end"
+              className="hidden md:block w-[27rem] lg:w-[30rem] shrink min-w-0 h-auto object-contain"
             />
           </div>
         </div>
