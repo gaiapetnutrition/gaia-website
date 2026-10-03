@@ -30,10 +30,10 @@ export default {
         honey:     { DEFAULT: '#B8882A', light: '#CC9E40', dark: '#96701E' },
       },
       fontFamily: {
-        sans:    ['"Secular One"', 'Heebo', 'system-ui', 'sans-serif'],
-        serif:   ['"Secular One"', 'Heebo', 'system-ui', 'sans-serif'],
+        sans:    ['"Secular One"', 'Arial', 'system-ui', 'sans-serif'],
+        serif:   ['"Secular One"', 'Arial', 'system-ui', 'sans-serif'],
         display: ['"Secular One"', 'system-ui', 'sans-serif'],
-        body:    ['"Secular One"', 'Heebo', 'system-ui', 'sans-serif'],
+        body:    ['"Secular One"', 'Arial', 'system-ui', 'sans-serif'],
         mono:    ['"Roboto Mono"', 'monospace'],
       },
       fontSize: {
