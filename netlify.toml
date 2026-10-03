@@ -8,3 +8,9 @@
 
 [functions]
   included_files = ["netlify/functions/data/**"]
+
+# Font filename isn't content-hashed, so keep the cache short (1 week) rather than immutable.
+[[headers]]
+  for = "/*.woff2"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
