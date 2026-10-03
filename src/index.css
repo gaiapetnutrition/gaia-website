@@ -16,7 +16,7 @@
 /* To revert: remove the @font-face block below */
 @font-face {
   font-family: 'Secular One';
-  src: url('/SecularOne-Regular.ttf') format('truetype');
+  src: url('/SecularOne-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -31,12 +31,12 @@
 }
 
 /* ─── Display headlines → Secular One ──────────────────────────────── */
-/* Secular One ships a single weight (400), so don't request bold. Heebo
-   stays in the stack as a Hebrew/Latin fallback. */
+/* Secular One ships a single weight (400), so don't request bold. Arial is
+   the system fallback while it loads (and for glyphs it lacks). */
 .text-display-xl,
 .text-display-lg,
 .text-display-md {
-  font-family: 'Secular One', 'Heebo', system-ui, sans-serif;
+  font-family: 'Secular One', Arial, system-ui, sans-serif;
   font-weight: 400;
 }
 
