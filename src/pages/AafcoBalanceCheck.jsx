@@ -558,8 +558,8 @@ function ResultsTable({ rows, totalKcal }) {
 
       {/* Table */}
       <div className="relative">
-        <div ref={scrollRef} className="overflow-x-auto rounded-2xl border border-stone/60">
-          <div className="relative w-max">
+        <div ref={scrollRef} className="overflow-x-auto rounded-2xl border border-stone/60" style={{ containerType: 'inline-size' }}>
+          <div className="relative w-max min-w-full">
           <table className="w-full min-w-[560px] text-sm">
           <thead>
             <tr className="bg-parchment border-b border-stone/60">
@@ -624,7 +624,12 @@ function ResultsTable({ rows, totalKcal }) {
                   {info && isExpanded && (
                     <tr className={clsx('border-b border-stone/40 last:border-0', meta.bg)}>
                       <td colSpan={7} className="px-3 pb-4 pt-0">
-                        <div className="animate-fade-in rounded-xl bg-white/70 border border-stone/50 p-3.5 text-sm leading-relaxed text-bark whitespace-pre-line" dir="rtl">
+                        {/* width 0 + min-width: the text wraps to the table's width (or the visible scroll area on mobile, kept in view via sticky) instead of stretching the table */}
+                        <div
+                          className="sticky right-3 w-0 animate-fade-in rounded-xl bg-white/70 border border-stone/50 p-3.5 text-sm leading-relaxed text-bark whitespace-pre-line"
+                          style={{ minWidth: 'min(100%, calc(100cqw - 1.5rem))' }}
+                          dir="rtl"
+                        >
                           {info}
                         </div>
                       </td>
@@ -1085,9 +1090,9 @@ export default function AafcoBalanceCheck() {
               </div>
             )}
 
-            {/* ── Two-column grid: recipe table left, results right ── */}
+            {/* ── Recipe table, then results — stacked so the wide results table fits without scrolling on desktop ── */}
             {recipe.length > 0 && (
-              <div className="grid grid-cols-1 lg:grid-cols-[420px_1fr] gap-6 items-start">
+              <div className="space-y-6">
 
                 {/* Recipe table */}
                 <div className="bg-white border border-stone rounded-3xl shadow-card p-5">
