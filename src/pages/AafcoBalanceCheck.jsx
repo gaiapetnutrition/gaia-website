@@ -559,7 +559,7 @@ function ResultsTable({ rows, totalKcal }) {
       {/* Table */}
       <div className="relative">
         <div ref={scrollRef} className="overflow-x-auto rounded-2xl border border-stone/60" style={{ containerType: 'inline-size' }}>
-          <div className="relative w-max">
+          <div className="relative w-max min-w-full">
           <table className="w-full min-w-[560px] text-sm">
           <thead>
             <tr className="bg-parchment border-b border-stone/60">
