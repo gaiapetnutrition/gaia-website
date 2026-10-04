@@ -558,7 +558,7 @@ function ResultsTable({ rows, totalKcal }) {
 
       {/* Table */}
       <div className="relative">
-        <div ref={scrollRef} className="overflow-x-auto rounded-2xl border border-stone/60">
+        <div ref={scrollRef} className="overflow-x-auto rounded-2xl border border-stone/60" style={{ containerType: 'inline-size' }}>
           <div className="relative w-max">
           <table className="w-full min-w-[560px] text-sm">
           <thead>
@@ -624,7 +624,12 @@ function ResultsTable({ rows, totalKcal }) {
                   {info && isExpanded && (
                     <tr className={clsx('border-b border-stone/40 last:border-0', meta.bg)}>
                       <td colSpan={7} className="px-3 pb-4 pt-0">
-                        <div className="animate-fade-in rounded-xl bg-white/70 border border-stone/50 p-3.5 text-sm leading-relaxed text-bark whitespace-pre-line" dir="rtl">
+                        {/* width 0 + min-width: the text wraps to the table's width (or the visible scroll area on mobile, kept in view via sticky) instead of stretching the table */}
+                        <div
+                          className="sticky right-3 w-0 animate-fade-in rounded-xl bg-white/70 border border-stone/50 p-3.5 text-sm leading-relaxed text-bark whitespace-pre-line"
+                          style={{ minWidth: 'min(100%, calc(100cqw - 1.5rem))' }}
+                          dir="rtl"
+                        >
                           {info}
                         </div>
                       </td>
