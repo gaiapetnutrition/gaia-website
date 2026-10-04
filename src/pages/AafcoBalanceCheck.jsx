@@ -1090,9 +1090,9 @@ export default function AafcoBalanceCheck() {
               </div>
             )}
 
-            {/* ── Two-column grid: recipe table left, results right ── */}
+            {/* ── Recipe table, then results — stacked so the wide results table fits without scrolling on desktop ── */}
             {recipe.length > 0 && (
-              <div className="grid grid-cols-1 lg:grid-cols-[420px_1fr] gap-6 items-start">
+              <div className="space-y-6">
 
                 {/* Recipe table */}
                 <div className="bg-white border border-stone rounded-3xl shadow-card p-5">
