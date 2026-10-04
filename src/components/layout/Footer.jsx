@@ -42,7 +42,7 @@ export default function Footer() {
             </p>
             <div className="flex items-center gap-2 pt-1">
               <a
-                href="mailto:hello@gaia-nutrition.com"
+                href="mailto:info@gaiapetnutrition.co.il"
                 className="w-9 h-9 rounded-xl bg-white/8 hover:bg-white/15 flex items-center justify-center transition-colors"
               >
                 <Mail className="w-4 h-4" />
