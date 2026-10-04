@@ -19,6 +19,21 @@ function ScrollToTop() {
   return null
 }
 
+/* Keep canonical + og:url pointing at the current page (unknown paths render Home, so they point at /) */
+const SITE_URL = 'https://www.gaiapetnutrition.co.il'
+const CANONICAL_PATHS = /^\/(calculators?|chocolate-calculator|natural-calorie-calculator|aafco-balance-check|consultations|about|articles(\/\d+)?)?$/
+
+function CanonicalUrl() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    const path = pathname.replace(/\/+$/, '') || '/'
+    const url = SITE_URL + (CANONICAL_PATHS.test(path) ? path : '/')
+    document.querySelector('link[rel="canonical"]')?.setAttribute('href', url)
+    document.querySelector('meta[property="og:url"]')?.setAttribute('content', url)
+  }, [pathname])
+  return null
+}
+
 function Layout() {
   const location = useLocation()
   return (
@@ -49,6 +64,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <CanonicalUrl />
       <Layout />
     </BrowserRouter>
   )
