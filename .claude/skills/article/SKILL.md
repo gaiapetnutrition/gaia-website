@@ -38,6 +38,10 @@ Add an entry to the `ARTICLES` array in `src/pages/Articles.jsx`:
 Only `read` and `date` are ever inferred/estimated — everything else is
 supplied by the user or copied verbatim.
 
+Also add the article's URL to `public/sitemap.xml`
+(`<url><loc>https://www.gaiapetnutrition.co.il/articles/<id></loc></url>`).
+The build generates the article's own canonical/og:url page from that list.
+
 ## Step 2 — the body (when full article copy is provided)
 
 Convert the plain-text article into a `body: [...]` array of typed blocks on
