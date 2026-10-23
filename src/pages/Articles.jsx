@@ -91,7 +91,8 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 function ArticlesList() {
   const [query, setQuery] = useState('')
   const [newsletterEmail, setNewsletterEmail] = useState('')
-  const [newsletterStatus, setNewsletterStatus] = useState('idle') // idle | loading | success | error
+  const [newsletterStatus, setNewsletterStatus] = useState('idle') // idle | loading | success | error | rate-limited
+  const [newsletterHoneypot, setNewsletterHoneypot] = useState('')
   const newsletterInputRef = useRef(null)
   const [newsletterFocusToken, setNewsletterFocusToken] = useState(0)
 
@@ -114,11 +115,15 @@ function ArticlesList() {
 
     setNewsletterStatus('loading')
     try {
-      const res = await fetch('/.netlify/functions/newsletter-subscribe', {
+      const res = await fetch('/api/newsletter-subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: newsletterEmail.trim() }),
+        body: JSON.stringify({ email: newsletterEmail.trim(), website: newsletterHoneypot }),
       })
+      if (res.status === 429) {
+        setNewsletterStatus('rate-limited')
+        return
+      }
       if (!res.ok) throw new Error('subscribe failed')
       setNewsletterStatus('success')
       setNewsletterEmail('')
@@ -201,6 +206,17 @@ function ArticlesList() {
           <p className="text-white/60 text-sm mb-6">הצטרפו לרשימת הדיוור ותקבלו ידע תזונתי ישירות למייל.</p>
           {newsletterStatus !== 'success' && (
             <form onSubmit={handleNewsletterSubmit} noValidate className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+              {/* Honeypot: hidden from people and screen readers; bots that fill every field get filtered server-side */}
+              <input
+                type="text"
+                name="website"
+                value={newsletterHoneypot}
+                onChange={e => setNewsletterHoneypot(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                className="sr-only"
+              />
               <input
                 ref={newsletterInputRef}
                 type="email"
@@ -211,6 +227,7 @@ function ArticlesList() {
                 }}
                 placeholder="your@email.com"
                 required
+                maxLength={254}
                 aria-label="כתובת אימייל להרשמה לניוזלטר"
                 aria-invalid={newsletterStatus === 'error'}
                 disabled={newsletterStatus === 'loading'}
@@ -232,6 +249,9 @@ function ArticlesList() {
             )}
             {newsletterStatus === 'error' && (
               <span className="text-white">לא הצלחנו להשלים את ההרשמה כרגע. נסו שוב בעוד רגע.</span>
+            )}
+            {newsletterStatus === 'rate-limited' && (
+              <span className="text-white">היו כמה ניסיונות הרשמה ברצף. נסו שוב בעוד דקה.</span>
             )}
           </p>
           {newsletterStatus === 'success' && (
