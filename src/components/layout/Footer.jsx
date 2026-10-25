@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
-import { Instagram, Mail, Phone } from 'lucide-react'
+import { Instagram } from 'lucide-react'
+import EmailCopy from '../ui/EmailCopy'
 
 const NAV_LINKS = [
   { label: 'בית',            path: '/' },
@@ -24,10 +25,10 @@ export default function Footer() {
       <div className="container-gaia py-16 md:py-20">
 
         {/* Top grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-12 pb-12 border-b border-white/10">
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_auto] gap-10 md:gap-12 pb-12 border-b border-white/10">
 
           {/* Brand column */}
-          <div className="md:col-span-2 space-y-5">
+          <div className="space-y-5">
             <div className="flex items-center">
               <Link to="/" onClick={handleLogoClick}>
                 <img
@@ -40,20 +41,6 @@ export default function Footer() {
             <p className="text-sm leading-relaxed max-w-xs text-white/60">
               ידע על תזונה טבעית לכלבים מבוססת מדע - שילוב ייחודי של ידע מדעי עם פילוסופיית מזון מלא ובריאות הוליסטית.
             </p>
-            <div className="flex items-center gap-2 pt-1">
-              <a
-                href="mailto:info@gaiapetnutrition.co.il"
-                className="w-9 h-9 rounded-xl bg-white/8 hover:bg-white/15 flex items-center justify-center transition-colors"
-              >
-                <Mail className="w-4 h-4" />
-              </a>
-              <a
-                href="tel:+972-50-0000000"
-                className="w-9 h-9 rounded-xl bg-white/8 hover:bg-white/15 flex items-center justify-center transition-colors"
-              >
-                <Phone className="w-4 h-4" />
-              </a>
-            </div>
           </div>
 
           {/* Nav column */}
@@ -73,10 +60,13 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Community column */}
+          {/* Contact column */}
           <div className="space-y-4">
-            <h4 className="text-sm font-semibold text-white uppercase tracking-wider">קהילה</h4>
+            <h4 className="text-sm font-semibold text-white uppercase tracking-wider">יצירת קשר</h4>
             <ul className="space-y-2.5">
+              <li>
+                <EmailCopy variant="footer" />
+              </li>
               <li>
                 <a
                   href="https://www.instagram.com/gaia.petnutrition/"

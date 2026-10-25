@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
+import EmailCopy from '../components/ui/EmailCopy'
 import {
   CheckCircle, ChevronDown, ChevronUp, Clock, ArrowLeft,
   FlaskConical, FileText, Heart, AlertCircle,
@@ -1099,6 +1100,8 @@ export default function Consultations() {
               לשיחת היכרות
             </a>
           </div>
+
+          <EmailCopy variant="cta" className="justify-center mt-6" />
 
           <p className="text-white/30 text-xs mt-4">
             * אינו מחליף ייעוץ וטרינרי. לשאלות רפואיות, פנו לוטרינר המטפל.
