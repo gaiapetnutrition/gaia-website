@@ -39,7 +39,9 @@ export default function Footer() {
               </Link>
             </div>
             <p className="text-sm leading-relaxed max-w-xs text-white/60">
-              תזונה טבעית לכלבים - מותאמת, מלאה ומאוזנת.
+              תזונה טבעית לכלבים -
+              <br />
+              מותאמת, מלאה ומאוזנת.
             </p>
           </div>
 
