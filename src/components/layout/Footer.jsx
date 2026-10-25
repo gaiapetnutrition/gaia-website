@@ -25,7 +25,7 @@ export default function Footer() {
       <div className="container-gaia py-16 md:py-20">
 
         {/* Top grid */}
-        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_auto] gap-10 md:gap-12 pb-12 border-b border-white/10">
+        <div className="grid grid-cols-1 md:flex gap-10 md:gap-20 lg:gap-28 pb-12 border-b border-white/10">
 
           {/* Brand column */}
           <div className="space-y-5">
