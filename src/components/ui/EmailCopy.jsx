@@ -6,13 +6,18 @@ export const CONTACT_EMAIL = 'info@gaiapetnutrition.co.il'
 
 /* Styles per surface: footer (dark earth) and the consultations CTA (forest green) */
 const variants = {
+  // Matches the other rows in the footer's contact list (Instagram, WhatsApp)
   footer: {
-    link:   'text-white/75 hover:text-white',
-    button: 'bg-white/[0.08] hover:bg-white/15 text-white/75 hover:text-white',
+    row:    'gap-x-2 gap-y-1',
+    link:   'gap-2.5 text-white/60 hover:text-white',
+    button: 'h-7 bg-white/[0.08] hover:bg-white/15 text-white/60 hover:text-white -my-1',
+    square: 'w-7',
   },
   cta: {
-    link:   'text-white/80 hover:text-white focus-visible:outline-white',
-    button: 'border border-white/30 hover:bg-white/[0.08] text-white focus-visible:outline-white',
+    row:    'gap-2',
+    link:   'gap-2 text-white/80 hover:text-white focus-visible:outline-white',
+    button: 'h-8 border border-white/30 hover:bg-white/[0.08] text-white focus-visible:outline-white',
+    square: 'w-8',
   },
 }
 
@@ -65,11 +70,11 @@ export default function EmailCopy({ email = CONTACT_EMAIL, variant = 'footer', c
   const StatusIcon = status === 'copied' ? Check : status === 'failed' ? X : Copy
 
   return (
-    <div className={clsx('flex flex-wrap items-center gap-2', className)}>
+    <div className={clsx('flex flex-wrap items-center', styles.row, className)}>
       <a
         href={`mailto:${email}`}
         aria-label={`שליחת מייל אל ${email}`}
-        className={clsx('inline-flex items-center gap-2 text-sm rounded-lg transition-colors', styles.link)}
+        className={clsx('inline-flex items-center text-sm rounded-lg transition-colors', styles.link)}
       >
         <Mail className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
         <span dir="ltr">{email}</span>
@@ -81,8 +86,8 @@ export default function EmailCopy({ email = CONTACT_EMAIL, variant = 'footer', c
         onClick={handleCopy}
         title="העתקת כתובת"
         className={clsx(
-          'inline-flex items-center justify-center gap-1.5 h-8 rounded-xl text-xs font-semibold transition-colors',
-          message ? 'px-3' : 'w-8',
+          'inline-flex items-center justify-center gap-1.5 rounded-xl text-xs font-semibold transition-colors',
+          message ? 'px-3' : styles.square,
           styles.button,
         )}
       >
