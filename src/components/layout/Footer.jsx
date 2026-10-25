@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
-import { Instagram, Mail, Phone } from 'lucide-react'
+import { Instagram } from 'lucide-react'
+import EmailCopy from '../ui/EmailCopy'
 
 const NAV_LINKS = [
   { label: 'בית',            path: '/' },
@@ -40,20 +41,7 @@ export default function Footer() {
             <p className="text-sm leading-relaxed max-w-xs text-white/60">
               ידע על תזונה טבעית לכלבים מבוססת מדע - שילוב ייחודי של ידע מדעי עם פילוסופיית מזון מלא ובריאות הוליסטית.
             </p>
-            <div className="flex items-center gap-2 pt-1">
-              <a
-                href="mailto:info@gaiapetnutrition.co.il"
-                className="w-9 h-9 rounded-xl bg-white/8 hover:bg-white/15 flex items-center justify-center transition-colors"
-              >
-                <Mail className="w-4 h-4" />
-              </a>
-              <a
-                href="tel:+972-50-0000000"
-                className="w-9 h-9 rounded-xl bg-white/8 hover:bg-white/15 flex items-center justify-center transition-colors"
-              >
-                <Phone className="w-4 h-4" />
-              </a>
-            </div>
+            <EmailCopy variant="footer" className="pt-1" />
           </div>
 
           {/* Nav column */}
