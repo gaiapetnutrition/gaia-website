@@ -403,22 +403,18 @@ function Philosophy() {
           }`}
         >
           <span className="eyebrow inline-flex items-center gap-2">
-            הגישה שלנו:
+            הגישה שלנו
           </span>
-          <p className="text-display-md text-forest font-bold mb-3 mt-1" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>הגשר בין מחקר להוליסטיות</p>
-          <div className="w-10 border-t border-earth/20 mx-auto my-3" />
-          <div className="flex justify-center my-3">
+          <div className="flex justify-center mt-2 mb-3">
             <h2 className="text-display-md font-serif text-earth md:whitespace-nowrap text-balance text-center">
-              נקודת התחלה של מלא ומאוזן - לפי תקנים בינלאומיים
+              נקודת התחלה של מלא ומאוזן{' '}- לפי תקנים בינלאומיים.
             </h2>
           </div>
-          <p className="font-serif text-earth font-bold text-[calc(1rem*1.2*1.1)] mb-4 tracking-wide">
+          <p className="font-serif text-forest font-bold text-[calc(1rem*1.2*1.1)] mb-5 tracking-wide">
             בלי ניחושים.
           </p>
-          <p className="text-mist leading-relaxed max-w-lg mx-auto">
-            תזונה מבוססת מדע ותזונה טבעית הוליסטית לא סותרות -
-            <span className="block font-semibold text-earth/75 mt-1 text-[1.15em]">הן משלימות.</span>
-
+          <p className="text-mist leading-relaxed max-w-xl mx-auto">
+            אנחנו מאמינים שתזונה טבעית לכלבים צריכה להיות ממזון אמיתי עם ידע מקצועי ועקרונות תזונה בינלאומיים המבוססים על המלצות AAFCO ו-NRC, ללא חוסרים.
           </p>
         </div>
 
