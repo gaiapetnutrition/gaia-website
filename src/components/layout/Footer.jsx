@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { Instagram } from 'lucide-react'
+import { Instagram, Phone } from 'lucide-react'
 import EmailCopy from '../ui/EmailCopy'
 
 const NAV_LINKS = [
@@ -66,6 +66,15 @@ export default function Footer() {
             <ul className="space-y-2.5">
               <li>
                 <EmailCopy variant="footer" />
+              </li>
+              <li>
+                <a
+                  href="tel:+972547565603"
+                  className="flex items-center gap-2.5 text-sm text-white/60 hover:text-white transition-colors"
+                >
+                  <Phone className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
+                  <span dir="ltr">054-756-5603</span>
+                </a>
               </li>
               <li>
                 <a
