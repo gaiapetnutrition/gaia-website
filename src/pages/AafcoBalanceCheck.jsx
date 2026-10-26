@@ -1074,7 +1074,7 @@ export default function AafcoBalanceCheck() {
               <label className="text-sm font-semibold text-bark block mb-1">
                 הוספת מרכיב
                 {/* Mobile/small tablet only: the results table is wide, so the tool works best on a computer */}
-                <span className="md:hidden text-xs font-normal text-mist ms-1.5">(מומלץ במחשב!)</span>
+                <span className="md:hidden text-xs font-normal text-mist ms-1.5">(מומלץ במחשב)</span>
               </label>
               <p className="text-xs text-mist mb-3">
                 שמות באנגלית (USDA) - חפשו לפי שם <strong className="text-bark">באנגלית</strong>
