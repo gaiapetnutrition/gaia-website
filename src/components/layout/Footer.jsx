@@ -5,7 +5,7 @@ import WhatsAppIcon from '../ui/WhatsAppIcon'
 
 const NAV_LINKS = [
   { label: 'בית',            path: '/' },
-  { label: 'מחשבון תזונה',  path: '/calculator' },
+  { label: 'מחשבונים',      path: '/calculators' },
   { label: 'ייעוץ תזונתי',  path: '/consultations' },
   { label: 'מאמרים',         path: '/articles' },
   { label: 'אודות',          path: '/about' },
