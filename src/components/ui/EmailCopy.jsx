@@ -4,7 +4,7 @@ import clsx from 'clsx'
 
 export const CONTACT_EMAIL = 'info@gaiapetnutrition.co.il'
 
-/* Styles per surface: footer (dark earth) and the consultations CTA (forest green) */
+/* Styles per surface */
 const variants = {
   // Matches the other rows in the footer's contact list (Instagram, WhatsApp)
   footer: {
@@ -12,12 +12,6 @@ const variants = {
     link:   'gap-2.5 text-white/60 hover:text-white',
     button: 'h-7 bg-white/[0.08] hover:bg-white/15 text-white/60 hover:text-white -my-1',
     square: 'w-7',
-  },
-  cta: {
-    row:    'gap-2',
-    link:   'gap-2 text-white/80 hover:text-white focus-visible:outline-white',
-    button: 'h-8 border border-white/30 hover:bg-white/[0.08] text-white focus-visible:outline-white',
-    square: 'w-8',
   },
 }
 

@@ -138,7 +138,7 @@ function ChlorideTooltip() {
 
       {open && (
         <span
-          className="absolute bottom-full right-0 mb-2 z-50 w-64 rounded-2xl
+          className="absolute bottom-full right-0 mb-2 z-50 w-64 rounded-2xl whitespace-normal
                      bg-earth text-white text-xs leading-relaxed p-3 shadow-lg
                      before:absolute before:bottom-[-6px] before:right-3
                      before:border-4 before:border-transparent before:border-t-earth"
@@ -563,7 +563,8 @@ function ResultsTable({ rows, totalKcal }) {
           <table className="w-full min-w-[560px] text-sm">
           <thead>
             <tr className="bg-parchment border-b border-stone/60">
-              <th className="py-2.5 px-3 text-right text-xs font-semibold text-mist">רכיב תזונתי</th>
+              {/* w-[1%] + nowrap: shrink to the longest nutrient name so extra width goes to the data columns */}
+              <th className="py-2.5 px-3 lg:pe-8 text-right text-xs font-semibold text-mist w-[1%] whitespace-nowrap">רכיב תזונתי</th>
               <th className="py-2.5 px-2 text-center text-xs font-semibold text-mist w-12">יחידה</th>
               <th className="py-2.5 px-2 text-center text-xs font-semibold text-mist w-24">מתכון<br/>/1000 קק"ל</th>
               <th className="py-2.5 px-2 text-center text-xs font-semibold text-mist w-16">מינימום</th>
@@ -580,7 +581,7 @@ function ResultsTable({ rows, totalKcal }) {
               return (
                 <Fragment key={row.nutrient}>
                   <tr className={clsx('border-b border-stone/40 last:border-0', meta.bg)}>
-                    <td className="py-2.5 px-3 font-medium text-earth">
+                    <td className="py-2.5 px-3 lg:pe-8 font-medium text-earth whitespace-nowrap">
                       <span className="inline-flex items-center gap-1">
                         {NUTRIENT_LABELS[row.nutrient] ?? row.nutrient}
                         {/* Chloride-only tooltip: value is estimated from Sodium via NaCl ratio */}
@@ -1070,7 +1071,11 @@ export default function AafcoBalanceCheck() {
 
             {/* ── Ingredient search — full width ── */}
             <div className="bg-white border border-stone rounded-3xl shadow-card p-5 relative z-10">
-              <label className="text-sm font-semibold text-bark block mb-1">הוספת מרכיב</label>
+              <label className="text-sm font-semibold text-bark block mb-1">
+                הוספת מרכיב
+                {/* Mobile/small tablet only: the results table is wide, so the tool works best on a computer */}
+                <span className="md:hidden text-xs font-normal text-mist ms-1.5">(מומלץ במחשב)</span>
+              </label>
               <p className="text-xs text-mist mb-3">
                 שמות באנגלית (USDA) - חפשו לפי שם <strong className="text-bark">באנגלית</strong>
               </p>
