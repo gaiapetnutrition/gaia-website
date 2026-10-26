@@ -95,7 +95,7 @@ function Hero() {
             style={{ animationFillMode: 'both' }}
           >
             <img src="/gaia-paw.png" alt="" className="w-3.5 h-3.5 opacity-80" style={{ filter: 'hue-rotate(0deg) saturate(0.8)' }} />
-            קהילת המאכילים במזון טבעי לכלבים
+            הדרך לתזונה טבעית ומאוזנת, מבוססת מדע
           </span>
 
           {/* H1 — each line enters independently, 80ms apart */}
