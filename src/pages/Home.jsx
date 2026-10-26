@@ -95,7 +95,7 @@ function Hero() {
             style={{ animationFillMode: 'both' }}
           >
             <img src="/gaia-paw.png" alt="" className="w-3.5 h-3.5 opacity-80" style={{ filter: 'hue-rotate(0deg) saturate(0.8)' }} />
-            קהילת המאכילים במזון טבעי לכלבים
+            הדרך לתזונה טבעית ומאוזנת, מבוססת מדע
           </span>
 
           {/* H1 — each line enters independently, 80ms apart */}
@@ -164,10 +164,10 @@ function TrustBar() {
   const PAW = <img src="/gaia-paw.png" alt="" className="w-3.5 h-3.5 opacity-80" />
   const ITEMS = [
     { icon: PAW, label: 'מבוסס AAFCO/NRC' },
-    { icon: PAW, label: 'מחשבונים חינמיים' },
+    { icon: PAW, label: 'כלים חינמיים' },
     { icon: PAW, label: 'תזונה טבעית' },
-    { icon: PAW, label: 'קהילה' },
-    { icon: PAW, label: 'בשיתוף תזונאי כלבים מוסמך' },
+    { icon: PAW, label: 'גישה הוליסטית' },
+    { icon: PAW, label: 'בליווי תזונאי כלבים מוסמך' },
   ]
   return (
     <div className="relative bg-forest-dark text-white overflow-hidden">
