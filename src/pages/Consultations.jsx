@@ -619,7 +619,7 @@ export default function Consultations() {
             {/* Quick contact: plain text, then call / WhatsApp icon links */}
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
               <p className="inline-flex items-center gap-2 text-forest font-semibold text-sm">
-                רוצים לדבר קודם? שיחת היכרות חינם
+                רוצים לדבר קודם? שיחת התאמה חינם
                 <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
               </p>
               <div className="flex items-center gap-2">
@@ -627,9 +627,9 @@ export default function Consultations() {
                   href="tel:+972547565603"
                   aria-label="התקשרו אלינו: 054-756-5603"
                   title="התקשרו אלינו"
-                  className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-forest/10 text-forest hover:bg-forest hover:text-cream transition-colors duration-200"
+                  className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-forest/10 text-forest hover:bg-forest hover:text-cream transition-colors duration-200"
                 >
-                  <Phone className="w-4 h-4" aria-hidden="true" />
+                  <Phone className="w-3.5 h-3.5" aria-hidden="true" />
                 </a>
                 <a
                   href="https://wa.me/972547565603"
@@ -637,9 +637,9 @@ export default function Consultations() {
                   rel="noopener noreferrer"
                   aria-label="שליחת הודעה בוואטסאפ (נפתח בחלון חדש)"
                   title="WhatsApp"
-                  className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-forest/10 text-forest hover:bg-forest hover:text-cream transition-colors duration-200"
+                  className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-forest/10 text-forest hover:bg-forest hover:text-cream transition-colors duration-200"
                 >
-                  <WhatsAppIcon className="w-4 h-4" />
+                  <WhatsAppIcon className="w-3.5 h-3.5" />
                 </a>
               </div>
             </div>
