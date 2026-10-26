@@ -2,9 +2,9 @@ import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import {
   CheckCircle, ChevronDown, ChevronUp, Clock, ArrowLeft,
-  FlaskConical, FileText, Heart, AlertCircle, Phone,
+  FlaskConical, FileText, Heart, AlertCircle,
 } from 'lucide-react'
-import WhatsAppIcon from '../components/ui/WhatsAppIcon'
+import QuickContact from '../components/ui/QuickContact'
 
 /* ─── Scroll reveal hook ─────────────────────────────────────── */
 function useReveal(threshold = 0.1) {
@@ -616,33 +616,7 @@ export default function Consultations() {
             >
               לקביעת פגישה
             </a>
-            {/* Quick contact: plain text, then call / WhatsApp icon links */}
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-              <p className="inline-flex items-center gap-2 text-forest font-semibold text-sm">
-                רוצים לדבר קודם? שיחת התאמה חינם
-                <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
-              </p>
-              <div className="flex items-center gap-2">
-                <a
-                  href="tel:+972547565603"
-                  aria-label="התקשרו אלינו: 054-756-5603"
-                  title="התקשרו אלינו"
-                  className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-forest/10 text-forest hover:bg-forest hover:text-cream transition-colors duration-200"
-                >
-                  <Phone className="w-3.5 h-3.5" aria-hidden="true" />
-                </a>
-                <a
-                  href="https://wa.me/972547565603"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="שליחת הודעה בוואטסאפ (נפתח בחלון חדש)"
-                  title="WhatsApp"
-                  className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-forest/10 text-forest hover:bg-forest hover:text-cream transition-colors duration-200"
-                >
-                  <WhatsAppIcon className="w-3.5 h-3.5" />
-                </a>
-              </div>
-            </div>
+            <QuickContact label="רוצים לדבר קודם? שיחת התאמה חינם" />
           </div>
         </div>
       </section>
@@ -1106,14 +1080,9 @@ export default function Consultations() {
             >
               לפגישת ייעוץ
             </a>
-            <a
-              href="#"
-              onClick={e => { e.preventDefault(); e.stopPropagation(); window.Calendly?.initPopupWidget({ url: 'https://calendly.com/gaiapetnutrition/30min?background_color=faf7f0&text_color=1e1e1b&primary_color=3b5e41' }) }}
-              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 border border-white/30 text-white font-semibold rounded-xl hover:bg-white/[0.08] transition-colors duration-200 text-sm cursor-pointer"
-            >
-              לשיחת היכרות
-            </a>
           </div>
+
+          <QuickContact label="לשיחת התאמה חינם" tone="dark" className="justify-center mt-5" />
 
           <p className="text-white/30 text-xs mt-4">
             * אינו מחליף ייעוץ וטרינרי. לשאלות רפואיות, פנו לוטרינר המטפל.
