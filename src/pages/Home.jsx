@@ -320,7 +320,7 @@ function ScrollSplitBowl() {
           מצוין!
         </span>
         <h2 className="text-[clamp(1.375rem,2.5vw,2rem)] leading-[1.3] font-serif text-earth text-balance" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
-          אבל טבעי זה לא מספיק <br className="sm:hidden" />ויכול גם לפגוע.<br />
+          אבל טבעי זה לא מספיק, <br className="sm:hidden" />ויכול גם לפגוע.<br />
           צריך גם <span className="text-forest font-bold not-italic inline-block mt-1">נכון.</span>
         </h2>
         <p className="text-mist mt-3 max-w-xl mx-auto text-[1.218rem] leading-relaxed" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
