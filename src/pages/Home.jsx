@@ -315,7 +315,7 @@ function ScrollSplitBowl() {
     <div>
       {/* Section heading — scrolls in before bowl pins */}
       <div className="bg-cream text-center px-4 pt-10 pb-4">
-        <span className="eyebrow block mb-4 text-display-md normal-case tracking-normal font-semibold text-balance" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
+        <span className="eyebrow block mb-4 text-display-md normal-case tracking-normal !font-bold text-balance" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
           מאכילים או שוקלים תזונה טבעית לכלב שלכם?<br />
           מצוין!
         </span>
