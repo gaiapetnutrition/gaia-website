@@ -315,12 +315,12 @@ function ScrollSplitBowl() {
     <div>
       {/* Section heading — scrolls in before bowl pins */}
       <div className="bg-cream text-center px-4 pt-10 pb-4">
-        <span className="eyebrow block mb-4 text-display-sm normal-case tracking-normal font-semibold text-balance" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
+        <span className="eyebrow block mb-4 text-[clamp(1.375rem,2.5vw,2rem)] leading-[1.3] normal-case tracking-normal font-semibold text-balance" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
           מאכילים או שוקלים תזונה טבעית לכלב שלכם?<br />
           מצוין!
         </span>
         <h2 className="text-display-md font-serif text-earth text-balance" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
-          אבל טבעי זה לא מספיק ויכול גם לפגוע.<br />
+          אבל טבעי זה לא מספיק <br className="sm:hidden" />ויכול גם לפגוע.<br />
           צריך גם <span className="text-forest font-bold not-italic inline-block mt-1">נכון.</span>
         </h2>
         <p className="text-mist mt-3 max-w-xl mx-auto text-[1.218rem] leading-relaxed" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
