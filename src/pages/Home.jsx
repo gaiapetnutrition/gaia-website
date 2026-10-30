@@ -324,7 +324,7 @@ function ScrollSplitBowl() {
           צריך גם <span className="text-forest font-bold not-italic inline-block mt-1">נכון.</span>
         </h2>
         <p className="text-mist mt-3 max-w-xl mx-auto text-[1.218rem] leading-relaxed" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
-          אנחנו בוחרים מה להאכיל את הכלבים שלנו <strong className="font-semibold text-earth/80">כל יום לשארית ימי חייהם</strong>.<br />בלי <strong className="font-semibold text-earth/80">התפריט והאיזון</strong> הנכון - אנחנו עלולים להזיק יותר מאשר להועיל.
+          אנחנו בוחרים מה להאכיל את הכלבים שלנו <strong className="font-semibold text-earth/80">כל יום לשארית ימי חייהם</strong>.<br />בלי <strong className="font-semibold text-earth/80">התפריט והאיזון</strong> הנכונים - אנחנו עלולים להזיק יותר מאשר להועיל.
         </p>
       </div>
 
