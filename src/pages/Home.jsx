@@ -315,15 +315,15 @@ function ScrollSplitBowl() {
     <div>
       {/* Section heading — scrolls in before bowl pins */}
       <div className="bg-cream text-center px-4 pt-10 pb-4">
-        <span className="eyebrow block mb-4 text-display-md normal-case tracking-normal !font-bold text-balance" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
+        <span className="eyebrow block mb-3 text-display-md leading-[1.35] normal-case tracking-normal !font-bold text-balance" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
           מאכילים או שוקלים תזונה טבעית לכלב שלכם?<br />
           מצוין!
         </span>
-        <h2 className="text-[clamp(1.375rem,2.5vw,2rem)] leading-[1.3] font-serif text-earth text-balance" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
+        <h2 className="text-[clamp(1.375rem,2.5vw,2rem)] leading-[1.45] font-serif text-earth text-balance" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
           אבל טבעי זה לא מספיק, <br className="sm:hidden" />ויכול גם לפגוע.<br />
           צריך גם <span className="text-forest font-bold not-italic inline-block mt-1">נכון.</span>
         </h2>
-        <p className="text-mist mt-3 max-w-xl mx-auto text-[1.218rem] leading-relaxed" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
+        <p className="text-mist mt-2.5 max-w-xl mx-auto text-[1.218rem] leading-relaxed" style={{ fontFamily: '"Secular One", system-ui, sans-serif' }}>
           אנחנו בוחרים מה להאכיל את הכלבים שלנו <strong className="font-semibold text-earth/80">כל יום לשארית ימי חייהם</strong>.<br />בלי <strong className="font-semibold text-earth/80">התפריט והאיזון</strong> הנכונים - אנחנו עלולים להזיק יותר מאשר להועיל.
         </p>
       </div>
