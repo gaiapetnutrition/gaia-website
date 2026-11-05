@@ -235,7 +235,7 @@ const NUTRIENT_INFO = {
 /* ─── Status helpers ────────────────────────────────────────────────────────── */
 const STATUS_META = {
   'Below minimum': { label: 'מתחת למינימום!', bg: 'bg-red-50',    text: 'text-red-600',    badge: 'bg-red-100 text-red-700'    },
-  'Above maximum': { label: 'מעל המקסימום',  bg: 'bg-amber-50',  text: 'text-amber-600',  badge: 'bg-amber-100 text-amber-700' },
+  'Above maximum': { label: 'מעל המקסימום',  bg: 'bg-red-50',    text: 'text-red-600',    badge: 'bg-red-100 text-red-700'    },
   'OK':            { label: 'בטווח התקין',  bg: 'bg-emerald-50', text: 'text-emerald-700', badge: 'bg-emerald-100 text-emerald-700' },
 }
 
@@ -500,16 +500,21 @@ function useScrollEndObserver(scrollRef, sentinelRef, deps = []) {
 }
 
 /* ─── Coverage bar ───────────────────────────────────────────────────────────── */
-function CoverageBar({ pct }) {
+/* Bar fills as the recipe approaches the AAFCO minimum (full at 100%); the number stays uncapped
+   (below-minimum rows show at most 99.9%, so rounding never reads as "met").
+   Color follows the row's status: green when OK, red when below the minimum or above a defined maximum. */
+function CoverageBar({ pct, status }) {
   if (pct == null) return <span className="text-mist text-xs">-</span>
-  const capped   = Math.min(pct, 200)
-  const barColor = pct < 100 ? 'bg-red-400' : pct > 100 ? 'bg-emerald-500' : 'bg-emerald-500'
+  const width    = Math.min(Math.max(pct, 0), 100)
+  const barColor = status === 'OK' ? 'bg-emerald-500' : 'bg-red-400'
+  // pct is pre-rounded to 1 decimal, so e.g. 99.96% arrives as 100 while the status is still below minimum
+  const shownPct = status === 'Below minimum' ? Math.min(pct, 99.9) : pct
   return (
     <div className="flex items-center gap-2">
       <div className="flex-1 h-1.5 bg-stone rounded-full overflow-hidden min-w-[40px]">
-        <div className={clsx('h-full rounded-full transition-all', barColor)} style={{ width: `${capped / 2}%` }} />
+        <div className={clsx('h-full rounded-full transition-all', barColor)} style={{ width: `${width}%` }} />
       </div>
-      <span className="text-xs tabular-nums w-12 text-right">{pct.toLocaleString('he-IL')}%</span>
+      <span className="text-xs tabular-nums w-12 text-right">{shownPct.toLocaleString('he-IL')}%</span>
     </div>
   )
 }
@@ -539,7 +544,7 @@ function ResultsTable({ rows, totalKcal }) {
             <span className="pill bg-red-100 text-red-700">{below} מתחת למינימום!</span>
           )}
           {above > 0 && (
-            <span className="pill bg-amber-100 text-amber-700">{above} מעל המקסימום</span>
+            <span className="pill bg-red-100 text-red-700">{above} מעל המקסימום</span>
           )}
           {ok > 0 && (
             <span className="pill bg-emerald-100 text-emerald-700">{ok} בטווח התקין<sup className="text-[9px] ml-0.5 opacity-70">*</sup></span>
@@ -569,8 +574,11 @@ function ResultsTable({ rows, totalKcal }) {
               <th className="py-2.5 px-2 text-center text-xs font-semibold text-mist w-24">מתכון<br/>/1000 קק"ל</th>
               <th className="py-2.5 px-2 text-center text-xs font-semibold text-mist w-16">מינימום</th>
               <th className="py-2.5 px-2 text-center text-xs font-semibold text-mist w-16">מקסימום</th>
-              <th className="py-2.5 px-3 text-right text-xs font-semibold text-mist w-36">כיסוי</th>
-              <th className="py-2.5 px-3 text-right text-xs font-semibold text-mist w-32">סטטוס</th>
+              <th className="py-2.5 px-3 text-center text-xs font-semibold text-mist w-36">
+                {/* Nudged 10% of the column toward the bar (right in RTL) */}
+                <div className="translate-x-[10%]">כיסוי המינימום</div>
+              </th>
+              <th className="py-2.5 px-3 text-center text-xs font-semibold text-mist w-32">סטטוס</th>
             </tr>
           </thead>
           <tbody>
@@ -614,9 +622,9 @@ function ResultsTable({ rows, totalKcal }) {
                       {row.aafcoMax != null ? row.aafcoMax : '-'}
                     </td>
                     <td className="py-2.5 px-3">
-                      <CoverageBar pct={row.coveragePct} />
+                      <CoverageBar pct={row.coveragePct} status={row.status} />
                     </td>
-                    <td className="py-2.5 px-3">
+                    <td className="py-2.5 px-3 text-center">
                       <span className={clsx('pill text-[11px]', meta.badge)}>
                         {meta.label}{row.status === 'OK' && <sup className="text-[9px] ml-0.5 opacity-70">*</sup>}
                       </span>
