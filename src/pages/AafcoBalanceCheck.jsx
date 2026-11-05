@@ -574,7 +574,10 @@ function ResultsTable({ rows, totalKcal }) {
               <th className="py-2.5 px-2 text-center text-xs font-semibold text-mist w-24">מתכון<br/>/1000 קק"ל</th>
               <th className="py-2.5 px-2 text-center text-xs font-semibold text-mist w-16">מינימום</th>
               <th className="py-2.5 px-2 text-center text-xs font-semibold text-mist w-16">מקסימום</th>
-              <th className="py-2.5 px-3 text-center text-xs font-semibold text-mist w-36">כיסוי המינימום</th>
+              <th className="py-2.5 px-3 text-center text-xs font-semibold text-mist w-36">
+                {/* Nudged 10% of the column toward the bar (right in RTL) */}
+                <div className="translate-x-[10%]">כיסוי המינימום</div>
+              </th>
               <th className="py-2.5 px-3 text-center text-xs font-semibold text-mist w-32">סטטוס</th>
             </tr>
           </thead>
