@@ -2,9 +2,11 @@ import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import {
   CheckCircle, ChevronDown, ChevronUp, Clock, ArrowLeft,
-  FlaskConical, FileText, Heart, AlertCircle,
+  FlaskConical, FileText, Heart, AlertCircle, Star,
 } from 'lucide-react'
+import Card from '../components/ui/Card'
 import QuickContact from '../components/ui/QuickContact'
+import NewsletterSignup from '../components/ui/NewsletterSignup'
 
 /* ─── Scroll reveal hook ─────────────────────────────────────── */
 function useReveal(threshold = 0.1) {
@@ -489,6 +491,89 @@ function FAQItem({ q, a }) {
 }
 
 /* ─── Page ───────────────────────────────────────────────────── */
+/* ─── Testimonials ───────────────────────────────────────── */
+function Testimonials() {
+  const [ref, visible, done] = useReveal(0.08)
+
+  const REVIEWS = [
+    {
+      name: 'נועה מ.',
+      dog:  'הבעלים של שון, לברדור בן 5',
+      text: 'האכלתי את שון במזון ביתי מבושל במשך שנתיים בלי לדעת שחסר לו יוד, סידן ועוד נוטריאנטים. הכלי גילה את זה תוך דקה ונתן לי בסיס לעבוד איתו. גאיה דייקו לי את התפריט עד הרכיב האחרון כדי שלא יהיו חוסרים. מקצועיים מאוד!!',
+      stars: 5,
+      accentColor: 'border-r-olive',
+    },
+    {
+      name: 'דניאל ר.',
+      dog:  'הבעלים של לונה, גורת גולדן בת 8 חודשים',
+      text: 'לא הבנתי בכלל כמה קריטי האיזון בתקופת הגדילה עד שהשתמשתי במחשבון. הייעוץ נתן לי תפריט מדויק ומדוד שאני סומך עליו, בלי תחושה שאני מנחש או מסכן את הכלב שלי.',
+      stars: 5,
+      accentColor: 'border-r-forest',
+    },
+    {
+      name: 'שירה מ.',
+      dog:  'הבעלים של ברונו, בוקסר בן 8',
+      text: 'ברונו כבר מבוגר ועם בעיות מפרקים. מעבר לזה שהבנתי שהתפריט שלנו לא מלא ומאוזן, נחשפתי להמון מרכיבים מבוססי מחקר שעזרו לו לתפקד והוא הרבה יותר טוב! הסבירו לי למה כל רכיב חשוב ובנינו משהו שבאמת מתאים לו.',
+      stars: 5,
+      accentColor: 'border-r-[#502814]',
+    },
+  ]
+
+  return (
+    <section className="pt-10 pb-section bg-cream">
+      <div className="container-gaia">
+        {/* Heading */}
+        <div
+          ref={ref}
+          className={`text-center mb-10 ${
+            done ? '' : `transition-[opacity,transform] duration-500 [transition-timing-function:cubic-bezier(0.23,1,0.32,1)] ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`
+          }`}
+        >
+          <h2 className="text-display-md font-serif text-earth inline-flex items-center gap-3">
+            מה אומרים{' '}
+            <span className="text-forest">בעלי הכלבים</span>
+            <img src="/gaia-paw.png" alt="" className="w-[1em] h-[1em] opacity-70" />
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {REVIEWS.map((r, i) => (
+            <div
+              key={r.name}
+              className={
+                done ? '' : `transition-[opacity,transform] duration-[450ms] [transition-timing-function:cubic-bezier(0.23,1,0.32,1)] ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`
+              }
+              style={!done ? { transitionDelay: `${100 + i * 110}ms` } : undefined}
+            >
+              <Card className={`flex flex-col justify-between h-full border-r-[3px] ${r.accentColor} hover:-translate-y-1 transition-transform duration-300`}>
+                <div>
+                  {/* Stars */}
+                  <div className="flex gap-0.5 mb-4">
+                    {[...Array(r.stars)].map((_, j) => (
+                      <Star key={j} className="w-3.5 h-3.5 fill-[#B8882A] text-[#B8882A]" />
+                    ))}
+                  </div>
+                  <p className="text-bark text-sm leading-[1.85] mb-5">{r.text}</p>
+                </div>
+                {/* Attribution */}
+                <div className="flex items-center gap-3 pt-4 border-t border-stone/50">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-sage/60 to-forest flex items-center justify-center text-white text-xs font-bold flex-shrink-0 shadow-warm-sm">
+                    {r.name[0]}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-earth leading-tight">{r.name}</p>
+                    <p className="text-[10px] text-mist leading-tight mt-0.5 whitespace-nowrap">{r.dog}</p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 export default function Consultations() {
   const [certOpen, setCertOpen] = useState(false)
 
@@ -614,7 +699,7 @@ export default function Consultations() {
                 window.Calendly?.initPopupWidget({ url: 'https://calendly.com/gaiapetnutrition/meet-with-me?background_color=faf7f0&text_color=1e1e1b&primary_color=3b5e41' })
               }}
             >
-              לקביעת פגישה
+              לפרטים וקביעת פגישה
             </a>
             <QuickContact label="רוצים לדבר קודם? שיחת התאמה חינם" />
           </div>
@@ -1024,9 +1109,14 @@ export default function Consultations() {
       </section>}
 
       {/* ══════════════════════════════════════════════════════
+          §9.5 TESTIMONIALS
+      ══════════════════════════════════════════════════════ */}
+      <Testimonials />
+
+      {/* ══════════════════════════════════════════════════════
           §10 FAQ
       ══════════════════════════════════════════════════════ */}
-      <section className="section-padding bg-cream relative overflow-hidden">
+      <section className="section-padding bg-parchment relative overflow-hidden">
         <img src="/gaia-paw.png" alt="" aria-hidden="true"
           className="absolute -top-3 -right-4 w-20 h-20 md:-top-6 md:-right-8 md:w-64 md:h-64 opacity-[0.07] pointer-events-none select-none"
           style={{ transform: 'rotate(15deg)' }}
@@ -1065,7 +1155,9 @@ export default function Consultations() {
             מוכנים לבנות תפריט שאפשר לסמוך עליו?
           </h2>
           <p className="text-white/60 text-base leading-relaxed mb-8 max-w-sm mx-auto">
-            שלחו הודעה ונחזור אליכם תוך יום עסקים. אפשר גם לשאול שאלה לפני קביעת פגישה.
+            שלחו הודעה ונחזור אליכם תוך יום עסקים.
+            <br />
+            אפשר גם להתייעץ לפני קביעת פגישה.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -1089,6 +1181,8 @@ export default function Consultations() {
           </p>
         </div>
       </section>
+
+      <NewsletterSignup variant="compact" />
 
     </div>
 

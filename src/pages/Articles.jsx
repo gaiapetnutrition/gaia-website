@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Clock, ArrowLeft, Search, Tag, Quote } from 'lucide-react'
 import Badge from '../components/ui/Badge'
 import Card from '../components/ui/Card'
+import NewsletterSignup from '../components/ui/NewsletterSignup'
 
 const ARTICLES = [
   {
@@ -86,57 +87,11 @@ export default function Articles() {
   return <ArticlesList />
 }
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
 function ArticlesList() {
   const [query, setQuery] = useState('')
-  const [newsletterEmail, setNewsletterEmail] = useState('')
-  const [newsletterStatus, setNewsletterStatus] = useState('idle') // idle | loading | success | error | rate-limited
-  const [newsletterHoneypot, setNewsletterHoneypot] = useState('')
-  const newsletterInputRef = useRef(null)
-  const [newsletterFocusToken, setNewsletterFocusToken] = useState(0)
-
-  useEffect(() => {
-    if (newsletterFocusToken > 0) newsletterInputRef.current?.focus()
-  }, [newsletterFocusToken])
-
   const filtered = ARTICLES.filter(a => (
     !query || a.title.includes(query) || a.excerpt.includes(query)
   ))
-
-  async function handleNewsletterSubmit(e) {
-    e.preventDefault()
-    if (newsletterStatus === 'loading') return
-
-    if (!EMAIL_RE.test(newsletterEmail.trim())) {
-      setNewsletterStatus('error')
-      return
-    }
-
-    setNewsletterStatus('loading')
-    try {
-      const res = await fetch('/api/newsletter-subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: newsletterEmail.trim(), website: newsletterHoneypot }),
-      })
-      if (res.status === 429) {
-        setNewsletterStatus('rate-limited')
-        return
-      }
-      if (!res.ok) throw new Error('subscribe failed')
-      setNewsletterStatus('success')
-      setNewsletterEmail('')
-    } catch {
-      setNewsletterStatus('error')
-    }
-  }
-
-  function handleNewsletterReset() {
-    setNewsletterStatus('idle')
-    setNewsletterEmail('')
-    setNewsletterFocusToken(t => t + 1)
-  }
 
   return (
     <div className="min-h-screen bg-cream">
@@ -201,69 +156,7 @@ function ArticlesList() {
         )}
 
         {/* Newsletter */}
-        <div className="mt-16 bg-green-gradient rounded-3xl p-8 md:p-12 text-center">
-          <h2 className="text-xl font-serif text-white mb-2">רוצים לקבל מאמרים חדשים?</h2>
-          <p className="text-white/60 text-sm mb-6">הצטרפו לרשימת הדיוור ותקבלו ידע תזונתי ישירות למייל.</p>
-          {newsletterStatus !== 'success' && (
-            <form onSubmit={handleNewsletterSubmit} noValidate className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-              {/* Honeypot: hidden from people and screen readers; bots that fill every field get filtered server-side */}
-              <input
-                type="text"
-                name="website"
-                value={newsletterHoneypot}
-                onChange={e => setNewsletterHoneypot(e.target.value)}
-                tabIndex={-1}
-                autoComplete="off"
-                aria-hidden="true"
-                className="sr-only"
-              />
-              <input
-                ref={newsletterInputRef}
-                type="email"
-                value={newsletterEmail}
-                onChange={e => {
-                  setNewsletterEmail(e.target.value)
-                  if (newsletterStatus !== 'idle' && newsletterStatus !== 'loading') setNewsletterStatus('idle')
-                }}
-                placeholder="your@email.com"
-                required
-                maxLength={254}
-                aria-label="כתובת אימייל להרשמה לניוזלטר"
-                aria-invalid={newsletterStatus === 'error'}
-                disabled={newsletterStatus === 'loading'}
-                className="input-base flex-1 text-right"
-                dir="ltr"
-              />
-              <button
-                type="submit"
-                disabled={newsletterStatus === 'loading'}
-                className="px-6 py-3 bg-white text-forest font-semibold text-sm rounded-xl hover:bg-cream transition-colors flex-shrink-0 disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {newsletterStatus === 'loading' ? 'נרשם...' : 'הרשמה'}
-              </button>
-            </form>
-          )}
-          <p role="status" aria-live="polite" className="text-sm mt-3">
-            {newsletterStatus === 'success' && (
-              <span className="text-white">תודה! נרשמתם בהצלחה לעדכונים של Gaia Pet Nutrition.</span>
-            )}
-            {newsletterStatus === 'error' && (
-              <span className="text-white">לא הצלחנו להשלים את ההרשמה כרגע. נסו שוב בעוד רגע.</span>
-            )}
-            {newsletterStatus === 'rate-limited' && (
-              <span className="text-white">היו כמה ניסיונות הרשמה ברצף. נסו שוב בעוד דקה.</span>
-            )}
-          </p>
-          {newsletterStatus === 'success' && (
-            <button
-              type="button"
-              onClick={handleNewsletterReset}
-              className="text-sm text-white/70 underline hover:text-white transition-colors mt-2"
-            >
-              להרשמה עם כתובת אחרת
-            </button>
-          )}
-        </div>
+        <NewsletterSignup className="mt-16" />
       </div>
     </div>
   )

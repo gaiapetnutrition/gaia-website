@@ -1,5 +1,4 @@
-import { Link } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
+import NewsletterSignup from '../components/ui/NewsletterSignup'
 
 export default function About() {
   return (
@@ -49,26 +48,10 @@ export default function About() {
               ברוכים הבאים לקהילה.
             </p>
           </div>
-
-          {/* CTA */}
-          <div className="mt-12 pt-8 border-t border-earth/10 relative">
-            <img src="/gaia-paw.png" alt="" aria-hidden="true"
-              className="absolute -left-4 bottom-0 w-28 h-28 opacity-[0.18] pointer-events-none select-none"
-              style={{ transform: 'translateY(85%) rotate(-15deg)' }}
-            />
-            <p className="text-earth font-semibold text-base mb-3">
-              רוצה לדעת איפה התפריט של הכלב שלך עומד?
-            </p>
-            <Link
-              to="/aafco-balance-check"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-forest hover:text-forest-dark transition-colors duration-200 group"
-            >
-              התחילו עם הבדיקה החינמית
-              <ArrowLeft className="w-3.5 h-3.5 transition-transform duration-200 group-hover:-translate-x-0.5" />
-            </Link>
-          </div>
         </div>
       </section>
+
+      <NewsletterSignup variant="compact" />
     </div>
   )
 }
