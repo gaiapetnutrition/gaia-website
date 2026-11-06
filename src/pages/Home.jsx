@@ -409,7 +409,7 @@ function Philosophy() {
             </h2>
           </div>
           <p className="font-serif text-forest font-bold text-[calc(1rem*1.2*1.1)] mb-5 tracking-wide">
-            בלי ניחושים.
+            בלי ניחושים, טרנדים או אינטואיציות.
           </p>
           <p className="text-mist leading-relaxed max-w-xl mx-auto">
             אנחנו מאמינים שתזונה טבעית לכלבים צריכה להיות ממזון אמיתי עם ידע מקצועי ועקרונות תזונה בינלאומיים המבוססים על המלצות AAFCO ו-NRC, ללא חוסרים.
