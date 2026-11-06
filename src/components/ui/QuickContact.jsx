@@ -5,11 +5,11 @@ import WhatsAppIcon from './WhatsAppIcon'
 /* Colors per surface: light background (forest text) or forest-green background (white text) */
 const tones = {
   light: {
-    text: 'text-forest',
+    text: 'text-sm text-forest',
     icon: 'bg-forest/10 text-forest hover:bg-forest hover:text-cream',
   },
   dark: {
-    text: 'text-white',
+    text: 'text-base text-white',
     icon: 'bg-white/10 text-white hover:bg-white hover:text-forest focus-visible:outline-white',
   },
 }
@@ -24,7 +24,7 @@ export default function QuickContact({ label, tone = 'light', className }) {
 
   return (
     <div className={clsx('flex flex-wrap items-center gap-x-3 gap-y-2', className)}>
-      <p className={clsx('inline-flex items-center gap-2 font-semibold text-sm', t.text)}>
+      <p className={clsx('inline-flex items-center gap-2 font-semibold', t.text)}>
         {label}
         <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
       </p>
